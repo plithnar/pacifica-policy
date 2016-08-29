@@ -12,5 +12,5 @@ class Root(object):
     not exposed by default the base objects are exposed
     """
     exposed = False
-    uploader = UploaderPolicy
+    uploader = UploaderPolicy()
 # pylint: enable=too-few-public-methods
