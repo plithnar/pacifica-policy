@@ -14,6 +14,12 @@ docker pull pacifica/policy
 
 ### The Docker Compose Way
 
+Build the images from `pacifica-metadata`.
+```
+docker-compose build
+```
+
+Bring up the policy and metadata images.
 ```
 docker-compose up
 ```

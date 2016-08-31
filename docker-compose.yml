@@ -1,0 +1,34 @@
+policyserver:
+  container_name: policyserver
+  build: .
+  dockerfile: Dockerfile
+  links:
+    - metadataserver:metadata
+  ports:
+    - 8181:8181
+
+elasticdb:
+  image: pacificametadata_elasticdb
+  container_name: elasticdb
+  ports:
+    - 9200:9200
+    - 9300:9300
+
+metadatadb:
+  image: postgres
+  container_name: metadatadb
+  environment:
+    POSTGRES_PASSWORD: password
+    POSTGRES_DB: pacifica_metadata
+    POSTGRES_USER: metadata
+  ports:
+    - 5432:5432
+
+metadataserver:
+  image: pacificametadata_metadataserver
+  container_name: metadataserver
+  links:
+    - metadatadb:postgres
+    - elasticdb:elasticdb
+  ports:
+    - 8121:8080
