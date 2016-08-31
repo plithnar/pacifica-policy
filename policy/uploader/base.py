@@ -31,12 +31,18 @@ class QueryBase(object):
         )
         admin_group_id = requests.get(agid_query)
         admin_groups = loads(admin_group_id.text)
-        self.admin_group_id = admin_groups[0]['_id']
+        if len(admin_groups):
+            self.admin_group_id = admin_groups[0]['_id']
+        else:
+            self.admin_group_id = -1
 
     def _is_admin(self, user_id):
         """
         Do the query to determine if the user is an admin
         """
+        # if we couldn't init properly try again...
+        if self.admin_group_id == -1:
+            self.__init__()
         amember_query = "%s/user_group?group_id=%s&person_id=%s"%(
             METADATA_ENDPOINT,
             self.admin_group_id,
