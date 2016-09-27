@@ -3,3 +3,4 @@ httpretty
 cherrypy
 pylint
 coverage
+codeclimate-test-reporter

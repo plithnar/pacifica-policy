@@ -1,5 +1,8 @@
 # Pacifica Policy API
 [![Build Status](https://travis-ci.org/EMSL-MSC/pacifica-policy.svg?branch=master)](https://travis-ci.org/EMSL-MSC/pacifica-policy)
+[![Code Climate](https://codeclimate.com/github/EMSL-MSC/pacifica-policy/badges/gpa.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-policy)
+[![Test Coverage](https://codeclimate.com/github/EMSL-MSC/pacifica-policy/badges/coverage.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-policy/coverage)
+[![Issue Count](https://codeclimate.com/github/EMSL-MSC/pacifica-policy/badges/issue_count.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-policy)
 
 This is the Pacifica Policy API and implements policy decisions
 for the rest of the Pacifica software.
