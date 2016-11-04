@@ -1,6 +1,7 @@
-requests
-httpretty
 cherrypy
-pylint
-coverage
 codeclimate-test-reporter
+coverage
+httpretty
+pylint
+radon
+requests

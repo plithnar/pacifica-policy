@@ -1,7 +1,5 @@
 #!/usr/bin/python
-"""
-Base class module for instrument and proposal queries
-"""
+"""Base class module for instrument and proposal queries."""
 from os import getenv
 from json import loads
 import requests
@@ -9,23 +7,19 @@ from policy import METADATA_ENDPOINT
 
 ADMIN_GROUP = getenv('ADMIN_GROUP', 'admin')
 
+
 # pylint: disable=too-few-public-methods
 class QueryBase(object):
-    """
-    This pulls the common bits of instrument and proposal query into a single
-    class
-    """
+    """This pulls the common bits of instrument and proposal query into a single class."""
 
-    all_instruments_url = "%s/instruments"%(METADATA_ENDPOINT)
-    all_proposals_url = "%s/proposals"%(METADATA_ENDPOINT)
-    prop_participant_url = "%s/proposal_participant"%(METADATA_ENDPOINT)
-    prop_instrument_url = "%s/proposal_instrument"%(METADATA_ENDPOINT)
+    all_instruments_url = '{0}/instruments'.format(METADATA_ENDPOINT)
+    all_proposals_url = '{0}/proposals'.format(METADATA_ENDPOINT)
+    prop_participant_url = '{0}/proposal_participant'.format(METADATA_ENDPOINT)
+    prop_instrument_url = '{0}/proposal_instrument'.format(METADATA_ENDPOINT)
 
     def __init__(self):
-        """
-        pull the gid for the admin group in the environment
-        """
-        agid_query = "%s/groups?group_name=%s"%(
+        """Pull the gid for the admin group in the environment."""
+        agid_query = '{0}/groups?group_name={1}'.format(
             METADATA_ENDPOINT,
             ADMIN_GROUP
         )
@@ -37,13 +31,11 @@ class QueryBase(object):
             self.admin_group_id = -1
 
     def _is_admin(self, user_id):
-        """
-        Do the query to determine if the user is an admin
-        """
+        """Do the query to determine if the user is an admin."""
         # if we couldn't init properly try again...
         if self.admin_group_id == -1:
             self.__init__()
-        amember_query = "%s/user_group?group_id=%s&person_id=%s"%(
+        amember_query = '{0}/user_group?group_id={1}&person_id={2}'.format(
             METADATA_ENDPOINT,
             self.admin_group_id,
             user_id

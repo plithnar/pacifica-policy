@@ -1,4 +1,2 @@
 #!/usr/bin/python
-"""
-CherryPy Uploader Policy object class
-"""
+"""CherryPy Uploader Policy object class."""

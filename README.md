@@ -45,14 +45,12 @@ python PolicyServer.py
 ## The API
 
 The policy server is split up into endpoints named for their Pacifica
-project that utilizes them. So the path `/uploader` is used by the 
+project that utilizes them. So the path `/uploader` is used by the
 Pacifica Uploader (http://github.com/EMSL-MSC/pacifica-uploader) to
-control its behavior. The idea is that workflow implemented by the 
+control its behavior. The idea is that workflow implemented by the
 various Pacifica projects has some element of site or instance
 specific policy that can be applied to the running service. The policy
 is driven by the metadata and thus this project should talk to the
 metadata service.
 
 ### The Uploader Policy API
-
-
