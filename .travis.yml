@@ -7,6 +7,9 @@ python:
  - pypy
  - 3.5
 
+env:
+  DOCKER_COMPOSE_VERSION: 1.9.0
+
 matrix:
   exclude:
     - python: 3.5
