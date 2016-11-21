@@ -1,0 +1,8 @@
+cherrypy
+codeclimate-test-reporter
+coverage
+httpretty
+pylint
+pytest
+radon
+requests

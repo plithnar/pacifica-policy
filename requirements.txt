@@ -1,7 +1,2 @@
 cherrypy
-codeclimate-test-reporter
-coverage
-httpretty
-pylint
-radon
 requests
