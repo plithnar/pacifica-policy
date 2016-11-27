@@ -1,2 +1,2 @@
 #!/usr/bin/python
-"""Test the uploader instrument and proposal list queries."""
+"""This module contains the httpretty tests to complete coverage."""
