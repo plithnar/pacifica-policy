@@ -1,15 +1,12 @@
 #!/usr/bin/python
 """Test the uploader policy."""
 from json import dumps, loads
-import logging
-import cherrypy
 from cherrypy.test import helper
-from policy.root import Root
 from policy.uploader.rest import UploaderPolicy
-from PolicyServer import error_page_default
+from policy.test.test_common import CommonCPSetup
 
 
-class TestUploaderPolicy(helper.CPWebCase):
+class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
     """Test the uploader policy service."""
 
     PORT = 8181
@@ -167,16 +164,6 @@ class TestUploaderPolicy(helper.CPWebCase):
             'answer': []
         }
     }
-
-    @staticmethod
-    def setup_server():
-        """Setup each test by starting the CherryPy server."""
-        logger = logging.getLogger('urllib2')
-        logger.setLevel(logging.DEBUG)
-        logger.addHandler(logging.StreamHandler())
-        cherrypy.config.update({'error_page.default': error_page_default})
-        cherrypy.config.update('server.conf')
-        cherrypy.tree.mount(Root(), '/', 'server.conf')
 
     def test_queries(self):
         """Test posting the queries."""
