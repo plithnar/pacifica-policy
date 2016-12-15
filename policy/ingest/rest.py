@@ -26,7 +26,6 @@ The CherryPy rest object for the structure.
   },
 ]
 """
-from six import text_type
 from cherrypy import tools, request, HTTPError
 from policy.uploader.rest import UploaderPolicy
 
@@ -37,27 +36,13 @@ class IngestPolicy(UploaderPolicy):
 
     def _valid_query(self, query):
         """Validate the metadata format."""
-        trans_parts = []
-        for bit in query:
-            bits = bit['destinationTable'].split('.')
-            if bits[0] == 'Transactions':
-                if bits[1] == 'proposal':
-                    trans_parts.append(isinstance(bit['value'], text_type))
-                else:
-                    trans_parts.append(isinstance(bit['value'], int))
-        if not (len(trans_parts) == 4 or len(trans_parts) == 3) or False in trans_parts:
-            return False
-        tkv_parts = []
-        for bit in query:
-            if bit['destinationTable'] == 'TransactionKeyValue':
-                tkv_parts.append(isinstance(bit['key'], text_type))
-                tkv_parts.append(isinstance(bit['value'], text_type))
-        if False in tkv_parts:
-            return False
-        submitter_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.submitter'][0]
-        proposal_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.proposal'][0]
-        instrument_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.instrument'][0]
-        if proposal_id not in self._proposals_for_user_inst(submitter_id, instrument_id):
+        try:
+            submitter_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.submitter'][0]
+            proposal_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.proposal'][0]
+            instrument_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.instrument'][0]
+            if proposal_id not in self._proposals_for_user_inst(submitter_id, instrument_id):
+                return False
+        except (KeyError, ValueError, IndexError):
             return False
         return True
 

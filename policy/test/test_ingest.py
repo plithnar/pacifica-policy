@@ -28,23 +28,6 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertTrue('status' in ret_data)
         self.assertEqual(ret_data['status'], 'success')
 
-        # change proposal ID to int...
-        valid_query[2]['value'] = 1234
-        self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
-                     'POST',
-                     dumps(valid_query))
-        self.assertStatus('500 Internal Server Error')
-
-        # change trans key value, key to an integer
-        valid_query[2]['value'] = '1234b'
-        valid_query[4]['key'] = 1234
-        self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
-                     'POST',
-                     dumps(valid_query))
-        self.assertStatus('500 Internal Server Error')
-
         # change proposal to valid but he's an admin so this works
         valid_query[4]['key'] = 'Tag'
         valid_query[2]['value'] = '1234a'
@@ -55,6 +38,13 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertStatus('200 OK')
 
         valid_query[1]['value'] = 100
+        self.getPage('/ingest',
+                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
+                     'POST',
+                     dumps(valid_query))
+        self.assertStatus('500 Internal Server Error')
+
+        del valid_query[1]['value']
         self.getPage('/ingest',
                      self.headers+[('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
