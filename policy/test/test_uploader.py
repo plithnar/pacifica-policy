@@ -6,6 +6,7 @@ import cherrypy
 from cherrypy.test import helper
 from policy.root import Root
 from policy.uploader.rest import UploaderPolicy
+from PolicyServer import error_page_default
 
 
 class TestUploaderPolicy(helper.CPWebCase):
@@ -173,6 +174,7 @@ class TestUploaderPolicy(helper.CPWebCase):
         logger = logging.getLogger('urllib2')
         logger.setLevel(logging.DEBUG)
         logger.addHandler(logging.StreamHandler())
+        cherrypy.config.update({'error_page.default': error_page_default})
         cherrypy.config.update('server.conf')
         cherrypy.tree.mount(Root(), '/', 'server.conf')
 
@@ -229,6 +231,12 @@ class TestUploaderPolicy(helper.CPWebCase):
                          'POST',
                          dumps(bad_query))
             self.assertStatus('500 Internal Server Error')
+            hit_exception = False
+            try:
+                loads(self.body)
+            except ValueError:  # pragma no cover
+                hit_exception = True
+            self.assertFalse(hit_exception)
 
         # pylint: disable=protected-access
         self.assertFalse(upolicy._valid_query({'foo': 'bar'}))
