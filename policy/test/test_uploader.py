@@ -16,7 +16,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
     queries = {
         'user_query': {
             'query': {
-                'user': 'dmlb2001',
+                'user': -1,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
                 'where': {'network_id': 'dmlb2001'}
@@ -30,7 +30,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'user_query_no_where': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
                 'where': {}
@@ -44,7 +44,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'user_query_with_proposal': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
                 'where': {'proposal_id': '1234a'}
@@ -58,7 +58,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'proposal_id': '1234a'}
@@ -72,7 +72,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query_not_admin': {
             'query': {
-                'user': 'dmlb2000',
+                'user': 100,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'proposal_id': '1234b'}
@@ -86,7 +86,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query2': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'_id': '1234a'}
@@ -100,7 +100,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query_with_instruments': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'instrument_id': 54}
@@ -114,7 +114,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query_for_user': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {}
@@ -128,7 +128,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'instrument_query': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
                 'where': {'_id': 54}
@@ -142,7 +142,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'instrument_query_from_proposal': {
             'query': {
-                'user': 'dmlb2001',
+                'user': 10,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
                 'where': {'proposal_id': '1234a'}
@@ -156,7 +156,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'instrument_query_from_proposal_bad': {
             'query': {
-                'user': 'dmlb2000',
+                'user': 100,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
                 'where': {'proposal_id': '1234a'}
@@ -196,7 +196,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         hit_exception = False
         try:
             bad_query = {
-                'user': 'dmlb2000',
+                'user': 100,
                 'from': 'foo',
                 'where': {}
             }
@@ -209,7 +209,13 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
 
         bad_queries = [
             {
-                'user': 'dmlb2001'
+                'user': 'abcd'
+            },
+            {
+                'user': 'abcd',
+                'from': 'users',
+                'columns': ['first_name'],
+                'where': {'network_id': 'foo'}
             }
         ]
         for bad_query in bad_queries:

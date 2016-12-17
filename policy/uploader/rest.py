@@ -104,10 +104,17 @@ class UploaderPolicy(object):
                 if key not in args:
                     del result[key]
 
+    @staticmethod
+    def _clean_user_query_id(query):
+        """determine the user_id for whatever is in the query."""
+        try:
+            return int(query['user'])
+        except ValueError:
+            return None
+
     # pylint: disable=too-many-branches
     def _query_select(self, query):
-        network_id = query['user']
-        user_id = self._user_info_from_kwds(network_id=network_id)[0]['_id']
+        user_id = self._clean_user_query_id(query)
         wants_object = query['from']
         where_objects = query['where'].keys()
         if wants_object == 'users':
