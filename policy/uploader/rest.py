@@ -1,14 +1,14 @@
 #!/usr/bin/python
 """The CherryPy rest object for the structure."""
-from os import getenv
 from json import loads, dumps
 from cherrypy import tools, request, HTTPError
 import requests
 from policy import METADATA_ENDPOINT
+from policy.admin import AdminPolicy
 
 
 # pylint: disable=too-few-public-methods
-class UploaderPolicy(object):
+class UploaderPolicy(AdminPolicy):
     """
     CherryPy root object class.
 
@@ -21,35 +21,6 @@ class UploaderPolicy(object):
     prop_participant_url = '{0}/proposal_participant'.format(METADATA_ENDPOINT)
     prop_instrument_url = '{0}/proposal_instrument'.format(METADATA_ENDPOINT)
     exposed = True
-
-    def __init__(self):
-        """Constructor for Uploader Policy."""
-        self.admin_group = getenv('ADMIN_GROUP', 'admin')
-        self._set_admin_id()
-
-    def _set_admin_id(self):
-        agid_query = '{0}/groups?group_name={1}'.format(
-            METADATA_ENDPOINT,
-            self.admin_group
-        )
-        admin_group_id = requests.get(agid_query)
-        admin_groups = loads(admin_group_id.text)
-        if len(admin_groups):
-            self.admin_group_id = admin_groups[0]['_id']
-        else:
-            self.admin_group_id = -1
-
-    def _is_admin(self, user_id):
-        if self.admin_group_id == -1:
-            self._set_admin_id()
-        amember_query = '{0}/user_group?group_id={1}&person_id={2}'.format(
-            METADATA_ENDPOINT,
-            self.admin_group_id,
-            user_id
-        )
-        is_admin_req = requests.get(amember_query)
-        is_admin_list = loads(is_admin_req.text)
-        return len(is_admin_list) > 0
 
     def _proposals_for_user(self, user_id):
         if self._is_admin(user_id):

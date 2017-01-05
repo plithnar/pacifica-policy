@@ -1,6 +1,7 @@
 #!/usr/bin/python
 """CherryPy root object class."""
 from policy.uploader.rest import UploaderPolicy
+from policy.status.rest import StatusPolicy
 from policy.ingest.rest import IngestPolicy
 
 
@@ -17,5 +18,6 @@ class Root(object):
     def __init__(self):
         """Create the local objects we need."""
         self.uploader = UploaderPolicy()
+        self.status = StatusPolicy()
         self.ingest = IngestPolicy()
 # pylint: enable=too-few-public-methods
