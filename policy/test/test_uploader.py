@@ -66,7 +66,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development'
+                    'title': 'Pacifica Development (active no close)'
                 }
             ]
         },
@@ -94,7 +94,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development'
+                    'title': 'Pacifica Development (active no close)'
                 }
             ]
         },
@@ -108,7 +108,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development'
+                    'title': 'Pacifica Development (active no close)'
                 }
             ]
         },
@@ -122,7 +122,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development'
+                    'title': 'Pacifica Development (active no close)'
                 }
             ]
         },
