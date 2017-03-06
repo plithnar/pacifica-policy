@@ -15,4 +15,6 @@ docker-compose stop policyserver
 export PYTHONPATH=$PWD
 coverage run --include='policy/*' -m pytest -v
 coverage report -m --fail-under=100
-codeclimate-test-reporter
+if [[ $CODECLIMATE_REPO_TOKEN ]] ; then
+  codeclimate-test-reporter
+fi
