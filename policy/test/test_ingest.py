@@ -18,7 +18,7 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         """Test posting the queries."""
         valid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
         self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('200 OK')
@@ -32,21 +32,14 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         valid_query[4]['key'] = 'Tag'
         valid_query[2]['value'] = '1234a'
         self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('200 OK')
 
-        valid_query[1]['value'] = 100
+        del valid_query[1]
         self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
-                     'POST',
-                     dumps(valid_query))
-        self.assertStatus('500 Internal Server Error')
-
-        del valid_query[1]['value']
-        self.getPage('/ingest',
-                     self.headers+[('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('500 Internal Server Error')

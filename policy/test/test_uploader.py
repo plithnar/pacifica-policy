@@ -169,12 +169,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         """Test posting the queries."""
         for value in self.queries.values():
             self.getPage('/uploader',
-                         self.headers+[('Content-Length', str(len(dumps(value['query']))))],
+                         self.headers + [('Content-Length', str(len(dumps(value['query']))))],
                          'POST',
                          dumps(value['query']))
             self.assertStatus('200 OK')
             self.assertHeader('Content-Type', 'application/json')
-            if len(loads(self.body)):
+            if loads(self.body):
                 answer = loads(self.body)[0]
                 for akey, avalue in value['answer'][0].items():
                     self.assertTrue(akey in answer)

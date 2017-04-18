@@ -34,14 +34,14 @@ def try_meta_connect(attempts=0):
         if ret.status_code != 200:
             raise Exception('try_meta_connect: {0}\n'.format(ret.status_code))
     # pylint: disable=broad-except
-    except Exception as ex:
+    except Exception:
         # pylint: enable=broad-except
         if attempts < METADATA_CONNECT_ATTEMPTS:
             sleep(METADATA_WAIT)
             attempts += 1
             try_meta_connect(attempts)
         else:
-            raise ex
+            raise Exception
 
 
 def validate_user(index=0):

@@ -20,6 +20,7 @@ class StatusPolicy(object):
 
     def __init__(self):
         """Create local objects to allow for import to work."""
+        self.instruments = InstrumentQuery()
         self.instrument = InstrumentQuery()
         self.proposals = ProposalQuery()
         self.transactions = TransactionQuery()

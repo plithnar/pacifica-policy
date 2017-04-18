@@ -1,5 +1,4 @@
 #!/bin/bash -xe
-
 docker-compose up -d
 MAX_TRIES=60
 HTTP_CODE=$(curl -sL -w "%{http_code}\\n" localhost:8121/keys -o /dev/null || true)

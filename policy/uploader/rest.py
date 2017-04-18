@@ -37,8 +37,8 @@ class UploaderPolicy(AdminPolicy):
 
     def _proposal_info_from_ids(self, prop_list):
         ret = []
-        for prop_id in prop_list:
-            if prop_id is not None and len(prop_id) > 0:
+        if prop_list:
+            for prop_id in prop_list:
                 prop_url = '{0}?_id={1}'.format(self.all_proposals_url, prop_id)
                 ret.append(loads(requests.get(prop_url).text)[0])
         return ret

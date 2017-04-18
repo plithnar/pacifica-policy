@@ -1,11 +1,12 @@
 """CherryPy Status Policy object class."""
 import requests
-from cherrypy import tools
+from cherrypy import tools, HTTPError
 from policy import METADATA_ENDPOINT, validate_proposal
+from policy.status.base import QueryBase
 
 
 # pylint: disable=too-few-public-methods
-class InstrumentsByProposal(object):
+class InstrumentsByProposal(QueryBase):
     """Retrieves instrument list for a given proposal."""
 
     exposed = True
@@ -16,7 +17,11 @@ class InstrumentsByProposal(object):
         md_url = '{0}/proposalinfo/by_proposal_id/{1}'.format(
             METADATA_ENDPOINT, proposal_id
         )
-        return requests.get(url=md_url).json()
+        query = requests.get(url=md_url)
+        if query.status_code == 200:
+            return query.json()
+        elif query.status_code == 404:
+            raise HTTPError('404 Not Found')
 
     # CherryPy requires these named methods
     # Add HEAD (basically Get without returning body
@@ -28,6 +33,9 @@ class InstrumentsByProposal(object):
         """CherryPy GET method."""
         proposal_info = InstrumentsByProposal._get_instruments_for_proposal(proposal_id)
         instruments = {index: info for (index, info) in proposal_info.get('instruments').items()}
+        if not instruments:
+            message = 'No instruments were located for this proposal'
+            raise HTTPError('404 Not Found', message)
 
         cleaned_instruments = []
         clean_info = {

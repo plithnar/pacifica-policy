@@ -36,15 +36,20 @@ class IngestPolicy(UploaderPolicy):
 
     def _valid_query(self, query):
         """Validate the metadata format."""
-        try:
-            submitter_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.submitter'][0]
-            proposal_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.proposal'][0]
-            instrument_id = [x['value'] for x in query if x['destinationTable'] == 'Transactions.instrument'][0]
-            if proposal_id not in self._proposals_for_user_inst(submitter_id, instrument_id):
-                return False
-        except (KeyError, ValueError, IndexError):
-            return False
-        return True
+        submitter_id = None
+        proposal_id = None
+        instrument_id = None
+        for rec in query:
+            if rec['destinationTable'] == 'Transactions.submitter':
+                submitter_id = rec['value']
+            if rec['destinationTable'] == 'Transactions.proposal':
+                proposal_id = rec['value']
+            if rec['destinationTable'] == 'Transactions.instrument':
+                instrument_id = rec['value']
+
+        if submitter_id and proposal_id and instrument_id:
+            return True
+        return False
 
     # pylint: disable=invalid-name
     @tools.json_in()

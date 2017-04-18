@@ -26,7 +26,7 @@ class AdminPolicy(object):
         )
         admin_group_id = requests.get(agid_query)
         admin_groups = loads(admin_group_id.text)
-        if len(admin_groups):
+        if admin_groups:
             self.admin_group_id = admin_groups[0]['_id']
         else:
             self.admin_group_id = -1

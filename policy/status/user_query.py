@@ -1,8 +1,7 @@
 #!/usr/bin/python
 """CherryPy Status Policy object class."""
-from cherrypy import tools
-import requests
-from policy import METADATA_ENDPOINT, validate_user
+from policy.status.user.search import UserSearch
+from policy.status.user.lookup import UserLookup
 
 
 # pylint: disable=too-few-public-methods
@@ -11,22 +10,8 @@ class UserQuery(object):
 
     exposed = True
 
-    @staticmethod
-    def _get_user_info(user_id):
-        """Return detailed info about a given user."""
-        lookup_url = '{0}/userinfo/by_id/{1}'.format(
-            METADATA_ENDPOINT, user_id
-        )
-        return requests.get(url=lookup_url).json()
-
-    # CherryPy requires these named methods
-    # Add HEAD (basically Get without returning body
-    # pylint: disable=invalid-name
-    @staticmethod
-    @tools.json_out()
-    @validate_user('user')
-    def GET(**kwargs):
-        """CherryPy GET method."""
-        user_id = kwargs['user']
-        return UserQuery._get_user_info(user_id)
+    def __init__(self):
+        """Create local objects for sub tree items."""
+        self.search = UserSearch()
+        self.by_id = UserLookup()
 # pylint: enable=too-few-public-methods

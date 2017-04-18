@@ -3,6 +3,7 @@
 from policy.uploader.rest import UploaderPolicy
 from policy.status.rest import StatusPolicy
 from policy.ingest.rest import IngestPolicy
+from policy.reporting.rest import ReportingPolicy
 from policy import try_meta_connect
 
 
@@ -21,5 +22,6 @@ class Root(object):
         try_meta_connect()
         self.uploader = UploaderPolicy()
         self.status = StatusPolicy()
+        self.reporting = ReportingPolicy()
         self.ingest = IngestPolicy()
 # pylint: enable=too-few-public-methods
