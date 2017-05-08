@@ -46,16 +46,15 @@ class TransactionSummary(QueryBase):
 
     @staticmethod
     def _cleanup_object_stats(object_listing, object_type, user_info):
-        valid_object_list = user_info[object_type + '_list']
+        valid_object_list = map(str, user_info[object_type + '_list'])
         clean_object_stats = {}
         for object_id, object_stats in object_listing.iteritems():
-            if user_info['emsl_employee'] or object_id in valid_object_list:
+            if object_id in valid_object_list or user_info['emsl_employee']:
                 clean_object_stats[object_id] = object_stats
             else:
                 if 'Other' not in clean_object_stats.keys():
                     clean_object_stats['Other'] = 0
                 clean_object_stats['Other'] += object_stats
-
         return clean_object_stats
 
     # pylint: enable=too-many-arguments
