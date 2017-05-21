@@ -34,20 +34,25 @@ from policy.uploader.rest import UploaderPolicy
 class IngestPolicy(UploaderPolicy):
     """CherryPy Ingest Policy Class."""
 
+    @staticmethod
+    def _pull_data_by_rec(query, table):
+        """Pull the value for the table."""
+        for rec in query:
+            if rec['destinationTable'] == table:
+                return rec['value']
+        return None
+
     def _valid_query(self, query):
         """Validate the metadata format."""
-        submitter_id = None
-        proposal_id = None
-        instrument_id = None
-        for rec in query:
-            if rec['destinationTable'] == 'Transactions.submitter':
-                submitter_id = rec['value']
-            if rec['destinationTable'] == 'Transactions.proposal':
-                proposal_id = rec['value']
-            if rec['destinationTable'] == 'Transactions.instrument':
-                instrument_id = rec['value']
+        submitter_id = self._pull_data_by_rec(query, 'Transactions.submitter')
+        proposal_id = self._pull_data_by_rec(query, 'Transactions.proposal')
+        instrument_id = self._pull_data_by_rec(query, 'Transactions.instrument')
 
         if submitter_id and proposal_id and instrument_id:
+            if proposal_id not in self._proposals_for_user(submitter_id):
+                return False
+            if instrument_id not in self._instruments_for_user_prop(submitter_id, proposal_id):
+                return False
             return True
         return False
 
