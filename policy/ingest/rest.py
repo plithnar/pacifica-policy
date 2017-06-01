@@ -44,17 +44,33 @@ class IngestPolicy(UploaderPolicy):
 
     def _valid_query(self, query):
         """Validate the metadata format."""
-        submitter_id = self._pull_data_by_rec(query, 'Transactions.submitter')
-        proposal_id = self._pull_data_by_rec(query, 'Transactions.proposal')
-        instrument_id = self._pull_data_by_rec(query, 'Transactions.instrument')
+        variables_to_query = {
+            'submitter': 'users',
+            'proposal': 'proposals',
+            'instrument': 'instruments'
+        }
+        invalid_terms = []
+        valid_terms = {}
+        for variable in variables_to_query:
+            value = self._pull_data_by_rec(query, 'Transactions.{0}'.format(variable))
+            valid = self._object_id_valid(variables_to_query[variable], value)
+            if not valid:
+                invalid_terms.append(variable)
+            else:
+                valid_terms[variable] = str(value)
+        if not invalid_terms:
+            # all the incoming terms are valid, check for xrefs
+            if valid_terms['proposal'] not in self._proposals_for_user_inst(
+                    valid_terms['submitter'], valid_terms['instrument']):
+                invalid_terms.append('proposal_xref')
+            if valid_terms['instrument'] not in self._instruments_for_user_prop(
+                    valid_terms['submitter'], valid_terms['proposal']
+            ):
+                invalid_terms.append('instrument_xref')
+            if not invalid_terms:
+                return {'status': 'success'}
 
-        if submitter_id and proposal_id and instrument_id:
-            if proposal_id not in self._proposals_for_user(submitter_id):
-                return False
-            if instrument_id not in self._instruments_for_user_prop(submitter_id, proposal_id):
-                return False
-            return True
-        return False
+        raise HTTPError(412, 'Precondition Failed: Invalid values for {0}'.format(', '.join(invalid_terms)))
 
     # pylint: disable=invalid-name
     @tools.json_in()
@@ -62,8 +78,6 @@ class IngestPolicy(UploaderPolicy):
     def POST(self):
         """Read in the json query and return results."""
         metadata = request.json
-        if not self._valid_query(metadata):
-            raise HTTPError(500, 'Invalid Metadata.')
-        return {'status': 'success'}
+        return self._valid_query(metadata)
     # pylint: enable=invalid-name
 # pylint: enable=too-few-public-methods

@@ -37,33 +37,47 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
                      dumps(valid_query))
         self.assertStatus('200 OK')
 
+        # change the proposal to be invalid => fails
         invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[2]['value'] = '12'
         self.getPage('/ingest',
                      self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',
                      dumps(invalid_query))
-        self.assertStatus('500 Internal Server Error')
+        self.assertStatus('412 Precondition Failed')
         ret_data = loads(self.body)
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
-        self.assertEqual(ret_data['message'], 'Invalid Metadata.')
 
+        # change instrument to be invalid => fails
         invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[3]['value'] = 4321
         self.getPage('/ingest',
                      self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',
                      dumps(invalid_query))
-        self.assertStatus('500 Internal Server Error')
+        self.assertStatus('412 Precondition Failed')
         ret_data = loads(self.body)
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
-        self.assertEqual(ret_data['message'], 'Invalid Metadata.')
+
+        # change the query so that the instrument xrefs and proposal xrefs fail (but for valid base entities)
+        invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        invalid_query[3]['value'] = 74
+        invalid_query[2]['value'] = '1234c'
+        invalid_query[1]['value'] = 12
+        self.getPage('/ingest',
+                     self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
+                     'POST',
+                     dumps(invalid_query))
+        self.assertStatus('412 Precondition Failed')
+        ret_data = loads(self.body)
+        self.assertFalse(ret_data is None)
+        self.assertTrue('message' in ret_data)
 
         del valid_query[1]
         self.getPage('/ingest',
                      self.headers + [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
-        self.assertStatus('500 Internal Server Error')
+        self.assertStatus('412 Precondition Failed')

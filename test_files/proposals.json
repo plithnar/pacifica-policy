@@ -9,5 +9,16 @@
     "science_theme": "general",
     "submitted_date": "Sun Nov 13 08:15:26 2016",
     "title": "Pacifica Development"
+  },
+  {
+    "_id": "1234c",
+    "abstract": "This is the Pacifica follow-on development proposal for use with development of data asset workflows. The goals is to provide the metadata needed for users to develop and refine how Pacifica fits into their workflows to save data required by sponsors and publishing agencies.",
+    "accepted_date": "Dec 10 2016",
+    "actual_end_date": "Dec 10 2016",
+    "actual_start_date": "Dec 10 2016",
+    "closed_date": null,
+    "science_theme": "general",
+    "submitted_date": "Sun Nov 13 08:15:26 2016",
+    "title": "Pacifica Development (Alt)"
   }
 ]

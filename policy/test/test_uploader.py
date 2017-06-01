@@ -47,7 +47,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 'user': 10,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
-                'where': {'proposal_id': '1234a'}
+                'where': {'proposal_id': '1234a', 'user': 10}
             },
             'answer': [
                 {
@@ -100,15 +100,15 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query_with_instruments': {
             'query': {
-                'user': 10,
+                'user': 11,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
-                'where': {'instrument_id': 54}
+                'where': {'instrument_id': 74}
             },
             'answer': [
                 {
-                    '_id': '1234a',
-                    'title': 'Pacifica Development (active no close)'
+                    '_id': '1234c',
+                    'title': 'Pacifica Development (Alt)',
                 }
             ]
         },

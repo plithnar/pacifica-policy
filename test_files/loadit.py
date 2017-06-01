@@ -13,6 +13,7 @@ def main():
     object_order = [
         'users',
         'proposals',
+        'instruments',
         'proposal_instrument',
         'proposal_participant'
     ]
