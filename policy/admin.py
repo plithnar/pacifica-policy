@@ -53,11 +53,15 @@ class AdminPolicy(object):
         inst_props = set([str(part['proposal_id']) for part in inst_props])
         return inst_props
 
+    # This should be included once we get the concepts of instrument group
+    # pylint: disable=unused-argument
     def _proposals_for_user_inst(self, user_id, inst_id):
         props = set(self._proposals_for_user(user_id))
+        if self._is_admin(user_id):
+            return props
         props_for_custodian = self._proposals_for_custodian(user_id)
-        inst_props = self._proposals_for_inst(inst_id)
-        return list(props.union(inst_props, props_for_custodian))
+        return list(props.union(props_for_custodian))
+    # pylint: enable=unused-argument
 
     def _proposal_info_from_ids(self, prop_list):
         ret = []
