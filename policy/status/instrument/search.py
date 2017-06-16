@@ -34,11 +34,8 @@ class InstrumentKeywordSearch(QueryBase):
                 METADATA_ENDPOINT, user_id
             )
             query = requests.get(url=inst_for_user_url)
-            if query.status_code == 200:
-                response = loads(query.text)
-                output_list = InstrumentKeywordSearch._squash_output_list(response, inst_response)
-            else:
-                raise HTTPError(query.status_code)
+            response = loads(query.text)
+            output_list = InstrumentKeywordSearch._squash_output_list(response, inst_response)
         else:
             output_list = inst_response
 

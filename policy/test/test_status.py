@@ -124,7 +124,8 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         user_id = 12
         url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
         self.getPage(url)
-        self.assertStatus(404)
+        self.assertStatus('200 OK')
+        self.assertBody('[]')
 
         user_id = 100
         url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
