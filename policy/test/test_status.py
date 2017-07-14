@@ -95,7 +95,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body)
-        self.assertEqual(len(answer), 1)
+        self.assertEqual(len(answer), 2)
 
         user_id = 13
         url = '/status/proposals/by_user_id/{0}'.format(user_id)
@@ -153,7 +153,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body)
-        self.assertEqual(len(answer), 1)
+        self.assertEqual(len(answer), 2)
 
         search_term = 'pacifica'
         user_id = 100  # non admin user

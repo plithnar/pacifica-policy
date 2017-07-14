@@ -9,7 +9,7 @@
   },
   {
     "destinationTable": "Transactions.proposal",
-    "value": "1234b"
+    "value": "1236\u00e9"
   },
   {
     "destinationTable": "Transactions.instrument",

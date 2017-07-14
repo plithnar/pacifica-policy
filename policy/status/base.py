@@ -24,5 +24,5 @@ class QueryBase(AdminPolicy):
         }
         response = requests.get(url=md_url, params=params)
 
-        return [str(x.get('proposal_id')) for x in response.json()]
+        return [x.get('proposal_id') for x in response.json()]
 # pylint: enable=too-few-public-methods

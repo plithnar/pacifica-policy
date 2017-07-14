@@ -63,9 +63,9 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
 
         # change the query so that the instrument xrefs and proposal xrefs fail (but for valid base entities)
         invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
-        invalid_query[3]['value'] = 74
-        invalid_query[2]['value'] = '1234c'
-        invalid_query[1]['value'] = 12
+        invalid_query[3]['value'] = 74  # instrument
+        invalid_query[2]['value'] = u'1234c\u00e9'  # proposal
+        invalid_query[1]['value'] = 12  # submitter
         self.getPage('/ingest',
                      self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',

@@ -22,6 +22,7 @@ class TestIngest(TestUploader):
         ret = ipolicy._valid_query(valid_query)
         self.assertTrue(ret)
         valid_query[1]['value'] = 100
+        valid_query[2]['value'] = u'1234b\u00e9'
         ret = ipolicy._valid_query(valid_query)
         self.assertTrue(ret)
         # pylint: enable=protected-access

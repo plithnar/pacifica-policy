@@ -28,10 +28,10 @@ class AdminPolicy(object):
 
     def _proposals_for_user(self, user_id):
         if self._is_admin(user_id):
-            return [str(prop['_id']) for prop in loads(requests.get(self.all_proposals_url).text)]
+            return [prop['_id'] for prop in loads(requests.get(self.all_proposals_url).text)]
 
         prop_url = '{0}?person_id={1}'.format(self.prop_participant_url, user_id)
-        return [str(part['proposal_id']) for part in loads(requests.get(prop_url).text)]
+        return [part['proposal_id'] for part in loads(requests.get(prop_url).text)]
 
     def _proposals_for_custodian(self, user_id):
         inst_list = self._instruments_for_custodian(user_id)
@@ -50,7 +50,7 @@ class AdminPolicy(object):
     def _proposals_for_inst(self, inst_id):
         inst_props_url = '{0}?instrument_id={1}'.format(self.prop_instrument_url, inst_id)
         inst_props = loads(requests.get(inst_props_url).text)
-        inst_props = set([str(part['proposal_id']) for part in inst_props])
+        inst_props = set([part['proposal_id'] for part in inst_props])
         return inst_props
 
     # This should be included once we get the concepts of instrument group
@@ -67,14 +67,14 @@ class AdminPolicy(object):
         ret = []
         if prop_list:
             for prop_id in prop_list:
-                prop_url = '{0}?_id={1}'.format(self.all_proposals_url, prop_id)
+                prop_url = u'{0}?_id={1}'.format(self.all_proposals_url, prop_id)
                 ret.append(loads(requests.get(prop_url).text)[0])
         return ret
 
     def _instruments_for_user_prop(self, user_id, prop_id):
         prop_insts = []
         if prop_id in self._proposals_for_user(user_id):
-            prop_insts_url = '{0}?proposal_id={1}'.format(self.prop_instrument_url, prop_id)
+            prop_insts_url = u'{0}?proposal_id={1}'.format(self.prop_instrument_url, prop_id)
             prop_insts = loads(requests.get(prop_insts_url).text)
 
         inst_custodian_associations_url = '{0}?custodian_id={1}'.format(self.inst_custodian_url, user_id)
@@ -95,7 +95,7 @@ class AdminPolicy(object):
         return ret
 
     def _users_for_prop(self, prop_id):
-        user_prop_url = '{0}?proposal_id={1}'.format(self.prop_participant_url, prop_id)
+        user_prop_url = u'{0}?proposal_id={1}'.format(self.prop_participant_url, prop_id)
         user_props = loads(requests.get(user_prop_url).text)
         return list(set([str(part['person_id']) for part in user_props]))
 
@@ -122,7 +122,7 @@ class AdminPolicy(object):
         if not object_id:
             return False
         object_type_url = '{0}/{1}'.format(METADATA_ENDPOINT, object_lookup_name)
-        object_query_url = '{0}?_id={1}'.format(object_type_url, object_id)
+        object_query_url = u'{0}?_id={1}'.format(object_type_url, object_id)
         object_value_req = requests.get(object_query_url)
         object_is_valid = loads(object_value_req.text)
         return len(object_is_valid) > 0

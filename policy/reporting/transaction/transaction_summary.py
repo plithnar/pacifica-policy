@@ -1,4 +1,5 @@
 """CherryPy Status Metadata object class."""
+from six import text_type
 import requests
 from cherrypy import tools, request
 from policy import METADATA_ENDPOINT, validate_user
@@ -46,7 +47,7 @@ class TransactionSummary(QueryBase):
 
     @staticmethod
     def _cleanup_object_stats(object_listing, object_type, user_info):
-        valid_object_list = map(str, user_info[object_type + '_list'])
+        valid_object_list = map(text_type, user_info[object_type + '_list'])
         clean_object_stats = {}
         for object_id, object_stats in object_listing.iteritems():
             if object_id in valid_object_list or user_info['emsl_employee']:

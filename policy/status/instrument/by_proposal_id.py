@@ -40,7 +40,7 @@ class InstrumentsByProposal(QueryBase):
         cleaned_instruments = []
         clean_info = {
             'id': -1,
-            'text': 'All Available Instruments for Proposal {0}'.format(proposal_id),
+            'text': u'All Available Instruments for Proposal {0}'.format(proposal_id),
             'name': 'All Instruments',
             'active': 'Y'
         }
@@ -49,7 +49,7 @@ class InstrumentsByProposal(QueryBase):
             info = instruments.get(inst_id)
             clean_info = {
                 'id': inst_id,
-                'text': 'Instrument {0}: {1}'.format(inst_id, info.get('display_name')),
+                'text': u'Instrument {0}: {1}'.format(inst_id, info.get('display_name')),
                 'name': info.get('name_short'),
                 'active': 'Y' if info.get('active') else 'N'
             }

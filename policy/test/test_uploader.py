@@ -23,8 +23,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             },
             'answer': [
                 {
-                    'last_name': 'Brown Jr',
-                    'first_name': 'David'
+                    'last_name': u'Brown\u00e9 Jr',
+                    'first_name': u'David\u00e9'
                 }
             ]
         },
@@ -37,8 +37,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             },
             'answer': [
                 {
-                    'last_name': 'Brown Jr',
-                    'first_name': 'David'
+                    'last_name': u'Brown\u00e9 Jr',
+                    'first_name': u'David\u00e9'
                 }
             ]
         },
@@ -51,8 +51,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             },
             'answer': [
                 {
-                    'last_name': 'Brown Jr',
-                    'first_name': 'David'
+                    'last_name': u'Brown\xe9 Jr',
+                    'first_name': u'David\xe9'
                 }
             ]
         },
@@ -66,7 +66,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development (active no close)'
+                    'title': u'Pacifica D\xe9velopment (active no close)'
                 }
             ]
         },
@@ -75,12 +75,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 'user': 100,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
-                'where': {'proposal_id': '1234b'}
+                'where': {'proposal_id': u'1234b\u00e9'}
             },
             'answer': [
                 {
-                    '_id': '1234b',
-                    'title': 'Pacifica Development'
+                    '_id': u'1234b\u00e9',
+                    'title': u'Pacifica D\xe9velopment'
                 }
             ]
         },
@@ -94,7 +94,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development (active no close)'
+                    'title': u'Pacifica D\xe9velopment (active no close)'
                 }
             ]
         },
@@ -107,8 +107,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             },
             'answer': [
                 {
-                    '_id': '1234c',
-                    'title': 'Pacifica Development (Alt)',
+                    '_id': u'1234c\u00e9',
+                    'title': u'Pacifica D\xe9velopment (Alt)',
                 }
             ]
         },
@@ -122,7 +122,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': '1234a',
-                    'title': 'Pacifica Development (active no close)'
+                    'title': u'Pacifica D\xe9velopment (active no close)'
                 }
             ]
         },
@@ -136,7 +136,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': 54,
-                    'name': 'NMR PROBES: Nittany Liquid Probes'
+                    'name': u'NMR PROBES: Nittany Liquid Prob\xe9s'
                 }
             ]
         },
@@ -150,7 +150,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             'answer': [
                 {
                     '_id': 54,
-                    'name': 'NMR PROBES: Nittany Liquid Probes'
+                    'name': u'NMR PROBES: Nittany Liquid Prob\xe9s'
                 }
             ]
         },

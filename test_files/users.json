@@ -2,15 +2,15 @@
   {
     "_id": 100,
     "email_address": "dmlb2000@gmail.com",
-    "first_name": "David",
-    "last_name": "Brown Jr",
+    "first_name": "David\u00e9",
+    "last_name": "Brown\u00e9 Jr",
     "network_id": "dmlb2000"
   },
   {
     "_id": 12,
     "email_address": "groovy1967@gmail.com",
-    "first_name": "Austin",
-    "last_name": "Powers",
+    "first_name": "Austin\u00e9",
+    "last_name": "Powers\u00e9",
     "network_id": "groovy1967"
   }
 ]
