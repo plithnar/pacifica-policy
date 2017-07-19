@@ -71,21 +71,18 @@ class AdminPolicy(object):
                 ret.append(loads(requests.get(prop_url).text)[0])
         return ret
 
+    def _instruments_for_user(self, user_id):
+        if self._is_admin(user_id):
+            return [inst['_id'] for inst in loads(requests.get(self.all_instruments_url).text)]
+        return self._instruments_for_custodian(user_id)
+
     def _instruments_for_user_prop(self, user_id, prop_id):
-        prop_insts = []
+        user_insts = set(self._instruments_for_user(user_id))
+        prop_insts = set()
         if prop_id in self._proposals_for_user(user_id):
             prop_insts_url = u'{0}?proposal_id={1}'.format(self.prop_instrument_url, prop_id)
-            prop_insts = loads(requests.get(prop_insts_url).text)
-
-        inst_custodian_associations_url = '{0}?custodian_id={1}'.format(self.inst_custodian_url, user_id)
-        inst_custodian_list = loads(requests.get(inst_custodian_associations_url).text)
-
-        ret = list(
-            set([str(part['instrument_id']) for part in prop_insts]).union(
-                [str(cust['instrument_id']) for cust in inst_custodian_list]
-            )
-        )
-        return ret
+            prop_insts = set([part['instrument_id'] for part in loads(requests.get(prop_insts_url).text)])
+        return list(prop_insts | user_insts)
 
     def _instrument_info_from_ids(self, inst_list):
         ret = []

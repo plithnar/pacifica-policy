@@ -26,7 +26,6 @@ The CherryPy rest object for the structure.
   },
 ]
 """
-from six import text_type
 from cherrypy import tools, request, HTTPError
 from policy.uploader.rest import UploaderPolicy
 
@@ -58,7 +57,7 @@ class IngestPolicy(UploaderPolicy):
             if not valid:
                 invalid_terms.append(variable)
             else:
-                valid_terms[variable] = text_type(value)
+                valid_terms[variable] = value
         if not invalid_terms:
             # all the incoming terms are valid, check for xrefs
             if valid_terms['proposal'] not in self._proposals_for_user_inst(

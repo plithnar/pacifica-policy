@@ -175,7 +175,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             self.assertStatus('200 OK')
             self.assertHeader('Content-Type', 'application/json')
             if loads(self.body):
-                answer = loads(self.body)[0]
+                answer = loads(self.body)
+                if '_id' in answer[0]:
+                    answer = sorted(answer, key=lambda i: i['_id'])
+                answer = answer[0]
                 for akey, avalue in value['answer'][0].items():
                     self.assertTrue(akey in answer)
                     self.assertEqual(avalue, answer[akey])
