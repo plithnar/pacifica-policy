@@ -63,6 +63,8 @@ class UploaderPolicy(AdminPolicy):
     def _query_select_instrument_info(self, query):
         user_id = self._clean_user_query_id(query)
         if 'proposal_id' in query['where']:
+            if self._is_admin(user_id):
+                return self._all_instrument_info()
             inst_ids = self._instruments_for_user_prop(user_id, query['where']['proposal_id'])
         elif '_id' in query['where']:
             inst_ids = [query['where']['_id']]
@@ -75,7 +77,7 @@ class UploaderPolicy(AdminPolicy):
         if wants_object == 'proposals':
             return self._all_proposal_info()
         if wants_object == 'instruments':
-            return self._all_instrument_info()
+            return self._query_select_instrument_info(query)
         raise TypeError('Invalid Query: ' +
                         'Not sure how to want {0} where {1}'.format(wants_object, query['where']))
 
