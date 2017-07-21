@@ -26,9 +26,15 @@ class AdminPolicy(object):
         self.admin_group = getenv('ADMIN_GROUP', 'admin')
         self._set_admin_id()
 
+    def _all_proposal_info(self):
+        return loads(requests.get(self.all_proposals_url).text)
+
+    def _all_instrument_info(self):
+        return loads(requests.get(self.all_instruments_url).text)
+
     def _proposals_for_user(self, user_id):
         if self._is_admin(user_id):
-            return [prop['_id'] for prop in loads(requests.get(self.all_proposals_url).text)]
+            return [prop['_id'] for prop in self._all_proposal_info()]
 
         prop_url = '{0}?person_id={1}'.format(self.prop_participant_url, user_id)
         return [part['proposal_id'] for part in loads(requests.get(prop_url).text)]
@@ -73,7 +79,7 @@ class AdminPolicy(object):
 
     def _instruments_for_user(self, user_id):
         if self._is_admin(user_id):
-            return [inst['_id'] for inst in loads(requests.get(self.all_instruments_url).text)]
+            return [inst['_id'] for inst in self._all_instrument_info()]
         return self._instruments_for_custodian(user_id)
 
     def _instruments_for_user_prop(self, user_id, prop_id):

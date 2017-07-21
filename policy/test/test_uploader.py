@@ -30,7 +30,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'user_query_no_where': {
             'query': {
-                'user': 10,
+                'user': 100,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
                 'where': {}
@@ -44,7 +44,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'user_query_with_proposal': {
             'query': {
-                'user': 10,
+                'user': 100,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
                 'where': {'proposal_id': '1234a', 'user': 10}
@@ -86,7 +86,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'proposal_query2': {
             'query': {
-                'user': 10,
+                'user': 100,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'_id': '1234a'}
@@ -128,7 +128,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         },
         'instrument_query': {
             'query': {
-                'user': 10,
+                'user': 100,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
                 'where': {'_id': 54}
@@ -217,6 +217,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             {
                 'user': 'abcd',
                 'from': 'users',
+                'columns': ['first_name'],
+                'where': {'network_id': 'foo'}
+            },
+            {
+                'user': 10,
+                'from': 'foobar',
                 'columns': ['first_name'],
                 'where': {'network_id': 'foo'}
             }
