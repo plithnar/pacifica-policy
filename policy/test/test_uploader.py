@@ -84,9 +84,23 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query2': {
+        'proposal_query_user': {
             'query': {
                 'user': 100,
+                'from': 'proposals',
+                'columns': ['_id', 'title'],
+                'where': {'_id': '1234a'}
+            },
+            'answer': [
+                {
+                    '_id': '1234a',
+                    'title': u'Pacifica D\xe9velopment (active no close)'
+                }
+            ]
+        },
+        'proposal_query_admin': {
+            'query': {
+                'user': 10,
                 'from': 'proposals',
                 'columns': ['_id', 'title'],
                 'where': {'_id': '1234a'}

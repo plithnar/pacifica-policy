@@ -75,6 +75,9 @@ class UploaderPolicy(AdminPolicy):
         if wants_object == 'users':
             return self._query_select_user_info(query)
         if wants_object == 'proposals':
+            if '_id' in query['where']:
+                prop_ids = [query['where']['_id']]
+                return self._proposal_info_from_ids(prop_ids)
             return self._all_proposal_info()
         if wants_object == 'instruments':
             return self._query_select_instrument_info(query)
