@@ -13,7 +13,7 @@ class ProposalLookup(object):
     @staticmethod
     def _get_proposals_details(proposal_id=None):
         """Return a details about this proposal."""
-        lookup_url = '{0}/proposalinfo/by_proposal_id/{1}'.format(
+        lookup_url = u'{0}/proposalinfo/by_proposal_id/{1}'.format(
             METADATA_ENDPOINT, proposal_id
         )
         return requests.get(url=lookup_url).json()

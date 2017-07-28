@@ -14,7 +14,7 @@ class InstrumentsByProposal(QueryBase):
     @staticmethod
     def _get_instruments_for_proposal(proposal_id):
         """Return a list with all the instruments belonging to this proposal."""
-        md_url = '{0}/proposalinfo/by_proposal_id/{1}'.format(
+        md_url = u'{0}/proposalinfo/by_proposal_id/{1}'.format(
             METADATA_ENDPOINT, proposal_id
         )
         query = requests.get(url=md_url)
