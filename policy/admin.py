@@ -20,6 +20,7 @@ class AdminPolicy(object):
     prop_participant_url = '{0}/proposal_participant'.format(METADATA_ENDPOINT)
     prop_instrument_url = '{0}/proposal_instrument'.format(METADATA_ENDPOINT)
     inst_custodian_url = '{0}/instrument_custodian'.format(METADATA_ENDPOINT)
+    inst_group_url = '{0}/instrument_group'.format(METADATA_ENDPOINT)
 
     def __init__(self):
         """Constructor for Uploader Policy."""
@@ -59,15 +60,20 @@ class AdminPolicy(object):
         inst_props = set([part['proposal_id'] for part in inst_props])
         return inst_props
 
-    # This should be included once we get the concepts of instrument group
-    # pylint: disable=unused-argument
     def _proposals_for_user_inst(self, user_id, inst_id):
         props = set(self._proposals_for_user(user_id))
-        if self._is_admin(user_id):
-            return props
-        props_for_custodian = self._proposals_for_custodian(user_id)
-        return list(props.union(props_for_custodian))
-    # pylint: enable=unused-argument
+        props_for_custodian = set(self._proposals_for_custodian(user_id))
+        inst_groups = self._groups_for_inst(inst_id)
+        if inst_groups:
+            group_insts = set()
+            for group_id in inst_groups:
+                group_insts |= set(self._instruments_for_group(group_id))
+        else:
+            group_insts = set([inst_id])
+        ginst_props = set()
+        for ginst_id in group_insts:
+            ginst_props |= self._proposals_for_inst(ginst_id)
+        return list((props | props_for_custodian) & ginst_props)
 
     def _proposal_info_from_ids(self, prop_list):
         ret = []
@@ -77,6 +83,14 @@ class AdminPolicy(object):
                 ret.append(loads(requests.get(prop_url).text)[0])
         return ret
 
+    def _groups_for_inst(self, inst_id):
+        inst_g_url = u'{0}?instrument_id={1}'.format(self.inst_group_url, inst_id)
+        return [i['group_id'] for i in loads(requests.get(inst_g_url).text)]
+
+    def _instruments_for_group(self, group_id):
+        inst_g_url = u'{0}?group_id={1}'.format(self.inst_group_url, group_id)
+        return [i['instrument_id'] for i in loads(requests.get(inst_g_url).text)]
+
     def _instruments_for_user(self, user_id):
         if self._is_admin(user_id):
             return [inst['_id'] for inst in self._all_instrument_info()]
@@ -84,11 +98,17 @@ class AdminPolicy(object):
 
     def _instruments_for_user_prop(self, user_id, prop_id):
         user_insts = set(self._instruments_for_user(user_id))
-        prop_insts = set()
-        if prop_id in self._proposals_for_user(user_id):
-            prop_insts_url = u'{0}?proposal_id={1}'.format(self.prop_instrument_url, prop_id)
-            prop_insts = set([part['instrument_id'] for part in loads(requests.get(prop_insts_url).text)])
-        return list(prop_insts | user_insts)
+        if self._is_admin(user_id):
+            return list(user_insts)
+        prop_insts_url = u'{0}?proposal_id={1}'.format(self.prop_instrument_url, prop_id)
+        prop_insts = set([part['instrument_id'] for part in loads(requests.get(prop_insts_url).text)])
+        inst_groups = set()
+        for inst_id in prop_insts:
+            inst_groups |= set(self._groups_for_inst(inst_id))
+        group_insts = set()
+        for group_id in inst_groups:
+            group_insts |= set(self._instruments_for_group(group_id))
+        return list(group_insts | user_insts | prop_insts)
 
     def _instrument_info_from_ids(self, inst_list):
         ret = []

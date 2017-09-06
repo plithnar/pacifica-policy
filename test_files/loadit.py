@@ -14,6 +14,7 @@ def main():
         'users',
         'proposals',
         'instruments',
+        'instrument_group',
         'proposal_instrument',
         'proposal_participant'
     ]

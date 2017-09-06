@@ -1,5 +1,6 @@
 #!/usr/bin/python
 """Test the uploader policy."""
+from __future__ import print_function
 from json import dumps, loads
 from cherrypy.test import helper
 from policy.uploader.rest import UploaderPolicy
@@ -140,6 +141,20 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
+        'proposal_query_for_non_admin_no_group': {
+            'query': {
+                'user': 100,
+                'from': 'proposals',
+                'columns': ['_id', 'title'],
+                'where': {'instrument_id': 75}
+            },
+            'answer': [
+                {
+                    '_id': u'1234b\u00e9',
+                    'title': u'Pacifica D\xe9velopment'
+                }
+            ]
+        },
         'instrument_query': {
             'query': {
                 'user': 100,
@@ -175,13 +190,19 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 'columns': ['_id', 'name'],
                 'where': {'proposal_id': '1234a'}
             },
-            'answer': []
+            'answer': [
+                {
+                    '_id': 54,
+                    'name': u'NMR PROBES: Nittany Liquid Prob\xe9s'
+                }
+            ]
         }
     }
 
     def test_queries(self):
         """Test posting the queries."""
-        for value in self.queries.values():
+        for title, value in self.queries.items():
+            print(title)
             self.getPage('/uploader',
                          self.headers + [('Content-Length', str(len(dumps(value['query']))))],
                          'POST',

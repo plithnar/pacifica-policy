@@ -12,7 +12,7 @@ services:
       METADATA_PORT: tcp://metadata:8121
 
   elasticdb:
-    image: elasticsearch:2.4
+    image: elasticsearch:latest
     container_name: elasticdb
     ports:
       - 9200:9200
