@@ -68,6 +68,8 @@ class UploaderPolicy(AdminPolicy):
             inst_ids = self._instruments_for_user_prop(user_id, query['where']['proposal_id'])
         elif '_id' in query['where']:
             inst_ids = [query['where']['_id']]
+        else:
+            inst_ids = self._instruments_for_user(user_id)
         return self._instrument_info_from_ids(inst_ids)
 
     def _query_select_admin(self, query):

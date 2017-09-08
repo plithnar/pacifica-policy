@@ -160,6 +160,20 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 'user': 100,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
+                'where': {}
+            },
+            'answer': [
+                {
+                    '_id': 54,
+                    'name': u'NMR PROBES: Nittany Liquid Prob\xe9s'
+                }
+            ]
+        },
+        'instrument_query_with_id': {
+            'query': {
+                'user': 100,
+                'from': 'instruments',
+                'columns': ['_id', 'name'],
                 'where': {'_id': 54}
             },
             'answer': [
