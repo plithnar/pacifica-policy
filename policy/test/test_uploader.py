@@ -267,7 +267,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 'user': 'abcd',
                 'from': 'users',
                 'columns': ['first_name'],
-                'where': {'network_id': 'foo'}
+                'where': {'no_such_column': 'foo'}
             },
             {
                 'user': 10,

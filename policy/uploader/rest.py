@@ -33,7 +33,7 @@ class UploaderPolicy(AdminPolicy):
     def _user_info_from_queries(self, user_queries):
         ret = []
         for user_query in user_queries:
-            ret.append(self._user_info_from_kwds(**user_query)[0])
+            ret.extend(self._user_info_from_kwds(**user_query))
         return ret
 
     def _query_select_user_info(self, query):

@@ -80,7 +80,7 @@ class AdminPolicy(object):
         if prop_list:
             for prop_id in prop_list:
                 prop_url = u'{0}?_id={1}'.format(self.all_proposals_url, prop_id)
-                ret.append(loads(requests.get(prop_url).text)[0])
+                ret.extend(loads(requests.get(prop_url).text))
         return ret
 
     def _groups_for_inst(self, inst_id):
@@ -114,7 +114,7 @@ class AdminPolicy(object):
         ret = []
         for inst_id in inst_list:
             inst_url = '{0}?_id={1}'.format(self.all_instruments_url, inst_id)
-            ret.append(loads(requests.get(inst_url).text)[0])
+            ret.extend(loads(requests.get(inst_url).text))
         return ret
 
     def _users_for_prop(self, prop_id):
