@@ -120,7 +120,7 @@ class AdminPolicy(object):
     def _instrument_info_from_ids(self, inst_list):
         ret = []
         for inst_id in inst_list:
-            inst_url = self._format_url('all_instruments_url', instrument_id=inst_id)
+            inst_url = self._format_url('all_instruments_url', _id=inst_id)
             ret.extend(loads(requests.get(inst_url).text))
         return ret
 
