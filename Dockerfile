@@ -1,3 +1,9 @@
-FROM python:2-onbuild
+FROM python:2
+
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir uwsgi
+COPY . .
 EXPOSE 8181
-CMD [ "python", "./PolicyServer.py" ]
+ENTRYPOINT [ "/bin/bash", "/usr/src/app/entrypoint.sh" ]
