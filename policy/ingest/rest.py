@@ -63,15 +63,31 @@ class IngestPolicy(UploaderPolicy):
             # all the incoming terms are valid, check for xrefs
             if text_type(valid_terms['proposal']) not in self._proposals_for_user_inst(
                     valid_terms['submitter'], valid_terms['instrument']):
-                invalid_terms.append('proposal_xref')
+                invalid_terms.append(
+                    text_type('proposal ({}) not in user instrument list ({})').format(
+                        text_type(valid_terms['proposal']),
+                        self._proposals_for_user_inst(
+                            valid_terms['submitter'],
+                            valid_terms['instrument']
+                        )
+                    )
+                )
             if int(valid_terms['instrument']) not in self._instruments_for_user_prop(
                     valid_terms['submitter'], valid_terms['proposal']
             ):
-                invalid_terms.append('instrument_xref')
+                invalid_terms.append(
+                    text_type('instrument ({}) not in user proposal list ({})').format(
+                        int(valid_terms['instrument']),
+                        self._instruments_for_user_prop(
+                            valid_terms['submitter'],
+                            valid_terms['proposal']
+                        )
+                    )
+                )
             if not invalid_terms:
                 return {'status': 'success'}
 
-        raise HTTPError(412, 'Precondition Failed: Invalid values for {0}'.format(', '.join(invalid_terms)))
+        raise HTTPError(412, text_type('Precondition Failed: Invalid values for {0}').format(', '.join(invalid_terms)))
 
     # pylint: disable=invalid-name
     @tools.json_in()
