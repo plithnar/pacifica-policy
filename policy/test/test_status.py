@@ -34,7 +34,9 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         # Test with no instruments to return
         url = '/status/instrument/by_proposal_id/1238'
         self.getPage(url)
-        self.assertStatus('404 Not Found')
+        self.assertStatus('200 OK')
+        answer = loads(self.body)
+        self.assertEqual(len(answer.get('items')), 0)
 
     def test_files_for_transaction(self):
         """Return file listing for a transaction."""

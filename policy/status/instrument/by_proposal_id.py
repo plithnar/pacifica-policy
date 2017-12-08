@@ -33,18 +33,16 @@ class InstrumentsByProposal(QueryBase):
         """CherryPy GET method."""
         proposal_info = InstrumentsByProposal._get_instruments_for_proposal(proposal_id)
         instruments = {index: info for (index, info) in proposal_info.get('instruments').items()}
-        if not instruments:
-            message = 'No instruments were located for this proposal'
-            raise HTTPError('404 Not Found', message)
-
         cleaned_instruments = []
-        clean_info = {
-            'id': -1,
-            'text': u'All Available Instruments for Proposal {0}'.format(proposal_id),
-            'name': 'All Instruments',
-            'active': 'Y'
-        }
-        cleaned_instruments.append(clean_info)
+        if instruments:
+            clean_info = {
+                'id': -1,
+                'text': u'All Available Instruments for Proposal {0}'.format(proposal_id),
+                'name': 'All Instruments',
+                'active': 'Y'
+            }
+            cleaned_instruments.append(clean_info)
+
         for inst_id in instruments.keys():
             info = instruments.get(inst_id)
             clean_info = {
