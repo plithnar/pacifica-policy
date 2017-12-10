@@ -2,7 +2,7 @@
 from json import loads
 from cherrypy import tools, HTTPError
 import requests
-from policy import METADATA_ENDPOINT
+from policy.globals import METADATA_ENDPOINT
 from policy.status.base import QueryBase
 
 

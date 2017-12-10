@@ -12,5 +12,8 @@ setup(name='PacificaPolicy',
       author='David Brown',
       author_email='david.brown@pnnl.gov',
       packages=['policy'],
+      entry_point={
+          'console_scripts': ['PolicyServer=policy:main'],
+      },
       scripts=['PolicyServer.py'],
       install_requires=[str(ir.req) for ir in INSTALL_REQS])

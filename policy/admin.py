@@ -1,9 +1,10 @@
 #!/usr/bin/python
 """The Admin module has logic about checking for admin group info."""
+from __future__ import absolute_import
 from os import getenv
 from json import loads
 import requests
-from policy import METADATA_ENDPOINT
+from .globals import METADATA_ENDPOINT
 
 RECURSION_DEPTH = 0
 

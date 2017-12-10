@@ -1,7 +1,8 @@
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
-from policy import METADATA_ENDPOINT, validate_proposal
+from policy.validation import validate_proposal
+from policy.globals import METADATA_ENDPOINT
 
 
 # pylint: disable=too-few-public-methods

@@ -21,6 +21,10 @@ PYTHONPATH=${MD_TEMP} python test_files/loadit.py
 
 export PYTHONPATH=$PWD
 coverage run --include='policy/*' -m pytest -v
+coverage run --include='policy/*' -a PolicyServer.py &
+SERVER_PID=$!
+sleep 4
+kill $SERVER_PID
 coverage report -m --fail-under=100
 if [[ $CODECLIMATE_REPO_TOKEN ]] ; then
   codeclimate-test-reporter

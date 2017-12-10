@@ -2,7 +2,8 @@
 from six import text_type
 import requests
 from cherrypy import tools, request
-from policy import METADATA_ENDPOINT, validate_user
+from policy.validation import validate_user
+from policy.globals import METADATA_ENDPOINT
 from policy.reporting.transaction.query_base import QueryBase
 
 

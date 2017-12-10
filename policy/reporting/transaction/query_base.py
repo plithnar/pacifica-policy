@@ -1,6 +1,6 @@
 """CherryPy Status Metadata proposalinfo base class."""
 import requests
-from policy import METADATA_ENDPOINT
+from policy.globals import METADATA_ENDPOINT
 
 
 # pylint: disable=too-few-public-methods

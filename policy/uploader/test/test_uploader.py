@@ -4,7 +4,7 @@ from unittest import TestCase
 from json import dumps
 import httpretty
 from policy.uploader.rest import UploaderPolicy
-from policy import METADATA_ENDPOINT
+from policy.globals import METADATA_ENDPOINT
 
 
 class TestUploader(TestCase):

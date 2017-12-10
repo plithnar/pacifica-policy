@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """Base class module for standard queries for the upload status tool."""
 import requests
-from policy import METADATA_ENDPOINT
+from policy.globals import METADATA_ENDPOINT
 from policy.admin import AdminPolicy
 
 

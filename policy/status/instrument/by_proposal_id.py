@@ -1,7 +1,8 @@
 """CherryPy Status Policy object class."""
 import requests
 from cherrypy import tools, HTTPError
-from policy import METADATA_ENDPOINT, validate_proposal
+from policy.validation import validate_proposal
+from policy.globals import METADATA_ENDPOINT
 from policy.status.base import QueryBase
 
 
