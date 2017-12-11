@@ -10,6 +10,7 @@ behavour of the uploader.
 from __future__ import print_function, absolute_import
 import sys
 from json import dumps
+from argparse import ArgumentParser
 import cherrypy
 from .root import Root
 from .globals import CHERRYPY_CONFIG
@@ -31,4 +32,19 @@ def error_page_default(**kwargs):
 
 def main():
     """Main method to start the httpd server."""
-    cherrypy.quickstart(Root(), '/', CHERRYPY_CONFIG)
+    parser = ArgumentParser(description='Run the policy server.')
+    parser.add_argument('-c', '--config', metavar='CONFIG', type=str,
+                        default=CHERRYPY_CONFIG, dest='config',
+                        help='cherrypy config file')
+    parser.add_argument('-p', '--port', metavar='PORT', type=int,
+                        default=8181, dest='port',
+                        help='port to listen on')
+    parser.add_argument('-a', '--address', metavar='ADDRESS',
+                        default='localhost', dest='address',
+                        help='address to listen on')
+    args = parser.parse_args()
+    cherrypy.config.update({
+        'server.socket_host': args.address,
+        'server.socket_port': args.port
+    })
+    cherrypy.quickstart(Root(), '/', args.config)
