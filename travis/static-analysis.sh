@@ -1,4 +1,3 @@
 #!/bin/bash
-pylint --rcfile=pylintrc policy
-pylint --rcfile=pylintrc PolicyServer.py
+pre-commit run --all-files
 radon cc policy

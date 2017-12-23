@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """The CherryPy rest object for the structure."""
 # from policy.uploader.instrument import InstrumentQuery
 from policy.status.proposal_query import ProposalQuery

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from cherrypy import tools, HTTPError
 import requests
@@ -14,7 +16,8 @@ class UserSearch(QueryBase):
     @staticmethod
     def _get_users_for_keywords(kwargs, search_terms=None, option=None):
         """Return a list with all the proposals involving this user."""
-        md_url = '{0}/userinfo/search/{1}'.format(METADATA_ENDPOINT, search_terms)
+        md_url = '{0}/userinfo/search/{1}'.format(
+            METADATA_ENDPOINT, search_terms)
         if option is not None:
             md_url += '/{0}'.format(option)
         response = requests.get(url=md_url, params=kwargs)

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
@@ -14,7 +16,8 @@ class FileLookup(object):
     @staticmethod
     def _get_file_list(transaction_id=None):
         """Return files for the specified transaction entry."""
-        filelist_url = '{0}/transactioninfo/files/{1}'.format(METADATA_ENDPOINT, transaction_id)
+        filelist_url = '{0}/transactioninfo/files/{1}'.format(
+            METADATA_ENDPOINT, transaction_id)
         return requests.get(url=filelist_url).json()
 
     # CherryPy requires these named methods

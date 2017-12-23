@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """Validation methods for various objects."""
 from __future__ import absolute_import
 import re

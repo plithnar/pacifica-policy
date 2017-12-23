@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """The CherryPy rest object for the structure."""
 from policy.reporting.transaction.transaction_summary import TransactionSummary
 from policy.reporting.transaction.transaction_details import TransactionDetails

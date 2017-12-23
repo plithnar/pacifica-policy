@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from json import loads
 from cherrypy import tools, HTTPError
@@ -35,7 +37,8 @@ class InstrumentKeywordSearch(QueryBase):
             )
             query = requests.get(url=inst_for_user_url)
             response = loads(query.text)
-            output_list = InstrumentKeywordSearch._squash_output_list(response, inst_response)
+            output_list = InstrumentKeywordSearch._squash_output_list(
+                response, inst_response)
         else:
             output_list = inst_response
 

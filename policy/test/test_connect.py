@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """Test the connections to external service."""
 from unittest import TestCase
 from json import dumps

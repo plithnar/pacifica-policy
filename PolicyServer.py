@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """This is the main policy server script."""
 import cherrypy
 from policy.root import Root

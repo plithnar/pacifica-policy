@@ -20,7 +20,8 @@ class TestReportingPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/reporting/transaction_details/{0}'.format(user_id)
         self.getPage(
             url,
-            self.headers + [('Content-Length', str(len(dumps(transaction_list))))],
+            self.headers +
+            [('Content-Length', str(len(dumps(transaction_list))))],
             'POST',
             dumps(transaction_list)
         )
@@ -69,7 +70,8 @@ class TestReportingPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/reporting/transaction_details/{0}'.format(user_id)
         self.getPage(
             url,
-            self.headers + [('Content-Length', str(len(dumps(transaction_list))))],
+            self.headers +
+            [('Content-Length', str(len(dumps(transaction_list))))],
             'POST',
             dumps(transaction_list)
         )

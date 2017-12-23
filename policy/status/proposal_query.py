@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from policy.status.proposal.by_user import ProposalUserSearch
 from policy.status.proposal.search import ProposalKeywordSearch

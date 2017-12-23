@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """The CherryPy rest object for the structure."""
 from json import dumps
 from cherrypy import tools, request, HTTPError
@@ -53,7 +54,8 @@ class UploaderPolicy(AdminPolicy):
         user_id = self._clean_user_query_id(query)
         where_objects = query['where'].keys()
         if 'instrument_id' in where_objects:
-            prop_ids = self._proposals_for_user_inst(user_id, query['where']['instrument_id'])
+            prop_ids = self._proposals_for_user_inst(
+                user_id, query['where']['instrument_id'])
         elif '_id' in query['where']:
             prop_ids = [query['where']['_id']]
         else:
@@ -65,7 +67,8 @@ class UploaderPolicy(AdminPolicy):
         if 'proposal_id' in query['where']:
             if self._is_admin(user_id):
                 return self._all_instrument_info()
-            inst_ids = self._instruments_for_user_prop(user_id, query['where']['proposal_id'])
+            inst_ids = self._instruments_for_user_prop(
+                user_id, query['where']['proposal_id'])
         elif '_id' in query['where']:
             inst_ids = [query['where']['_id']]
         else:
@@ -114,7 +117,8 @@ class UploaderPolicy(AdminPolicy):
         """Read in the json query and return results."""
         query = request.json
         if not self._valid_query(query):
-            raise HTTPError(500, dumps({'message': 'Invalid Query.', 'status': 'error'}))
+            raise HTTPError(500, dumps(
+                {'message': 'Invalid Query.', 'status': 'error'}))
         if self._is_admin(self._clean_user_query_id(query)):
             results = self._query_select_admin(query)
         else:

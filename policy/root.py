@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy root object class."""
 from time import sleep
 import requests
@@ -33,7 +34,8 @@ class Root(object):
         try:
             ret = requests.get(METADATA_STATUS_URL.encode('utf-8'))
             if ret.status_code != 200:
-                raise Exception('try_meta_connect: {0}\n'.format(ret.status_code))
+                raise Exception(
+                    'try_meta_connect: {0}\n'.format(ret.status_code))
         # pylint: disable=broad-except
         except Exception:
             # pylint: enable=broad-except

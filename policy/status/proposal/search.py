@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
@@ -16,9 +18,11 @@ class ProposalKeywordSearch(QueryBase):
         is_admin = self._is_admin(user_id) if user_id is not None else False
         if not search_terms and user_id:
             # no terms, just get any proposals for this user
-            md_url = '{0}/proposalinfo/by_user_id/{1}'.format(METADATA_ENDPOINT, user_id)
+            md_url = '{0}/proposalinfo/by_user_id/{1}'.format(
+                METADATA_ENDPOINT, user_id)
         else:
-            md_url = '{0}/proposalinfo/search/{1}'.format(METADATA_ENDPOINT, search_terms)
+            md_url = '{0}/proposalinfo/search/{1}'.format(
+                METADATA_ENDPOINT, search_terms)
 
         results = []
 
@@ -27,8 +31,10 @@ class ProposalKeywordSearch(QueryBase):
             if is_admin:
                 results = response.json()
             else:
-                available_proposals = QueryBase._get_available_proposals(user_id)
-                results = [x for x in response.json() if x.get('id') in available_proposals]
+                available_proposals = QueryBase._get_available_proposals(
+                    user_id)
+                results = [x for x in response.json() if x.get('id')
+                           in available_proposals]
 
         return results
 

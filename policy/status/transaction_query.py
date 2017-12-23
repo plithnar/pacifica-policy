@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from policy.status.transaction.search import TransactionSearch
 from policy.status.transaction.lookup import TransactionLookup

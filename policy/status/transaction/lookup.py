@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
@@ -14,7 +16,8 @@ class TransactionLookup(object):
     @staticmethod
     def _get_transaction_details(transaction_id=None):
         """Return details for the specified transaction entry."""
-        md_url = '{0}/transactioninfo/by_id/{1}'.format(METADATA_ENDPOINT, transaction_id)
+        md_url = '{0}/transactioninfo/by_id/{1}'.format(
+            METADATA_ENDPOINT, transaction_id)
         return requests.get(url=md_url).json()
 
     # CherryPy requires these named methods

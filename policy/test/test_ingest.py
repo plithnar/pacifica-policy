@@ -16,9 +16,11 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
 
     def test_queries(self):
         """Test posting the queries."""
-        valid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        valid_query = loads(
+            open(join('test_files', 'ingest_base_query.json')).read())
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('200 OK')
@@ -32,16 +34,19 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         valid_query[4]['key'] = 'Tag'
         valid_query[2]['value'] = '1234a'
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('200 OK')
 
         # change the proposal to be invalid => fails
-        invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        invalid_query = loads(
+            open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[2]['value'] = '12'
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
@@ -50,10 +55,12 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertTrue('message' in ret_data)
 
         # change instrument to be invalid => fails
-        invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        invalid_query = loads(
+            open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[3]['value'] = 4321
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
@@ -62,12 +69,14 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertTrue('message' in ret_data)
 
         # change the query so that the instrument xrefs and proposal xrefs fail (but for valid base entities)
-        invalid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        invalid_query = loads(
+            open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[3]['value'] = 74  # instrument
         invalid_query[2]['value'] = u'1234c\u00e9'  # proposal
         invalid_query[1]['value'] = 12  # submitter
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(invalid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(invalid_query))))],
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
@@ -77,7 +86,8 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
 
         del valid_query[1]
         self.getPage('/ingest',
-                     self.headers + [('Content-Length', str(len(dumps(valid_query))))],
+                     self.headers +
+                     [('Content-Length', str(len(dumps(valid_query))))],
                      'POST',
                      dumps(valid_query))
         self.assertStatus('412 Precondition Failed')

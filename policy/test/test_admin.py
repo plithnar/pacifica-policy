@@ -23,7 +23,8 @@ class TestAdminBase(helper.CPWebCase, CommonCPSetup):
         # pylint: disable=protected-access
         for user_id, inst_id in valid_pairs:
             for prop_id in adm_policy._proposals_for_user_inst(user_id, inst_id):
-                self.assertTrue(inst_id in adm_policy._instruments_for_user_prop(user_id, prop_id))
+                self.assertTrue(
+                    inst_id in adm_policy._instruments_for_user_prop(user_id, prop_id))
         # pylint: enable=protected-access
 
     def test_base_queries(self):

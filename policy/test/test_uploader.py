@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """Test the uploader policy."""
 from __future__ import print_function
 from json import dumps, loads
@@ -218,7 +219,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         for title, value in self.queries.items():
             print(title)
             self.getPage('/uploader',
-                         self.headers + [('Content-Length', str(len(dumps(value['query']))))],
+                         self.headers +
+                         [('Content-Length', str(len(dumps(value['query']))))],
                          'POST',
                          dumps(value['query']))
             self.assertStatus('200 OK')
@@ -278,7 +280,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
         ]
         for bad_query in bad_queries:
             self.getPage('/uploader',
-                         self.headers+[('Content-Length', str(len(dumps(bad_query))))],
+                         self.headers +
+                         [('Content-Length', str(len(dumps(bad_query))))],
                          'POST',
                          dumps(bad_query))
             self.assertStatus('500 Internal Server Error')

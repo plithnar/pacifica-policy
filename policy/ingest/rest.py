@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 The CherryPy rest object for the structure.
 
@@ -53,7 +54,8 @@ class IngestPolicy(UploaderPolicy):
         invalid_terms = []
         valid_terms = {}
         for variable in variables_to_query:
-            value = self._pull_data_by_rec(query, 'Transactions.{0}'.format(variable))
+            value = self._pull_data_by_rec(
+                query, 'Transactions.{0}'.format(variable))
             valid = self._object_id_valid(variables_to_query[variable], value)
             if not valid:
                 invalid_terms.append(variable)
@@ -87,7 +89,8 @@ class IngestPolicy(UploaderPolicy):
             if not invalid_terms:
                 return {'status': 'success'}
 
-        raise HTTPError(412, text_type('Precondition Failed: Invalid values for {0}').format(', '.join(invalid_terms)))
+        raise HTTPError(412, text_type(
+            'Precondition Failed: Invalid values for {0}').format(', '.join(invalid_terms)))
 
     # pylint: disable=invalid-name
     @tools.json_in()

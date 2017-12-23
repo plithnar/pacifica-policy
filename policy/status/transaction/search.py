@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
@@ -13,7 +15,8 @@ class TransactionSearch(object):
     @staticmethod
     def _get_transactions_for_keywords(kwargs, option=None):
         """Return a list with all the proposals involving this user."""
-        md_url = '{0}/transactioninfo/search/{1}'.format(METADATA_ENDPOINT, option)
+        md_url = '{0}/transactioninfo/search/{1}'.format(
+            METADATA_ENDPOINT, option)
         response = requests.get(url=md_url, params=kwargs)
 
         return response.json()

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Metadata proposalinfo base class."""
 import requests
 from policy.globals import METADATA_ENDPOINT

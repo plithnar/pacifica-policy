@@ -46,7 +46,8 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertStatus('200 OK')
         answer = loads(self.body)
         self.assertEqual(len(answer), 2)
-        self.assertListEqual(sorted(answer.keys()), sorted(loads(dumps(['103', '104']))))
+        self.assertListEqual(sorted(answer.keys()),
+                             sorted(loads(dumps(['103', '104']))))
 
     def test_transaction_for_id(self):
         """Return transaction info for a given id."""
@@ -66,7 +67,8 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
     def test_transaction_search(self):
         """Return proposals for a specified user."""
         transaction_id = 68
-        url = '/status/transactions/search?transaction={0}'.format(transaction_id)
+        url = '/status/transactions/search?transaction={0}'.format(
+            transaction_id)
         self.getPage(url)
         self.assertStatus('200 OK')
 
@@ -119,23 +121,27 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         """Return appropriate instruments for a set of search criteria."""
         search_terms = 'nmr'
         user_id = 10
-        url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
+        url = '/status/instrument/search/{0}?user={1}'.format(
+            search_terms, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
 
         user_id = 12
-        url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
+        url = '/status/instrument/search/{0}?user={1}'.format(
+            search_terms, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         self.assertBody('[]')
 
         user_id = 100
-        url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
+        url = '/status/instrument/search/{0}?user={1}'.format(
+            search_terms, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
 
         search_terms = 'flux+capacitor'
-        url = '/status/instrument/search/{0}?user={1}'.format(search_terms, user_id)
+        url = '/status/instrument/search/{0}?user={1}'.format(
+            search_terms, user_id)
         self.getPage(url)
         self.assertStatus(404)
 
@@ -189,6 +195,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
 
         user_id = 10  # admin user
         search_term = 'nmr'
-        url = '/status/instrument/search/{0}?user={1}'.format(search_term, user_id)
+        url = '/status/instrument/search/{0}?user={1}'.format(
+            search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')

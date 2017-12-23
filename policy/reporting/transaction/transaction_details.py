@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Metadata object class."""
 import requests
 from cherrypy import tools, request
@@ -16,7 +18,8 @@ class TransactionDetails(QueryBase):
     def _get_transaction_list_details(transaction_list, user_id):
         header_list = {'Content-Type': 'application/json'}
         req = requests.post(
-            url='{0}/summaryinfo/transaction_details'.format(METADATA_ENDPOINT),
+            url='{0}/summaryinfo/transaction_details'.format(
+                METADATA_ENDPOINT),
             json=transaction_list,
             headers=header_list
         )

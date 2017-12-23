@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
 import requests
 from cherrypy import tools, HTTPError
@@ -21,8 +23,7 @@ class InstrumentsByProposal(QueryBase):
         query = requests.get(url=md_url)
         if query.status_code == 200:
             return query.json()
-        elif query.status_code == 404:
-            raise HTTPError('404 Not Found')
+        raise HTTPError('404 Not Found')
 
     # CherryPy requires these named methods
     # Add HEAD (basically Get without returning body
@@ -32,8 +33,10 @@ class InstrumentsByProposal(QueryBase):
     @validate_proposal()
     def GET(proposal_id=None):
         """CherryPy GET method."""
-        proposal_info = InstrumentsByProposal._get_instruments_for_proposal(proposal_id)
-        instruments = {index: info for (index, info) in proposal_info.get('instruments').items()}
+        proposal_info = InstrumentsByProposal._get_instruments_for_proposal(
+            proposal_id)
+        instruments = {index: info for (
+            index, info) in proposal_info.get('instruments').items()}
         cleaned_instruments = []
         if instruments:
             clean_info = {

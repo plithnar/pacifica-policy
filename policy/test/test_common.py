@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """Common server setup code for CherryPy testing."""
 import logging
 import cherrypy

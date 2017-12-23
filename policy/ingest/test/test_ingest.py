@@ -15,7 +15,8 @@ class TestIngest(TestUploader):
     def test_failed_admin_id(self):
         """override this to test valid query."""
         super(TestIngest, self).test_failed_admin_id()
-        valid_query = loads(open(join('test_files', 'ingest_base_query.json')).read())
+        valid_query = loads(
+            open(join('test_files', 'ingest_base_query.json')).read())
         ipolicy = IngestPolicy()
         # pylint: disable=no-member
         # pylint: disable=protected-access
