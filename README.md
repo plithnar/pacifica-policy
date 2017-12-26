@@ -1,5 +1,6 @@
 # Pacifica Policy API
 [![Build Status](https://travis-ci.org/pacifica/pacifica-policy.svg?branch=master)](https://travis-ci.org/pacifica/pacifica-policy)
+[![Build status](https://ci.appveyor.com/api/projects/status/rdid7r40620xl12o?svg=true)](https://ci.appveyor.com/project/dmlb2000/pacifica-policy)
 [![Code Climate](https://codeclimate.com/github/pacifica/pacifica-policy/badges/gpa.svg)](https://codeclimate.com/github/pacifica/pacifica-policy)
 [![Test Coverage](https://codeclimate.com/github/pacifica/pacifica-policy/badges/coverage.svg)](https://codeclimate.com/github/pacifica/pacifica-policy/coverage)
 [![Issue Count](https://codeclimate.com/github/pacifica/pacifica-policy/badges/issue_count.svg)](https://codeclimate.com/github/pacifica/pacifica-policy)
