@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Setup and install the policy."""
 from pip.req import parse_requirements
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 INSTALL_REQS = parse_requirements('requirements.txt', session='hack')
@@ -14,22 +14,8 @@ setup(
     description='Pacifica Policy',
     author='David Brown',
     author_email='david.brown@pnnl.gov',
-    packages=[
-        'policy',
-        'policy.ingest',
-        'policy.ingest.test',
-        'policy.reporting',
-        'policy.reporting.transaction',
-        'policy.status',
-        'policy.status.instrument',
-        'policy.status.proposal',
-        'policy.status.transaction',
-        'policy.status.user',
-        'policy.test',
-        'policy.uploader',
-        'policy.uploader.test',
-    ],
-    entry_point={
+    packages=find_packages(),
+    entry_points={
         'console_scripts': ['PolicyServer=policy:main'],
     },
     scripts=['PolicyServer.py'],
