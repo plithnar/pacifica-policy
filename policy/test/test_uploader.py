@@ -225,8 +225,8 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                          dumps(value['query']))
             self.assertStatus('200 OK')
             self.assertHeader('Content-Type', 'application/json')
-            if loads(self.body):
-                answer = loads(self.body)
+            if loads(self.body.decode('UTF-8')):
+                answer = loads(self.body.decode('UTF-8'))
                 if '_id' in answer[0]:
                     answer = sorted(answer, key=lambda i: i['_id'])
                 answer = answer[0]
@@ -234,7 +234,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                     self.assertTrue(akey in answer)
                     self.assertEqual(avalue, answer[akey])
             else:
-                self.assertEqual(len(loads(self.body)), 0)
+                self.assertEqual(len(loads(self.body.decode('UTF-8'))), 0)
 
     def test_bad_query(self):
         """Try to throw a bad query at the query select method."""
@@ -287,7 +287,7 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
             self.assertStatus('500 Internal Server Error')
             hit_exception = False
             try:
-                loads(self.body)
+                loads(self.body.decode('UTF-8'))
             except ValueError:  # pragma no cover
                 hit_exception = True
             self.assertFalse(hit_exception)

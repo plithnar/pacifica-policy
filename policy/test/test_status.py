@@ -18,7 +18,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/instrument/by_proposal_id/1234a'
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer.get('items')), 2)
 
         # Test nonexistent proposal
@@ -35,7 +35,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/instrument/by_proposal_id/1238'
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer.get('items')), 0)
 
     def test_files_for_transaction(self):
@@ -44,7 +44,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/transactions/files/{0}'.format(transaction_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 2)
         self.assertListEqual(sorted(answer.keys()),
                              sorted(loads(dumps(['103', '104']))))
@@ -55,7 +55,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/transactions/by_id/{0}'.format(transaction_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(answer['_id'], 68)
 
         bad_transaction_id = 'bob'
@@ -98,7 +98,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/proposals/by_user_id/{0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 2)
 
         user_id = 13
@@ -113,7 +113,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         url = '/status/proposals/by_proposal_id/{0}'.format(proposal_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer['instruments']), 1)
         self.assertEqual(answer['id'], proposal_id)
 
@@ -153,14 +153,14 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 2)
 
         search_term = None
         url = '/status/proposals/search?user={0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 2)
 
         search_term = 'pacifica'
@@ -169,14 +169,14 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 1)
 
         search_term = 'bob'
         url = '/status/proposals/search/{0}'.format(search_term)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 0)
 
         search_term = 'bob'
@@ -184,13 +184,13 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 0)
 
         url = '/status/proposals/search?user={0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
-        answer = loads(self.body)
+        answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 1)
 
         user_id = 10  # admin user

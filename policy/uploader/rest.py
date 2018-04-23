@@ -19,7 +19,7 @@ class UploaderPolicy(AdminPolicy):
     @staticmethod
     def _filter_results(results, *args):
         for result in results:
-            for key in result.keys():
+            for key in list(result.keys()):
                 if key not in args:
                     del result[key]
 

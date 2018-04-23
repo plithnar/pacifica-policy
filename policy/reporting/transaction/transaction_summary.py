@@ -52,7 +52,7 @@ class TransactionSummary(QueryBase):
     def _cleanup_object_stats(object_listing, object_type, user_info):
         valid_object_list = map(text_type, user_info[object_type + '_list'])
         clean_object_stats = {}
-        for object_id, object_stats in object_listing.iteritems():
+        for object_id, object_stats in object_listing.items():
             if object_id in valid_object_list or user_info['emsl_employee']:
                 clean_object_stats[object_id] = object_stats
             else:

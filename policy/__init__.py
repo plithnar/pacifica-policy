@@ -23,7 +23,7 @@ def error_page_default(**kwargs):
     """The default error page should always enforce json."""
     cherrypy.response.headers['Content-Type'] = 'application/json'
     json_str = dumps({
-        'postdata': cherrypy.request.body.read(),
+        'postdata': cherrypy.request.body.read().decode('UTF-8'),
         'status': kwargs['status'],
         'message': kwargs['message'],
         'traceback': kwargs['traceback'],

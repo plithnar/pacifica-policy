@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=invalid-name
 """This is the main policy server script."""
 import cherrypy
 from policy.root import Root

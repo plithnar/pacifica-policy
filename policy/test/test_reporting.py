@@ -26,7 +26,7 @@ class TestReportingPolicy(helper.CPWebCase, CommonCPSetup):
             dumps(transaction_list)
         )
         self.assertStatus('200 OK')
-        ret_data = loads(self.body)
+        ret_data = loads(self.body.decode('UTF-8'))
         self.assertFalse(ret_data is None)
 
     def test_transaction_summary(self):
@@ -76,4 +76,4 @@ class TestReportingPolicy(helper.CPWebCase, CommonCPSetup):
             dumps(transaction_list)
         )
         self.assertStatus('200 OK')
-        self.assertFalse(loads(self.body))
+        self.assertFalse(loads(self.body.decode('UTF-8')))

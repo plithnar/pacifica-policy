@@ -4,7 +4,7 @@
 import logging
 import cherrypy
 from policy.root import Root
-from PolicyServer import error_page_default
+from policy import error_page_default
 
 
 # pylint: disable=too-few-public-methods

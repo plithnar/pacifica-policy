@@ -11,13 +11,11 @@ addons:
 language: python
 python:
  - 2.7
- - 3.5
+ - 3.6
 
 matrix:
-  exclude:
-    - python: 3.5
   include:
-    - python: 3.5
+    - python: 3.6
       env: RUN_LINTS=true
     - python: 2.7
       env: RUN_LINTS=true

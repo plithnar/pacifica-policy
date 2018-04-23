@@ -25,7 +25,7 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
                      dumps(valid_query))
         self.assertStatus('200 OK')
         self.assertHeader('Content-Type', 'application/json')
-        ret_data = loads(self.body)
+        ret_data = loads(self.body.decode('UTF-8'))
         self.assertFalse(ret_data is None)
         self.assertTrue('status' in ret_data)
         self.assertEqual(ret_data['status'], 'success')
@@ -50,7 +50,7 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
-        ret_data = loads(self.body)
+        ret_data = loads(self.body.decode('UTF-8'))
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
 
@@ -64,7 +64,7 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
-        ret_data = loads(self.body)
+        ret_data = loads(self.body.decode('UTF-8'))
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
 
@@ -80,7 +80,7 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
                      'POST',
                      dumps(invalid_query))
         self.assertStatus('412 Precondition Failed')
-        ret_data = loads(self.body)
+        ret_data = loads(self.body.decode('UTF-8'))
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
 
