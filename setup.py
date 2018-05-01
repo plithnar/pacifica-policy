@@ -19,7 +19,10 @@ setup(
     author_email='david.brown@pnnl.gov',
     packages=find_packages(),
     entry_points={
-        'console_scripts': ['PolicyServer=policy:main'],
+        'console_scripts': [
+            'PolicyServer=policy:main',
+            'PolicyAdmin=policy.admin_cmd:main'
+        ],
     },
     scripts=['PolicyServer.py'],
     install_requires=[str(ir.req) for ir in INSTALL_REQS]
