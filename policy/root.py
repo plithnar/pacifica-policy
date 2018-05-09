@@ -22,14 +22,14 @@ class Root(object):
 
     def __init__(self):
         """Create the local objects we need."""
-        self._try_meta_connect()
+        self.try_meta_connect()
         self.uploader = UploaderPolicy()
         self.status = StatusPolicy()
         self.reporting = ReportingPolicy()
         self.ingest = IngestPolicy()
 
     @classmethod
-    def _try_meta_connect(cls, attempts=0):
+    def try_meta_connect(cls, attempts=0):
         """Try to connect to the metadata service see if its there."""
         try:
             ret = requests.get(METADATA_STATUS_URL.encode('utf-8'))
@@ -42,7 +42,7 @@ class Root(object):
             if attempts < METADATA_CONNECT_ATTEMPTS:
                 sleep(METADATA_WAIT)
                 attempts += 1
-                cls._try_meta_connect(attempts)
+                cls.try_meta_connect(attempts)
             else:
                 raise Exception
 # pylint: enable=too-few-public-methods
