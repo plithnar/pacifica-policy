@@ -135,7 +135,7 @@ def generate_work(items_per_page, work_queue, time_ago):
                 )
             )
             total_count = resp.json()['record_count']
-            num_pages = int(ceil(total_count / items_per_page))
+            num_pages = int(ceil(float(total_count) / items_per_page))
             for page in range(1, num_pages + 1):
                 work_queue.put(
                     (obj, time_field, page, items_per_page, time_delta))
