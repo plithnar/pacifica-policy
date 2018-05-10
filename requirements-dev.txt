@@ -1,6 +1,7 @@
 cherrypy
 codeclimate-test-reporter
 coverage>4.0,<4.4
+elasticsearch
 httpretty
 -e git://github.com/pacifica/pacifica-metadata.git#egg=PacificaMetadata
 pep257
