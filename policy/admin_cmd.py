@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """This is the admin main method."""
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from sys import argv as sys_argv
 from argparse import ArgumentParser
 from datetime import timedelta
