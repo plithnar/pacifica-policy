@@ -105,7 +105,7 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
         )
     )
     objs = resp.json()
-    return SearchRender.generate(obj, objs, True)
+    return SearchRender.generate(obj, objs, obj != 'transactions')
 
 
 def create_worker_threads(threads, work_queue):
