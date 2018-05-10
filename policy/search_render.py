@@ -7,6 +7,7 @@ import requests
 from .globals import METADATA_ENDPOINT
 
 ELASTIC_INDEX = getenv('ELASTIC_INDEX', 'pacifica_search')
+CACHE_SIZE = getenv('CACHE_SIZE', 10000)
 
 
 class LimitedSizeDict(OrderedDict):
@@ -85,7 +86,7 @@ def trans_users(obj):
 class SearchRender(object):
     """Search render class to contain methods."""
 
-    obj_cache = {}
+    obj_cache = LimitedSizeDict(size_limit=CACHE_SIZE)
     render_data = {
         'instruments': {
             'display_name': '{display_name}',
@@ -119,11 +120,10 @@ class SearchRender(object):
     @classmethod
     def get_obj_by_id(cls, obj, obj_id):
         """Get the user from metadata and put it in cache."""
-        if obj not in cls.obj_cache:
-            cls.obj_cache[obj] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache[obj]
-        if obj_id in cache:
-            return cache[obj_id]
+        key = '{}_{}'.format(obj, obj_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
         resp = requests.get(
             '{base_url}/{obj}?_id={obj_id}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -131,17 +131,16 @@ class SearchRender(object):
                 obj_id=obj_id
             )
         )
-        cache[obj_id] = resp.json()[0]
-        return cache[obj_id]
+        cls.obj_cache[key] = resp.json()[0]
+        return cls.obj_cache[key]
 
     @classmethod
     def get_institutions_from_user(cls, user_id):
         """Get an institution list based on user id."""
-        if 'inst_by_user' not in cls.obj_cache:
-            cls.obj_cache['inst_by_user'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['inst_by_user']
-        if user_id in cache:
-            return cache[user_id]
+        key = 'inst_by_user_{}'.format(user_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/institution_person?person_id={user_id}'.format(
@@ -153,17 +152,16 @@ class SearchRender(object):
         for inst_id in [obj['institution_id'] for obj in resp.json()]:
             ret.append(cls.render('institutions',
                                   cls.get_obj_by_id('institutions', inst_id)))
-        cache[user_id] = ret
+        cls.obj_cache[key] = ret
         return ret
 
     @classmethod
     def get_groups_from_instrument(cls, inst_id):
         """Get the list of groups from an instrument."""
-        if 'grp_by_inst' not in cls.obj_cache:
-            cls.obj_cache['grp_by_inst'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['grp_by_inst']
-        if inst_id in cache:
-            return cache[inst_id]
+        key = 'grp_by_inst_{}'.format(inst_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/instrument_group?instrument_id={inst_id}'.format(
@@ -175,18 +173,17 @@ class SearchRender(object):
         for grp_id in [obj['group_id'] for obj in resp.json()]:
             ret.append(cls.render(
                 'groups', cls.get_obj_by_id('groups', grp_id)))
-        cache[inst_id] = ret
+        cls.obj_cache[key] = ret
         return ret
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_institutions(cls, inst_id):
         """Get a list of transactions from an institution."""
-        if 'trans_by_instit' not in cls.obj_cache:
-            cls.obj_cache['trans_by_instit'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['trans_by_instit']
-        if inst_id in cache:
-            return cache[inst_id]
+        key = 'trans_by_instit_{}'.format(inst_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/institution_person?institution_id={inst_id}'.format(
@@ -197,18 +194,17 @@ class SearchRender(object):
         ret = []
         for user_id in [obj['person_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_users(user_id))
-        cache[inst_id] = ret
+        cls.obj_cache[key] = ret
         return ret
     # pylint: enable=invalid-name
 
     @classmethod
     def get_transactions_from_users(cls, user_id):
         """Get a list of transactions for a user."""
-        if 'trans_by_user' not in cls.obj_cache:
-            cls.obj_cache['trans_by_user'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['trans_by_user']
-        if user_id in cache:
-            return cache[user_id]
+        key = 'trans_by_user_{}'.format(user_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/transactions?submitter={user_id}'.format(
@@ -216,17 +212,16 @@ class SearchRender(object):
                 user_id=user_id
             )
         )
-        cache[user_id] = [obj['_id'] for obj in resp.json()]
-        return cache[user_id]
+        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        return cls.obj_cache[key]
 
     @classmethod
     def get_transactions_from_proposals(cls, prop_id):
         """Get a list of transactions for a proposal."""
-        if 'trans_by_prop' not in cls.obj_cache:
-            cls.obj_cache['trans_by_prop'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['trans_by_prop']
-        if prop_id in cache:
-            return cache[prop_id]
+        key = 'trans_by_prop_{}'.format(prop_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/transactions?proposal={prop_id}'.format(
@@ -234,18 +229,17 @@ class SearchRender(object):
                 prop_id=prop_id
             )
         )
-        cache[prop_id] = [obj['_id'] for obj in resp.json()]
-        return cache[prop_id]
+        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        return cls.obj_cache[key]
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_instruments(cls, inst_id):
         """Get a list of transactions for a instrument."""
-        if 'trans_by_inst' not in cls.obj_cache:
-            cls.obj_cache['trans_by_inst'] = LimitedSizeDict(size_limit=10000)
-        cache = cls.obj_cache['trans_by_inst']
-        if inst_id in cache:
-            return cache[inst_id]
+        key = 'trans_by_inst_{}'.format(inst_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/transactions?instrument={inst_id}'.format(
@@ -253,18 +247,17 @@ class SearchRender(object):
                 inst_id=inst_id
             )
         )
-        cache[inst_id] = [obj['_id'] for obj in resp.json()]
-        return cache[inst_id]
+        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        return cls.obj_cache[key]
     # pylint: enable=invalid-name
 
     @classmethod
     def get_transactions_from_groups(cls, group_id):
         """Get a list of instruments for a group."""
-        if 'trans_by_group' not in cls.obj_cache:
-            cls.obj_cache['trans_by_group'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['trans_by_group']
-        if group_id in cache:
-            return cache[group_id]
+        key = 'trans_by_group_{}'.format(group_id)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/instrument_group?group_id={group_id}'.format(
@@ -275,18 +268,17 @@ class SearchRender(object):
         ret = []
         for inst_id in [obj['instrument_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_instruments(inst_id))
-        cache[group_id] = ret
+        cls.obj_cache[key] = ret
         return ret
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_science_theme(cls, science_theme):
         """Get a list of transactions for a science theme."""
-        if 'trans_by_sci' not in cls.obj_cache:
-            cls.obj_cache['trans_by_sci'] = LimitedSizeDict(size_limit=1000)
-        cache = cls.obj_cache['trans_by_sci']
-        if science_theme in cache:
-            return cache[science_theme]
+        key = 'trans_by_sci_{}'.format(science_theme)
+        val = cls.obj_cache.get(key, None)
+        if val is not None:
+            return val
 
         resp = requests.get(
             '{base_url}/proposals?science_theme={science_theme}'.format(
@@ -297,7 +289,7 @@ class SearchRender(object):
         ret = []
         for prop_id in [obj['_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_proposals(prop_id))
-        cache[science_theme] = ret
+        cls.obj_cache[key] = ret
         return ret
     # pylint: enable=invalid-name
 
