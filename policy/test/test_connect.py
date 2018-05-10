@@ -17,9 +17,7 @@ class TestMetaConnect(TestCase):
         httpretty.register_uri(httpretty.GET, METADATA_STATUS_URL,
                                body=dumps([]),
                                content_type='application/json')
-        # pylint: disable=protected-access
-        Root._try_meta_connect(0)
-        # pylint: enable=protected-access
+        Root.try_meta_connect(0)
         self.assertEqual(httpretty.last_request().method, 'GET')
 
     @httpretty.activate
@@ -31,9 +29,7 @@ class TestMetaConnect(TestCase):
                                content_type='application/json')
         hit_exception = False
         try:
-            # pylint: disable=protected-access
-            Root._try_meta_connect(39)
-            # pylint: enable=protected-access
+            Root.try_meta_connect(39)
         # pylint: disable=broad-except
         except Exception:
             hit_exception = True
