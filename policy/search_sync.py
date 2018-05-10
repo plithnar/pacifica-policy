@@ -51,7 +51,7 @@ def try_es_connect(attempts=0):
     try:
         cli = es_client()
         cli.info()
-    except ElasticsearchException as ex:
+    except ElasticsearchException as ex:  # pragma: no cover pulled from metadata
         if attempts < ELASTIC_CONNECT_ATTEMPTS:
             sleep(ELASTIC_WAIT)
             attempts += 1

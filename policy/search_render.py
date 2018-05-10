@@ -263,7 +263,7 @@ class SearchRender(object):
         """Get a list of instruments for a group."""
         key = 'trans_by_group_{}'.format(group_id)
         val = cls.obj_cache.get(key, None)
-        if val is not None:
+        if val is not None:  # pragma: no cover
             return val
 
         resp = requests.get(
