@@ -3,6 +3,7 @@
 """This is the render object for the search interface."""
 from os import getenv
 from collections import OrderedDict
+from six import text_type
 import requests
 from .globals import METADATA_ENDPOINT
 
@@ -93,23 +94,23 @@ class SearchRender(object):
     obj_cache = LimitedSizeDict(size_limit=CACHE_SIZE)
     render_data = {
         'instruments': {
-            'display_name': '{display_name}',
-            'long_name': '{name}'
+            'display_name': text_type('{display_name}'),
+            'long_name': text_type('{name}')
         },
         'institutions': {
-            'display_name': '{name}'
+            'display_name': text_type('{name}')
         },
         'users': {
-            'display_name': '{first_name}, {last_name} {middle_initial}'
+            'display_name': text_type('{first_name}, {last_name} {middle_initial}')
         },
         'proposals': {
-            'display_name': '{title}',
-            'long_name': '',
-            'abstract': '{abstract}',
-            'title': '{title}',
+            'display_name': text_type('{title}'),
+            'long_name': text_type(''),
+            'abstract': text_type('{abstract}'),
+            'title': text_type('{title}'),
         },
         'groups': {
-            'display_name': '{name}'
+            'display_name': text_type('{name}')
         },
         'transactions': {
             'users': trans_users,
