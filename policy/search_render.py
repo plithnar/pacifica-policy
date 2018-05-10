@@ -49,7 +49,7 @@ def trans_science_themes(obj):
 
 def trans_proposals(obj):
     """Render the proposals for a transaction."""
-    return [SearchRender.render('proposal', obj['proposal'])],
+    return [SearchRender.render('proposals', obj['proposal'])],
 
 
 def trans_inst_groups(obj):
