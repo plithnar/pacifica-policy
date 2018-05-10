@@ -1,4 +1,4 @@
 cherrypy
-dateutil
+python-dateutil
 requests
 six

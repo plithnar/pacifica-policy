@@ -1,12 +1,12 @@
 cherrypy
 codeclimate-test-reporter
 coverage>4.0,<4.4
-dateutil
 httpretty
 -e git://github.com/pacifica/pacifica-metadata.git#egg=PacificaMetadata
 pep257
 pylint<1.8
 pytest
+python-dateutil
 radon
 requests
 six
