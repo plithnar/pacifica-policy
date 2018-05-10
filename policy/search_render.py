@@ -31,10 +31,12 @@ class LimitedSizeDict(OrderedDict):
             pass
         return val
 
-    def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
+    # pylint: disable=signature-differs
+    def __setitem__(self, key, value):
         """Set item foo[key] = value."""
-        OrderedDict.__setitem__(self, key, value, dict_setitem)
+        OrderedDict.__setitem__(self, key, value)
         self._check_size_limit()
+    # pylint: enable=signature-differs
 
     def _check_size_limit(self):
         """Function to set the item and remove old ones."""
