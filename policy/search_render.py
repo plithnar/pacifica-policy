@@ -44,7 +44,9 @@ class LimitedSizeDict(OrderedDict):
 
 def trans_science_themes(obj):
     """Render the science theme from a proposal."""
-    return [SearchRender.render_science_theme(obj['proposal'])]
+    return [SearchRender.render_science_theme(
+        SearchRender.get_obj_by_id('proposals', obj['proposal'])
+    )]
 
 
 def trans_proposals(obj):
