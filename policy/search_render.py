@@ -23,9 +23,7 @@ class LimitedSizeDict(OrderedDict):
         """Get the item and put it back so it's on top."""
         val = OrderedDict.__getitem__(self, key)
         try:
-            # pylint: disable=no-member
-            self.move_to_end(key)
-            # pylint: enable=no-member
+            self[key] = self.pop(key)
         except KeyError:
             # the key must have gotten purged...
             pass
