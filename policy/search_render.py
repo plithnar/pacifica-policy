@@ -31,9 +31,9 @@ class LimitedSizeDict(OrderedDict):
             pass
         return val
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
         """Set item foo[key] = value."""
-        OrderedDict.__setitem__(self, key, value)
+        OrderedDict.__setitem__(self, key, value, dict_setitem)
         self._check_size_limit()
 
     def _check_size_limit(self):

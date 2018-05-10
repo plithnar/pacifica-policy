@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Sync the database to elasticsearch index for use by Searching tools."""
+from __future__ import print_function
 from os import getenv
 from time import sleep
 from threading import Thread
