@@ -12,11 +12,22 @@ services:
       METADATA_PORT: tcp://metadata:8121
 
   elasticdb:
-    image: elasticsearch:latest
-    container_name: elasticdb
+    build:
+      context: .
+      dockerfile: docker-compose/Dockerfile.elastic
+    container_name: elasticmaster
+    environment:
+    - cluster.name=pacifica-cluster
+    - bootstrap.memory_lock=true
+    - xpack.security.enabled=false
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
     ports:
-      - 9200:9200
-      - 9300:9300
+    - 9200:9200
 
   metadatadb:
     image: postgres

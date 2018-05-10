@@ -63,9 +63,10 @@ def start_work(work_queue):
     cli = es_client()
     job = work_queue.get()
     while job:
+        print('Starting {} ({}): {}'.format(job[0], job[1], job[2]))
         try_doing_work(cli, job)
         work_queue.task_done()
-        print('{}: {}'.format(job[0].__name__, job[1]))
+        print('Finished {} ({}): {}'.format(job[0], job[1], job[2]))
         job = work_queue.get()
     work_queue.task_done()
 
@@ -103,8 +104,8 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
             items_per_page=items_per_page
         )
     )
-    for record in resp.json():
-        SearchRender.generate(obj, record, True)
+    objs = resp.json()
+    return SearchRender.generate(obj, objs, True)
 
 
 def create_worker_threads(threads, work_queue):

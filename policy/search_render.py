@@ -21,7 +21,13 @@ class LimitedSizeDict(OrderedDict):
     def __getitem__(self, key):
         """Get the item and put it back so it's on top."""
         val = OrderedDict.__getitem__(self, key)
-        self.__setitem__(key, val)
+        try:
+            # pylint: disable=no-member
+            self.move_to_end(key)
+            # pylint: enable=no-member
+        except KeyError:
+            # the key must have gotten purged...
+            pass
         return val
 
     def __setitem__(self, key, value):
@@ -89,7 +95,7 @@ class SearchRender(object):
             'display_name': '{name}'
         },
         'users': {
-            'display_name', '{first_name}, {last_name} {middle_initial}'
+            'display_name': '{first_name}, {last_name} {middle_initial}'
         },
         'proposals': {
             'display_name': '{title}',
@@ -114,7 +120,7 @@ class SearchRender(object):
     def get_obj_by_id(cls, obj, obj_id):
         """Get the user from metadata and put it in cache."""
         if obj not in cls.obj_cache:
-            cls.obj_cache[obj] = LimitedSizeDict(1000)
+            cls.obj_cache[obj] = LimitedSizeDict(size_limit=1000)
         cache = cls.obj_cache[obj]
         if obj_id in cache:
             return cache[obj_id]
@@ -131,6 +137,12 @@ class SearchRender(object):
     @classmethod
     def get_institutions_from_user(cls, user_id):
         """Get an institution list based on user id."""
+        if 'inst_by_user' not in cls.obj_cache:
+            cls.obj_cache['inst_by_user'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['inst_by_user']
+        if user_id in cache:
+            return cache[user_id]
+
         resp = requests.get(
             '{base_url}/institution_person?person_id={user_id}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -141,11 +153,18 @@ class SearchRender(object):
         for inst_id in [obj['institution_id'] for obj in resp.json()]:
             ret.append(cls.render('institutions',
                                   cls.get_obj_by_id('institutions', inst_id)))
+        cache[user_id] = ret
         return ret
 
     @classmethod
     def get_groups_from_instrument(cls, inst_id):
         """Get the list of groups from an instrument."""
+        if 'grp_by_inst' not in cls.obj_cache:
+            cls.obj_cache['grp_by_inst'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['grp_by_inst']
+        if inst_id in cache:
+            return cache[inst_id]
+
         resp = requests.get(
             '{base_url}/instrument_group?instrument_id={inst_id}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -156,12 +175,19 @@ class SearchRender(object):
         for grp_id in [obj['group_id'] for obj in resp.json()]:
             ret.append(cls.render(
                 'groups', cls.get_obj_by_id('groups', grp_id)))
+        cache[inst_id] = ret
         return ret
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_institutions(cls, inst_id):
         """Get a list of transactions from an institution."""
+        if 'trans_by_instit' not in cls.obj_cache:
+            cls.obj_cache['trans_by_instit'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['trans_by_instit']
+        if inst_id in cache:
+            return cache[inst_id]
+
         resp = requests.get(
             '{base_url}/institution_person?institution_id={inst_id}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -171,47 +197,75 @@ class SearchRender(object):
         ret = []
         for user_id in [obj['person_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_users(user_id))
+        cache[inst_id] = ret
         return ret
     # pylint: enable=invalid-name
 
     @classmethod
     def get_transactions_from_users(cls, user_id):
         """Get a list of transactions for a user."""
+        if 'trans_by_user' not in cls.obj_cache:
+            cls.obj_cache['trans_by_user'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['trans_by_user']
+        if user_id in cache:
+            return cache[user_id]
+
         resp = requests.get(
             '{base_url}/transactions?submitter={user_id}'.format(
                 base_url=METADATA_ENDPOINT,
                 user_id=user_id
             )
         )
-        return [obj['_id'] for obj in resp.json()]
+        cache[user_id] = [obj['_id'] for obj in resp.json()]
+        return cache[user_id]
 
     @classmethod
     def get_transactions_from_proposals(cls, prop_id):
         """Get a list of transactions for a proposal."""
+        if 'trans_by_prop' not in cls.obj_cache:
+            cls.obj_cache['trans_by_prop'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['trans_by_prop']
+        if prop_id in cache:
+            return cache[prop_id]
+
         resp = requests.get(
             '{base_url}/transactions?proposal={prop_id}'.format(
                 base_url=METADATA_ENDPOINT,
                 prop_id=prop_id
             )
         )
-        return [obj['_id'] for obj in resp.json()]
+        cache[prop_id] = [obj['_id'] for obj in resp.json()]
+        return cache[prop_id]
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_instruments(cls, inst_id):
         """Get a list of transactions for a instrument."""
+        if 'trans_by_inst' not in cls.obj_cache:
+            cls.obj_cache['trans_by_inst'] = LimitedSizeDict(size_limit=10000)
+        cache = cls.obj_cache['trans_by_inst']
+        if inst_id in cache:
+            return cache[inst_id]
+
         resp = requests.get(
             '{base_url}/transactions?instrument={inst_id}'.format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
         )
-        return [obj['_id'] for obj in resp.json()]
+        cache[inst_id] = [obj['_id'] for obj in resp.json()]
+        return cache[inst_id]
     # pylint: enable=invalid-name
 
     @classmethod
     def get_transactions_from_groups(cls, group_id):
         """Get a list of instruments for a group."""
+        if 'trans_by_group' not in cls.obj_cache:
+            cls.obj_cache['trans_by_group'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['trans_by_group']
+        if group_id in cache:
+            return cache[group_id]
+
         resp = requests.get(
             '{base_url}/instrument_group?group_id={group_id}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -221,12 +275,19 @@ class SearchRender(object):
         ret = []
         for inst_id in [obj['instrument_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_instruments(inst_id))
+        cache[group_id] = ret
         return ret
 
     # pylint: disable=invalid-name
     @classmethod
     def get_transactions_from_science_theme(cls, science_theme):
         """Get a list of transactions for a science theme."""
+        if 'trans_by_sci' not in cls.obj_cache:
+            cls.obj_cache['trans_by_sci'] = LimitedSizeDict(size_limit=1000)
+        cache = cls.obj_cache['trans_by_sci']
+        if science_theme in cache:
+            return cache[science_theme]
+
         resp = requests.get(
             '{base_url}/proposals?science_theme={science_theme}'.format(
                 base_url=METADATA_ENDPOINT,
@@ -236,29 +297,31 @@ class SearchRender(object):
         ret = []
         for prop_id in [obj['_id'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_proposals(prop_id))
+        cache[science_theme] = ret
         return ret
     # pylint: enable=invalid-name
 
     @classmethod
-    def generate(cls, obj_cls, obj, trans_ids=False):
+    def generate(cls, obj_cls, objs, trans_ids=False):
         """generate the institution object."""
-        yield {
-            '_op_type': 'update',
-            '_index': ELASTIC_INDEX,
-            '_type': obj_cls,
-            '_id': obj['_id'],
-            'doc': getattr(cls, 'render_{}'.format(obj_cls))(obj, trans_ids),
-            'doc_as_upsert': True
-        }
-        if obj_cls == 'proposals':
+        for obj in objs:
             yield {
                 '_op_type': 'update',
                 '_index': ELASTIC_INDEX,
-                '_type': 'science_theme',
-                '_id': obj['science_theme'],
-                'doc': cls.render_science_theme(obj, trans_ids),
+                '_type': obj_cls,
+                '_id': '{}_{}'.format(obj_cls, obj['_id']),
+                'doc': cls.render(obj_cls, obj, trans_ids),
                 'doc_as_upsert': True
             }
+            if obj_cls == 'proposals':
+                yield {
+                    '_op_type': 'update',
+                    '_index': ELASTIC_INDEX,
+                    '_type': 'science_theme',
+                    '_id': 'science_theme_{}'.format(obj['science_theme']),
+                    'doc': cls.render_science_theme(obj, trans_ids),
+                    'doc_as_upsert': True
+                }
 
     @classmethod
     def render_science_theme(cls, obj, trans_ids=False):
