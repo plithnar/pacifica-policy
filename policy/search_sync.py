@@ -26,6 +26,7 @@ SYNC_OBJECTS = [
     'proposals',
     'users',
     'instruments',
+    'institutions',
     'groups'
 ]
 

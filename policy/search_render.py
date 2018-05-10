@@ -26,7 +26,7 @@ class LimitedSizeDict(OrderedDict):
         try:
             del self[key]
             OrderedDict.__setitem__(self, key, val)
-        except KeyError:
+        except KeyError:  # pragma: no cover can't get this covered
             # the key must have gotten purged...
             pass
         return val
