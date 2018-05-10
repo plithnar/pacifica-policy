@@ -4,6 +4,7 @@
 from unittest import TestCase
 import requests
 from ..admin_cmd import main
+from ..search_render import LimitedSizeDict, SearchRender
 
 
 class TestAdminCMD(TestCase):
@@ -11,6 +12,7 @@ class TestAdminCMD(TestCase):
 
     def test_default_search_sync(self):
         """Test the data release subcommand."""
+        SearchRender.obj_cache = LimitedSizeDict(size_limit=1)
         main('searchsync')
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
