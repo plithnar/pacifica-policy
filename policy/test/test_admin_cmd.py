@@ -15,7 +15,7 @@ class TestAdminCMD(TestCase):
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(
-            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 56)
+            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 22)
 
     def test_default_data_release(self):
         """Test the data release subcommand."""
