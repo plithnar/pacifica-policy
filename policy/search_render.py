@@ -127,12 +127,12 @@ class SearchRender(object):
     @classmethod
     def get_obj_by_id(cls, obj, obj_id):
         """Get the user from metadata and put it in cache."""
-        key = '{}_{}'.format(obj, obj_id)
+        key = text_type('{}_{}').format(obj, obj_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
         resp = requests.get(
-            '{base_url}/{obj}?_id={obj_id}'.format(
+            text_type('{base_url}/{obj}?_id={obj_id}').format(
                 base_url=METADATA_ENDPOINT,
                 obj=obj,
                 obj_id=obj_id
@@ -144,13 +144,13 @@ class SearchRender(object):
     @classmethod
     def get_institutions_from_user(cls, user_id):
         """Get an institution list based on user id."""
-        key = 'inst_by_user_{}'.format(user_id)
+        key = text_type('inst_by_user_{}').format(user_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/institution_person?person_id={user_id}'.format(
+            text_type('{base_url}/institution_person?person_id={user_id}').format(
                 base_url=METADATA_ENDPOINT,
                 user_id=user_id
             )
@@ -165,13 +165,13 @@ class SearchRender(object):
     @classmethod
     def get_groups_from_instrument(cls, inst_id):
         """Get the list of groups from an instrument."""
-        key = 'grp_by_inst_{}'.format(inst_id)
+        key = text_type('grp_by_inst_{}').format(inst_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/instrument_group?instrument_id={inst_id}'.format(
+            text_type('{base_url}/instrument_group?instrument_id={inst_id}').format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -187,13 +187,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_institutions(cls, inst_id):
         """Get a list of transactions from an institution."""
-        key = 'trans_by_instit_{}'.format(inst_id)
+        key = text_type('trans_by_instit_{}').format(inst_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/institution_person?institution_id={inst_id}'.format(
+            text_type('{base_url}/institution_person?institution_id={inst_id}').format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -208,13 +208,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_users(cls, user_id):
         """Get a list of transactions for a user."""
-        key = 'trans_by_user_{}'.format(user_id)
+        key = text_type('trans_by_user_{}').format(user_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/transactions?submitter={user_id}'.format(
+            text_type('{base_url}/transactions?submitter={user_id}').format(
                 base_url=METADATA_ENDPOINT,
                 user_id=user_id
             )
@@ -225,13 +225,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_proposals(cls, prop_id):
         """Get a list of transactions for a proposal."""
-        key = 'trans_by_prop_{}'.format(prop_id)
+        key = text_type('trans_by_prop_{}').format(prop_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/transactions?proposal={prop_id}'.format(
+            text_type('{base_url}/transactions?proposal={prop_id}').format(
                 base_url=METADATA_ENDPOINT,
                 prop_id=prop_id
             )
@@ -243,13 +243,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_instruments(cls, inst_id):
         """Get a list of transactions for a instrument."""
-        key = 'trans_by_inst_{}'.format(inst_id)
+        key = text_type('trans_by_inst_{}').format(inst_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/transactions?instrument={inst_id}'.format(
+            text_type('{base_url}/transactions?instrument={inst_id}').format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -261,13 +261,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_groups(cls, group_id):
         """Get a list of instruments for a group."""
-        key = 'trans_by_group_{}'.format(group_id)
+        key = text_type('trans_by_group_{}').format(group_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:  # pragma: no cover
             return val
 
         resp = requests.get(
-            '{base_url}/instrument_group?group_id={group_id}'.format(
+            text_type('{base_url}/instrument_group?group_id={group_id}').format(
                 base_url=METADATA_ENDPOINT,
                 group_id=group_id
             )
@@ -282,13 +282,13 @@ class SearchRender(object):
     @classmethod
     def get_transactions_from_science_theme(cls, science_theme):
         """Get a list of transactions for a science theme."""
-        key = 'trans_by_sci_{}'.format(science_theme)
+        key = text_type('trans_by_sci_{}').format(science_theme)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
 
         resp = requests.get(
-            '{base_url}/proposals?science_theme={science_theme}'.format(
+            text_type('{base_url}/proposals?science_theme={science_theme}').format(
                 base_url=METADATA_ENDPOINT,
                 science_theme=science_theme
             )
@@ -308,7 +308,7 @@ class SearchRender(object):
                 '_op_type': 'update',
                 '_index': ELASTIC_INDEX,
                 '_type': obj_cls,
-                '_id': '{}_{}'.format(obj_cls, obj['_id']),
+                '_id': text_type('{}_{}').format(obj_cls, obj['_id']),
                 'doc': cls.render(obj_cls, obj, trans_ids),
                 'doc_as_upsert': True
             }
@@ -317,7 +317,7 @@ class SearchRender(object):
                     '_op_type': 'update',
                     '_index': ELASTIC_INDEX,
                     '_type': 'science_theme',
-                    '_id': 'science_theme_{}'.format(obj['science_theme']),
+                    '_id': text_type('science_theme_{}').format(obj['science_theme']),
                     'doc': cls.render_science_theme(obj, trans_ids),
                     'doc_as_upsert': True
                 }
