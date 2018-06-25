@@ -132,7 +132,7 @@ class SearchRender(object):
         if val is not None:
             return val
         resp = requests.get(
-            text_type('{base_url}/{obj}?_id={obj_id}').format(
+            text_type('{base_url}/{obj}?_id={obj_id}&recursion_depth=0&recursion_limit=1').format(
                 base_url=METADATA_ENDPOINT,
                 obj=obj,
                 obj_id=obj_id
