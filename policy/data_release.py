@@ -24,8 +24,16 @@ def relavent_data_release_objs(time_ago, orm_obj, date_key):
     """generate a list of relavent orm_objs saving date_key."""
     objs = {}
     for time_field in ['updated', 'created']:
+        get_args = {
+            '{time_field}': '{epoch}',
+            '{time_field}_operator': 'gt',
+            'recursion_depth': '0',
+            'recursion_limit': '1'
+        }
+        get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
+        url = '{base_url}/{orm_obj}?'+'&'.join(get_list)
         resp = requests.get(
-            text_type('{base_url}/{orm_obj}?{time_field}={epoch}&{time_field}_operator=gt').format(
+            url.format(
                 base_url=METADATA_ENDPOINT,
                 time_field=time_field,
                 orm_obj=orm_obj,
