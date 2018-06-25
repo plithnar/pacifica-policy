@@ -92,7 +92,9 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
         '{time_field}': '{epoch}',
         '{time_field}_operator': 'gt',
         'page_number': '{page}',
-        'items_per_page': '{items_per_page}'
+        'items_per_page': '{items_per_page}',
+        'recursion_depth': '0',
+        'recursion_limit': '1'
     }
     get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
     url = '{base_url}/{orm_obj}?'+'&'.join(get_list)
