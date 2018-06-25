@@ -124,6 +124,18 @@ class SearchRender(object):
         }
     }
 
+    global_get_args = {
+        'recursion_depth': '0',
+        'recursion_limit': '1'
+    }
+
+    @classmethod
+    def merge_get_args(cls, get_args):
+        """Change a hash of get args and global get args into string for url."""
+        get_args.update(cls.global_get_args)
+        get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
+        return '&'.join(get_list)
+
     @classmethod
     def get_obj_by_id(cls, obj, obj_id):
         """Get the user from metadata and put it in cache."""
@@ -131,8 +143,9 @@ class SearchRender(object):
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
+        url = '{base_url}/{obj}?'+cls.merge_get_args({'_id': '{obj_id}'})
         resp = requests.get(
-            text_type('{base_url}/{obj}?_id={obj_id}&recursion_depth=0&recursion_limit=1').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 obj=obj,
                 obj_id=obj_id
@@ -149,8 +162,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/institution_person?' + \
+            cls.merge_get_args({'person_id': '{user_id}'})
         resp = requests.get(
-            text_type('{base_url}/institution_person?person_id={user_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 user_id=user_id
             )
@@ -170,8 +185,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/instrument_group?' + \
+            cls.merge_get_args({'instrument_id': '{inst_id}'})
         resp = requests.get(
-            text_type('{base_url}/instrument_group?instrument_id={inst_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -192,8 +209,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/institution_person?' + \
+            cls.merge_get_args({'institution_id': '{inst_id}'})
         resp = requests.get(
-            text_type('{base_url}/institution_person?institution_id={inst_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -213,8 +232,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/transactions?' + \
+            cls.merge_get_args({'submitter': '{user_id}'})
         resp = requests.get(
-            text_type('{base_url}/transactions?submitter={user_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 user_id=user_id
             )
@@ -230,8 +251,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/transactions?' + \
+            cls.merge_get_args({'proposal': '{prop_id}'})
         resp = requests.get(
-            text_type('{base_url}/transactions?proposal={prop_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 prop_id=prop_id
             )
@@ -248,8 +271,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/transactions?' + \
+            cls.merge_get_args({'instrument': '{inst_id}'})
         resp = requests.get(
-            text_type('{base_url}/transactions?instrument={inst_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 inst_id=inst_id
             )
@@ -266,8 +291,10 @@ class SearchRender(object):
         if val is not None:  # pragma: no cover
             return val
 
+        url = '{base_url}/instrument_group?' + \
+            cls.merge_get_args({'group_id': '{group_id}'})
         resp = requests.get(
-            text_type('{base_url}/instrument_group?group_id={group_id}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 group_id=group_id
             )
@@ -287,8 +314,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
+        url = '{base_url}/proposals?' + \
+            cls.merge_get_args({'science_theme': '{science_theme}'})
         resp = requests.get(
-            text_type('{base_url}/proposals?science_theme={science_theme}').format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 science_theme=science_theme
             )

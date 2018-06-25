@@ -33,7 +33,7 @@ def relavent_data_release_objs(time_ago, orm_obj, date_key):
         get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
         url = '{base_url}/{orm_obj}?'+'&'.join(get_list)
         resp = requests.get(
-            url.format(
+            text_type(url).format(
                 base_url=METADATA_ENDPOINT,
                 time_field=time_field,
                 orm_obj=orm_obj,
