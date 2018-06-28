@@ -13,7 +13,7 @@ class TestAdminCMD(TestCase):
     def test_default_search_sync(self):
         """Test the data release subcommand."""
         main('searchsync', '--objects-per-page', '4', '--threads', '1')
-        SearchRender.obj_cache = LimitedSizeDict(size_limit=200)
+        SearchRender.obj_cache = LimitedSizeDict(size_limit=4000)
         main('searchsync', '--objects-per-page', '4', '--threads', '1')
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
