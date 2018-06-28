@@ -20,6 +20,13 @@ VALID_KEYWORDS = [
 ]
 
 
+def collate_objs_from_key(resp, objs, date_key):
+    """Deduplicate objs and make sure they have dates."""
+    for chk_obj in resp.json():
+        if chk_obj['_id'] not in objs.keys() and chk_obj.get(date_key, False):
+            objs[chk_obj['_id']] = chk_obj[date_key]
+
+
 def relavent_data_release_objs(time_ago, orm_obj, date_key):
     """generate a list of relavent orm_objs saving date_key."""
     objs = {}
@@ -42,9 +49,7 @@ def relavent_data_release_objs(time_ago, orm_obj, date_key):
                 ).replace(microsecond=0).isoformat()
             )
         )
-        for chk_obj in resp.json():
-            if chk_obj['_id'] not in objs.keys() and chk_obj.get(date_key, False):
-                objs[chk_obj['_id']] = chk_obj[date_key]
+        collate_objs_from_key(resp, objs, date_key)
     return objs
 
 
