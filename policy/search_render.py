@@ -240,7 +240,8 @@ class SearchRender(object):
                 user_id=user_id
             )
         )
-        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        cls.obj_cache[key] = ['transactions_{}'.format(
+            obj['_id']) for obj in resp.json()]
         return cls.obj_cache[key]
 
     @classmethod
@@ -259,7 +260,8 @@ class SearchRender(object):
                 prop_id=prop_id
             )
         )
-        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        cls.obj_cache[key] = ['transactions_{}'.format(
+            obj['_id']) for obj in resp.json()]
         return cls.obj_cache[key]
 
     # pylint: disable=invalid-name
@@ -279,7 +281,8 @@ class SearchRender(object):
                 inst_id=inst_id
             )
         )
-        cls.obj_cache[key] = [obj['_id'] for obj in resp.json()]
+        cls.obj_cache[key] = ['transactions_{}'.format(
+            obj['_id']) for obj in resp.json()]
         return cls.obj_cache[key]
     # pylint: enable=invalid-name
 
