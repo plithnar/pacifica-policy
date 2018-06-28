@@ -25,10 +25,10 @@ def relavent_data_release_objs(time_ago, orm_obj, date_key):
     objs = {}
     for time_field in ['updated', 'created']:
         get_args = {
-            '{time_field}': '{epoch}',
-            '{time_field}_operator': 'gt',
             'recursion_depth': '0',
-            'recursion_limit': '1'
+            'recursion_limit': '1',
+            '{time_field}': '{epoch}',
+            '{time_field}_operator': 'gt'
         }
         get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
         url = '{base_url}/{orm_obj}?'+'&'.join(get_list)

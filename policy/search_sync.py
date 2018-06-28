@@ -101,8 +101,8 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
     resp = requests.get(
         text_type(url).format(
             base_url=METADATA_ENDPOINT,
-            time_field=time_field,
             orm_obj=obj,
+            time_field=time_field,
             epoch=time_delta.isoformat(),
             page=page,
             items_per_page=items_per_page
