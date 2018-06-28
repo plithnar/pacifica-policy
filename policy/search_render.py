@@ -2,27 +2,21 @@
 # -*- coding: utf-8 -*-
 """This is the render object for the search interface."""
 from os import getenv
-import sys
-from numbers import Number
-from collections import OrderedDict, Set, Mapping, deque
+from collections import OrderedDict
 from six import text_type
 import requests
 from .globals import METADATA_ENDPOINT
 
-
 ELASTIC_INDEX = getenv('ELASTIC_INDEX', 'pacifica_search')
-CACHE_SIZE = getenv('CACHE_SIZE', 4000000)
+CACHE_SIZE = getenv('CACHE_SIZE', 10000)
 
 
 class LimitedSizeDict(OrderedDict):
     """Limited caching dictionary."""
 
-    _seen_ids = set()
-
     def __init__(self, *args, **kwds):
         """Constructor for caching dictionary."""
         self.size_limit = kwds.pop('size_limit', None)
-        self.cur_size = 0
         OrderedDict.__init__(self, *args, **kwds)
         self._check_size_limit()
 
@@ -40,7 +34,6 @@ class LimitedSizeDict(OrderedDict):
     # pylint: disable=signature-differs
     def __setitem__(self, key, value):
         """Set item foo[key] = value."""
-        self.cur_size += self._getsize(value)
         OrderedDict.__setitem__(self, key, value)
         self._check_size_limit()
     # pylint: enable=signature-differs
@@ -48,43 +41,8 @@ class LimitedSizeDict(OrderedDict):
     def _check_size_limit(self):
         """Function to set the item and remove old ones."""
         if self.size_limit is not None:
-            while self.cur_size > self.size_limit:
-                key, value = self.popitem(last=False)
-                self.cur_size -= self._getsize(value)
-
-    @classmethod
-    def _getsize(cls, obj_0):
-        """Recursively iterate to sum size of object & members."""
-        try:  # Python 2
-            zero_depth_bases = (basestring, Number, xrange, bytearray)
-            iteritems = 'iteritems'
-        except NameError:  # Python 3
-            zero_depth_bases = (str, bytes, Number, range, bytearray)
-            iteritems = 'items'
-
-        def inner(obj):
-            """Recursive get size method does all the real work."""
-            obj_id = id(obj)
-            _seen_ids = cls._seen_ids
-            if obj_id in _seen_ids:
-                return 0
-            _seen_ids.add(obj_id)
-            size = sys.getsizeof(obj)
-            if isinstance(obj, zero_depth_bases):
-                pass  # bypass remaining control flow and return
-            elif isinstance(obj, (tuple, list, Set, deque)):
-                size += sum(inner(i) for i in obj)
-            elif isinstance(obj, Mapping) or hasattr(obj, iteritems):
-                size += sum(inner(k) + inner(v)
-                            for k, v in getattr(obj, iteritems)())
-            # Check for custom object instances - may subclass above too
-            if hasattr(obj, '__dict__'):
-                size += inner(vars(obj))
-            if hasattr(obj, '__slots__'):  # can have __slots__ with __dict__
-                size += sum(inner(getattr(obj, s))
-                            for s in obj.__slots__ if hasattr(obj, s))
-            return size
-        return inner(obj_0)
+            while len(self) > self.size_limit:
+                self.popitem(last=False)
 
 
 def trans_science_themes(obj):
