@@ -3,6 +3,7 @@
 """Sync the database to elasticsearch index for use by Searching tools."""
 from __future__ import print_function, absolute_import
 from os import getenv
+from json import dumps
 from time import sleep
 from threading import Thread
 try:
@@ -35,13 +36,23 @@ def es_client():
     """Get the elasticsearch client object."""
     esclient = Elasticsearch(
         [ELASTIC_ENDPOINT],
-        sniff_on_start=True,
-        sniff_on_connection_fail=True,
-        sniffer_timeout=60,
+        #    sniff_on_start=True,
+        #    sniff_on_connection_fail=True,
+        #    sniffer_timeout=60,
         timeout=60
     )
+    mapping_params = {
+        'properties': {
+            'transaction_ids': {
+                'type':     'text',
+                'fielddata': True
+            }
+        }
+    }
     # pylint: disable=unexpected-keyword-arg
     esclient.indices.create(index=ELASTIC_INDEX, ignore=400)
+    esclient.indices.put_mapping(
+        index=ELASTIC_INDEX, doc_type='doc', body=dumps(mapping_params))
     # pylint: enable=unexpected-keyword-arg
     return esclient
 
