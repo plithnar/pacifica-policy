@@ -36,9 +36,9 @@ def es_client():
     """Get the elasticsearch client object."""
     esclient = Elasticsearch(
         [ELASTIC_ENDPOINT],
-        #    sniff_on_start=True,
-        #    sniff_on_connection_fail=True,
-        #    sniffer_timeout=60,
+        sniff_on_start=True,
+        sniff_on_connection_fail=True,
+        sniffer_timeout=60,
         timeout=60
     )
     mapping_params = {

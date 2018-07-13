@@ -96,25 +96,31 @@ class SearchRender(object):
     obj_cache = LimitedSizeDict(size_limit=CACHE_SIZE)
     render_data = {
         'instruments': {
+            'obj_id': text_type('instruments_{_id}'),
             'display_name': text_type('{display_name}'),
             'long_name': text_type('{name}')
         },
         'institutions': {
+            'obj_id': text_type('institutions_{_id}'),
             'display_name': text_type('{name}')
         },
         'users': {
+            'obj_id': text_type('users_{_id}'),
             'display_name': text_type('{first_name}, {last_name} {middle_initial}')
         },
         'proposals': {
+            'obj_id': text_type('proposals_{_id}'),
             'display_name': text_type('{title}'),
             'long_name': text_type(''),
             'abstract': text_type('{abstract}'),
             'title': text_type('{title}'),
         },
         'groups': {
+            'obj_id': text_type('groups_{_id}'),
             'display_name': text_type('{name}')
         },
         'transactions': {
+            'obj_id': text_type('transactions_{_id}'),
             'users': trans_users,
             'institutions': trans_institutions,
             'instruments': trans_instruments,
@@ -359,6 +365,7 @@ class SearchRender(object):
         """Render the science theme as an object..."""
         ret = {
             'type': 'science_theme',
+            'obj_id': text_type('science_theme_{}').format(obj['science_theme']),
             'display_name': obj['science_theme']
         }
         if trans_ids:
