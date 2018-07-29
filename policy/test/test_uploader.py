@@ -3,17 +3,12 @@
 """Test the uploader policy."""
 from __future__ import print_function
 from json import dumps, loads
-from cherrypy.test import helper
 from policy.uploader.rest import UploaderPolicy
 from policy.test.test_common import CommonCPSetup
 
 
-class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
+class TestUploaderPolicy(CommonCPSetup):
     """Test the uploader policy service."""
-
-    PORT = 8181
-    HOST = '127.0.0.1'
-    headers = [('Content-Type', 'application/json')]
 
     queries = {
         'user_query': {
