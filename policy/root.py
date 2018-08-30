@@ -6,6 +6,7 @@ import requests
 from policy.uploader.rest import UploaderPolicy
 from policy.status.rest import StatusPolicy
 from policy.ingest.rest import IngestPolicy
+from policy.events.rest import EventsPolicy
 from policy.reporting.rest import ReportingPolicy
 from policy.globals import METADATA_STATUS_URL, METADATA_CONNECT_ATTEMPTS, METADATA_WAIT
 
@@ -27,6 +28,7 @@ class Root(object):
         self.status = StatusPolicy()
         self.reporting = ReportingPolicy()
         self.ingest = IngestPolicy()
+        self.events = EventsPolicy()
 
     @classmethod
     def try_meta_connect(cls, attempts=0):

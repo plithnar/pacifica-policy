@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Test the uploader policy."""
-from cherrypy.test import helper
 from policy.test.test_common import CommonCPSetup
 from policy.admin import AdminPolicy
 
 
-class TestAdminBase(helper.CPWebCase, CommonCPSetup):
+class TestAdminBase(CommonCPSetup):
     """Test the uploader policy service."""
 
     PORT = 8181
