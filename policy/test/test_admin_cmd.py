@@ -11,22 +11,23 @@ class TestAdminCMD(TestCase):
 
     def test_trans_data_release(self):
         """Test transaction data release."""
-        main('data_release', '--keyword', 'transactions.created',
+        main('--verbose', 'data_release', '--keyword', 'transactions.created',
              '--time-after', '365 days after')
-        resp = requests.get('http://localhost:8121/transactions?_id=68')
+        resp = requests.get('http://localhost:8121/transactions?_id=1234')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()[0]['suspense_date'], '2018-07-10')
+        self.assertEqual(resp.json()[0]['suspense_date'], '2018-07-15')
         resp = requests.get(
-            'http://localhost:8121/transaction_release?transaction=68')
+            'http://localhost:8121/transaction_release?transaction=1234')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()[0]['transaction'], 68)
+        self.assertEqual(resp.json()[0]['transaction'], 1234)
 
     def test_default_data_release(self):
         """Test the data release subcommand."""
-        main('data_release', '--time-after', '365 days after')
-        resp = requests.get('http://localhost:8121/proposals?_id=1234a')
+        main('data_release', '--time-after',
+             '365 days after', '--exclude', u'1234cé')
+        resp = requests.get('http://localhost:8121/proposals?_id=1234b%C3%A9')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()[0]['suspense_date'], '2018-09-29')
+        self.assertEqual(resp.json()[0]['suspense_date'], '2017-12-10')
         resp = requests.get(
             'http://localhost:8121/transaction_release?transaction=1234')
         self.assertEqual(resp.status_code, 200)

@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 """This is the admin main method."""
 from __future__ import print_function
+import logging
 from sys import argv as sys_argv
 from argparse import ArgumentParser
 from datetime import timedelta
+from six import text_type
 from .data_release import data_release, VALID_KEYWORDS
+
+logging.basicConfig()
+LOGGER = logging.getLogger('urllib3')
 
 
 def objstr_to_timedelta(obj_str):
@@ -23,6 +28,11 @@ def objstr_to_keyword(obj_str):
 
 def datarel_options(datarel_parser):
     """Add data release options to the parser."""
+    datarel_parser.add_argument(
+        '--exclude', dest='exclude',
+        help='id of keyword prefix to exclude.',
+        nargs='*', default=set(), type=text_type
+    )
     datarel_parser.add_argument(
         '--keyword', dest='keyword', type=objstr_to_keyword,
         help='keyword one of {}.'.format(', '.join(VALID_KEYWORDS)),
@@ -54,6 +64,10 @@ def create_subcommands(subparsers):
 def main(*argv):
     """Main method for admin command line tool."""
     parser = ArgumentParser()
+    parser.add_argument(
+        '--verbose', default=False, action='store_true',
+        help='enable verbose debug output'
+    )
     subparsers = parser.add_subparsers(help='sub-command help')
     datarel_parser = create_subcommands(
         subparsers
@@ -62,6 +76,8 @@ def main(*argv):
     if not argv:  # pragma: no cover
         argv = sys_argv[1:]
     args = parser.parse_args(argv)
+    if args.verbose:
+        LOGGER.setLevel('DEBUG')
     args.func(args)
 
 

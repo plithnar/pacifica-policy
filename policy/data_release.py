@@ -21,7 +21,7 @@ VALID_KEYWORDS = [
 ]
 
 
-def relavent_data_release_objs(time_ago, orm_obj):
+def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
     """Query proposals or transactions that has gone past their suspense date."""
     trans_objs = set()
     suspense_args = {
@@ -30,7 +30,9 @@ def relavent_data_release_objs(time_ago, orm_obj):
             datetime.now() - time_ago
         ).replace(microsecond=0).isoformat(),
         'suspense_date_1': datetime.now().replace(microsecond=0).isoformat(),
-        'suspense_date_operator': 'between'
+        'suspense_date_operator': 'between',
+        'recursion_depth': 0,
+        'recursion_limit': 1
     }
     resp = requests.get(
         text_type('{base_url}/{orm_obj}?{args}').format(
@@ -43,8 +45,10 @@ def relavent_data_release_objs(time_ago, orm_obj):
     if orm_obj == 'proposals':
         for prop_obj in resp.json():
             prop_id = prop_obj['_id']
+            if text_type(prop_id) in exclude_list:
+                continue
             resp = requests.get(
-                text_type('{base_url}/transactions?proposal_id={prop_id}').format(
+                text_type('{base_url}/transactions?proposal={prop_id}').format(
                     base_url=METADATA_ENDPOINT,
                     prop_id=prop_id
                 )
@@ -53,7 +57,8 @@ def relavent_data_release_objs(time_ago, orm_obj):
                 trans_objs.add(trans_obj['_id'])
     else:
         for trans_obj in resp.json():
-            trans_objs.add(trans_obj['_id'])
+            if text_type(trans_obj['_id']) not in exclude_list:
+                trans_objs.add(trans_obj['_id'])
     return trans_objs
 
 
@@ -61,18 +66,24 @@ def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
     """generate a list of relavent orm_objs saving date_key."""
     objs = set()
     for time_field in ['updated', 'created']:
+        obj_args = {
+            'time_field': time_field,
+            'epoch': (
+                datetime.now() - time_ago
+            ).replace(microsecond=0).isoformat(),
+            'recursion_depth': 0,
+            'recursion_limit': 1
+        }
         resp = requests.get(
-            text_type('{base_url}/{orm_obj}?{time_field}={epoch}&{time_field}_operator=gt').format(
+            text_type('{base_url}/{orm_obj}?{args}').format(
                 base_url=METADATA_ENDPOINT,
-                time_field=time_field,
                 orm_obj=orm_obj,
-                epoch=(
-                    datetime.now() - time_ago
-                ).replace(microsecond=0).isoformat()
+                args='&'.join(['{}={}'.format(key, value)
+                               for key, value in obj_args.items()])
             )
         )
         for chk_obj in resp.json():
-            if chk_obj.get(date_key, False):
+            if chk_obj.get(date_key, False) and not chk_obj['suspense_date']:
                 objs.add((chk_obj['_id'], chk_obj[date_key]))
     return objs
 
@@ -140,5 +151,6 @@ def data_release(args):
     orm_obj, date_key = args.keyword.split('.')
     objs = relavent_suspense_date_objs(args.time_ago, orm_obj, date_key)
     update_suspense_date_objs(objs, args.time_after, orm_obj)
-    trans_objs = relavent_data_release_objs(args.time_ago, orm_obj)
+    trans_objs = relavent_data_release_objs(
+        args.time_ago, orm_obj, args.exclude)
     update_data_release(trans_objs)
