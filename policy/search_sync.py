@@ -47,66 +47,60 @@ def es_client():
                 'type':     'text',
                 'fielddata': True
             },
-            'users' : {
+            'users': {
                 'type': 'nested',
                 'properties': {
-                    'display_name' {
+                    'display_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
             },
-            'instruments' : {
+            'instruments': {
                 'type': 'nested',
                 'properties': {
-                    'long_name' {
+                    'long_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
             },
-            'proposals' : {
+            'proposals': {
                 'type': 'nested',
                 'properties': {
-                    'display_name' {
+                    'display_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
             },
-            'institutions' : {
+            'institutions': {
                 'type': 'nested',
                 'properties': {
-                    'display_name' {
+                    'display_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
             },
-            'science_themes' : {
+            'science_themes': {
                 'type': 'nested',
                 'properties': {
-                    'display_name' {
+                    'display_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
             },
-            'instrument_groups' : {
+            'instrument_groups': {
                 'type': 'nested',
                 'properties': {
-                    'display_name' {
+                    'display_name': {
                         'type': 'text',
                         'fielddata': True
-                    },
-
+                    }
                 }
-            },
+            }
         }
     }
     # pylint: disable=unexpected-keyword-arg
