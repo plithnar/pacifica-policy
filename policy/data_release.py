@@ -71,7 +71,7 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
 
 def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
     """generate a list of relavent orm_objs saving date_key."""
-    objs = set()
+    objs = {}
     for time_field in ['updated', 'created']:
         obj_args = {
             'time_field': time_field,
@@ -95,7 +95,7 @@ def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
 
 def update_suspense_date_objs(objs, time_after, orm_obj):
     """update the list of objs given date_key adding time_after."""
-    for obj_id, obj_date_key in objs:
+    for obj_id, obj_date_key in objs.items():
         resp = requests.post(
             text_type('{base_url}/{orm_obj}?_id={obj_id}').format(
                 base_url=METADATA_ENDPOINT,
