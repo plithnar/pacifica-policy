@@ -17,7 +17,8 @@ def main():
         'instruments',
         'instrument_group',
         'proposal_instrument',
-        'proposal_participant'
+        'proposal_participant',
+        'transactions'
     ]
     for obj in object_order:
         mdclient.create(obj, loads(
