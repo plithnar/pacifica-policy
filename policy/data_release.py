@@ -74,12 +74,12 @@ def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
     objs = set()
     for time_field in ['updated', 'created']:
         obj_args = {
-            '{time_field}': time_field,
-            '{epoch}': (
+            'time_field': time_field,
+            'epoch': (
                 datetime.now() - time_ago
             ).replace(microsecond=0).isoformat(),
-            'recursion_depth': '0',
-            'recursion_limit': '1'
+            'recursion_depth': 0,
+            'recursion_limit': 1
         }
         resp = requests.get(
             text_type('{base_url}/{orm_obj}?{args}').format(
