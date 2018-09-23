@@ -28,8 +28,8 @@ services:
         hard: -1
     mem_limit: 1g
     ports:
-    - 9200:9200
-    - 9300:9300
+      - 9200:9200
+      - 9300:9300
 
   metadatadb:
     image: postgres
