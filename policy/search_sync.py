@@ -46,6 +46,60 @@ def es_client():
             'transaction_ids': {
                 'type':     'text',
                 'fielddata': True
+            },
+            'users': {
+                'type': 'nested',
+                'properties': {
+                    'display_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
+            },
+            'instruments': {
+                'type': 'nested',
+                'properties': {
+                    'long_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
+            },
+            'proposals': {
+                'type': 'nested',
+                'properties': {
+                    'display_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
+            },
+            'institutions': {
+                'type': 'nested',
+                'properties': {
+                    'display_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
+            },
+            'science_themes': {
+                'type': 'nested',
+                'properties': {
+                    'display_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
+            },
+            'instrument_groups': {
+                'type': 'nested',
+                'properties': {
+                    'display_name': {
+                        'type': 'text',
+                        'fielddata': True
+                    }
+                }
             }
         }
     }

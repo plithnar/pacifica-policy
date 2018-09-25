@@ -5,7 +5,8 @@ elasticsearch
 httpretty
 -e git://github.com/pacifica/pacifica-metadata.git#egg=PacificaMetadata
 pep257
-pylint<1.8
+pre-commit
+pylint<2
 pytest
 python-dateutil
 radon
