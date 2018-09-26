@@ -49,7 +49,7 @@ def es_client():
             },
             'users' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
 
