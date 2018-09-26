@@ -1,6 +1,7 @@
 #!/bin/bash -xe
 export POSTGRES_ENV_POSTGRES_USER=postgres
 export POSTGRES_ENV_POSTGRES_PASSWORD=
+export ADMIN_USER_ID=10
 pushd travis
 MetadataServer.py &
 popd

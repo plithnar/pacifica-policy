@@ -92,9 +92,8 @@ def es_client():
                     'keyword' {
                         'type': 'keyword'
                     },
-
                 }
-            },
+            }
         }
     }
     # pylint: disable=unexpected-keyword-arg
