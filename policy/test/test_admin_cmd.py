@@ -17,8 +17,9 @@ class TestAdminCMD(TestCase):
         main('searchsync', '--objects-per-page', '4', '--threads', '1')
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
+        print resp.json()['indices']['pacifica_search']['primaries']['docs']
         self.assertEqual(
-            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 24)
+            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 25)
 
     def test_trans_data_release(self):
         """Test transaction data release."""
