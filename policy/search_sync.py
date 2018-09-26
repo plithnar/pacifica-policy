@@ -57,7 +57,7 @@ def es_client():
             },
             'instruments' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
 
@@ -65,7 +65,7 @@ def es_client():
             },
             'proposals' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
 
@@ -73,7 +73,7 @@ def es_client():
             },
             'institutions' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
 
@@ -81,7 +81,7 @@ def es_client():
             },
             'science_themes' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
 
@@ -89,7 +89,7 @@ def es_client():
             },
             'instrument_groups' : {
                 'properties': {
-                    'keyword' {
+                    'keyword': {
                         'type': 'keyword'
                     },
                 }
