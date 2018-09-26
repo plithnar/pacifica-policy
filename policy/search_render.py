@@ -98,17 +98,17 @@ class SearchRender(object):
         'instruments': {
             'obj_id': text_type('instruments_{_id}'),
             'display_name': text_type('{display_name}'),
-            'long_name': text_type('{name}')
+            'long_name': text_type('{name}'),
             'keyword': text_type('{display_name}')
         },
         'institutions': {
             'obj_id': text_type('institutions_{_id}'),
-            'display_name': text_type('{name}')
+            'display_name': text_type('{name}'),
             'keyword': text_type('{name}')
         },
         'users': {
             'obj_id': text_type('users_{_id}'),
-            'display_name': text_type('{last_name}, {first_name} {middle_initial}')
+            'display_name': text_type('{last_name}, {first_name} {middle_initial}'),
             'keyword': text_type('{last_name}, {first_name} {middle_initial}')
         },
         'proposals': {
@@ -116,12 +116,12 @@ class SearchRender(object):
             'display_name': text_type('{title}'),
             'long_name': text_type(''),
             'abstract': text_type('{abstract}'),
-            'title': text_type('{title}')
+            'title': text_type('{title}'),
             'keyword': text_type('{title}')
         },
         'groups': {
             'obj_id': text_type('groups_{_id}'),
-            'display_name': text_type('{name}')
+            'display_name': text_type('{name}'),
             'keyword': text_type('{name}')
         },
         'transactions': {
