@@ -47,7 +47,7 @@ def es_client():
                 'type':     'text',
                 'fielddata': True
             },
-            'users' : {
+            'users': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
@@ -55,7 +55,7 @@ def es_client():
 
                 }
             },
-            'instruments' : {
+            'instruments': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
@@ -63,7 +63,7 @@ def es_client():
 
                 }
             },
-            'proposals' : {
+            'proposals': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
@@ -71,7 +71,7 @@ def es_client():
 
                 }
             },
-            'institutions' : {
+            'institutions': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
@@ -79,7 +79,7 @@ def es_client():
 
                 }
             },
-            'science_themes' : {
+            'science_themes': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
@@ -87,7 +87,7 @@ def es_client():
 
                 }
             },
-            'instrument_groups' : {
+            'instrument_groups': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'

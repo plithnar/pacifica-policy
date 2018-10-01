@@ -5,9 +5,9 @@ from __future__ import print_function
 from os import getenv
 from datetime import datetime
 from json import dumps
-from dateutil import parser
 from six import text_type
 import requests
+from dateutil import parser
 from .globals import METADATA_ENDPOINT
 
 VALID_KEYWORDS = [
