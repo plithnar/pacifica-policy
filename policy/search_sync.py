@@ -48,57 +48,50 @@ def es_client():
                 'fielddata': True
             },
             'users': {
-                'type': 'nested',
                 'properties': {
-                    'display_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+
                 }
             },
             'instruments': {
-                'type': 'nested',
                 'properties': {
-                    'long_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+
                 }
             },
             'proposals': {
-                'type': 'nested',
                 'properties': {
-                    'display_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+
                 }
             },
             'institutions': {
-                'type': 'nested',
                 'properties': {
-                    'display_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+
                 }
             },
             'science_themes': {
-                'type': 'nested',
                 'properties': {
-                    'display_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+
                 }
             },
             'instrument_groups': {
-                'type': 'nested',
                 'properties': {
-                    'display_name': {
-                        'type': 'text',
-                        'fielddata': True
-                    }
+                    'keyword': {
+                        'type': 'keyword'
+                    },
                 }
             }
         }
