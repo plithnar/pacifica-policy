@@ -1,14 +1,9 @@
-cherrypy
-codeclimate-test-reporter
-coverage>4.0,<4.4
-elasticsearch
+-r requirements.txt
+coverage
 httpretty
--e git://github.com/pacifica/pacifica-metadata.git#egg=PacificaMetadata
+pacifica-metadata
 pep257
 pre-commit
 pylint<2
 pytest
-python-dateutil
 radon
-requests
-six
