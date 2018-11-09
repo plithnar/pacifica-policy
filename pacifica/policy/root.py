@@ -56,7 +56,8 @@ class Root(object):
             ret = requests.get(get_config().get('metadata', 'status_url'))
             if ret.status_code != 200:
                 raise Exception(
-                    'try_meta_connect: {0}\n'.format(ret.status_code))
+                    'try_meta_connect: {0}\n'.format(ret.status_code)
+                )
         # pylint: disable=broad-except
         except Exception:
             # pylint: enable=broad-except

@@ -90,6 +90,21 @@ def trans_users(obj):
     ]
 
 
+def user_release(obj):
+    """Render the transaction release attribute."""
+    return SearchRender.get_user_release(obj['_id'])
+
+
+def prop_release(obj):
+    """Render the transaction release attribute."""
+    return SearchRender.get_prop_release(obj['_id'])
+
+
+def trans_release(obj):
+    """Render the transaction release attribute."""
+    return SearchRender.get_trans_release(obj['_id'])
+
+
 class SearchRender(object):
     """Search render class to contain methods."""
 
@@ -99,17 +114,20 @@ class SearchRender(object):
             'obj_id': text_type('instruments_{_id}'),
             'display_name': text_type('{display_name}'),
             'long_name': text_type('{name}'),
-            'keyword': text_type('{display_name}')
+            'keyword': text_type('{display_name}'),
+            'release': text_type('true')
         },
         'institutions': {
             'obj_id': text_type('institutions_{_id}'),
             'display_name': text_type('{name}'),
-            'keyword': text_type('{name}')
+            'keyword': text_type('{name}'),
+            'release': text_type('true')
         },
         'users': {
             'obj_id': text_type('users_{_id}'),
             'display_name': text_type('{last_name}, {first_name} {middle_initial}'),
-            'keyword': text_type('{last_name}, {first_name} {middle_initial}')
+            'keyword': text_type('{last_name}, {first_name} {middle_initial}'),
+            'release': user_release
         },
         'proposals': {
             'obj_id': text_type('proposals_{_id}'),
@@ -117,12 +135,19 @@ class SearchRender(object):
             'long_name': text_type(''),
             'abstract': text_type('{abstract}'),
             'title': text_type('{title}'),
-            'keyword': text_type('{title}')
+            'keyword': text_type('{title}'),
+            'release': prop_release,
+            'updated_date': text_type('{updated}'),
+            'created_date': text_type('{created}'),
+            'closed_date': text_type('{closed_date}'),
+            'actual_end_date': text_type('{actual_end_date}'),
+            'actual_start_date': text_type('{actual_start_date}')
         },
         'groups': {
             'obj_id': text_type('groups_{_id}'),
             'display_name': text_type('{name}'),
-            'keyword': text_type('{name}')
+            'keyword': text_type('{name}'),
+            'release': text_type('true')
         },
         'transactions': {
             'obj_id': text_type('transactions_{_id}'),
@@ -131,7 +156,10 @@ class SearchRender(object):
             'instruments': trans_instruments,
             'instrument_groups': trans_inst_groups,
             'proposals': trans_proposals,
-            'science_themes': trans_science_themes
+            'science_themes': trans_science_themes,
+            'release': trans_release,
+            'updated_date': text_type('{updated}'),
+            'created_date': text_type('{created}')
         }
     }
 
@@ -144,7 +172,9 @@ class SearchRender(object):
     def merge_get_args(cls, get_args):
         """Change a hash of get args and global get args into string for url."""
         get_args.update(cls.global_get_args)
-        get_list = ['{}={}'.format(key, val) for key, val in get_args.items()]
+        get_list = []
+        for key, val in get_args.items():
+            get_list.append(text_type('{}={}').format(key, val))
         return '&'.join(get_list)
 
     @classmethod
@@ -166,6 +196,47 @@ class SearchRender(object):
         return cls.obj_cache[key]
 
     @classmethod
+    def get_trans_release(cls, trans_id):
+        """Get the transaction release and return true/false."""
+        resp = requests.get(
+            text_type('{base_url}/transaction_release?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'transaction': trans_id})
+            )
+        )
+        if resp.json():
+            return 'true'
+        return 'false'
+
+    @classmethod
+    def get_prop_release(cls, prop_id):
+        """Get the proposal release from transactions on that prop."""
+        resp = requests.get(
+            text_type('{base_url}/transactions?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'proposal': prop_id})
+            )
+        )
+        for trans_obj in resp.json():
+            if cls.get_trans_release(trans_obj['_id']) == 'true':
+                return 'true'
+        return 'false'
+
+    @classmethod
+    def get_user_release(cls, user_id):
+        """Get the user release from transactions on that prop."""
+        resp = requests.get(
+            text_type('{base_url}/transactions?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'submitter': user_id})
+            )
+        )
+        for trans_obj in resp.json():
+            if cls.get_trans_release(trans_obj['_id']) == 'true':
+                return 'true'
+        return 'false'
+
+    @classmethod
     def get_institutions_from_user(cls, user_id):
         """Get an institution list based on user id."""
         key = text_type('inst_by_user_{}').format(user_id)
@@ -173,12 +244,10 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/institution_person?' + \
-            cls.merge_get_args({'person_id': '{user_id}'})
         resp = requests.get(
-            text_type(url).format(
+            text_type('{base_url}/institution_person?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                user_id=user_id
+                args=cls.merge_get_args({'person_id': user_id})
             )
         )
         ret = []
@@ -344,7 +413,7 @@ class SearchRender(object):
     # pylint: enable=invalid-name
 
     @classmethod
-    def generate(cls, obj_cls, objs, trans_ids=False):
+    def generate(cls, obj_cls, objs, trans_ids=False, render_release=False):
         """generate the institution object."""
         for obj in objs:
             yield {
@@ -352,7 +421,7 @@ class SearchRender(object):
                 '_index': ELASTIC_INDEX,
                 '_type': obj_cls,
                 '_id': text_type('{}_{}').format(obj_cls, obj['_id']),
-                'doc': cls.render(obj_cls, obj, trans_ids),
+                'doc': cls.render(obj_cls, obj, trans_ids, render_release),
                 'doc_as_upsert': True
             }
             if obj_cls == 'proposals':
@@ -375,20 +444,26 @@ class SearchRender(object):
         }
         if trans_ids:
             ret['transaction_ids'] = cls.get_transactions_from_science_theme(
-                obj['science_theme'])
+                obj['science_theme']
+            )
         return ret
 
     @classmethod
-    def render(cls, obj_cls, obj, trans_ids=False):
+    def render(cls, obj_cls, obj, trans_ids=False, render_release=False):
         """Render the instrument object hash."""
         ret = {
             'type': obj_cls
         }
         for key, value in cls.render_data[obj_cls].items():
+            if key == 'release' and not render_release:
+                continue
             if callable(value):
                 ret[key] = value(obj)
             else:
-                ret[key] = value.format(**obj)
+                if value.format(**obj) == 'None':
+                    ret[key] = None
+                else:
+                    ret[key] = value.format(**obj)
         if trans_ids:
             trans_func = getattr(
                 cls, 'get_transactions_from_{}'.format(obj_cls))

@@ -35,8 +35,9 @@ class AdminPolicy(object):
     def _format_url(self, url, **get_args):
         """Append the recursion_depth parameter to the url."""
         get_args['recursion_depth'] = RECURSION_DEPTH
-        args_str = '&'.join([u'{0}={1}'.format(key, value)
-                             for key, value in get_args.items()])
+        args_str = '&'.join(
+            [u'{0}={1}'.format(key, value) for key, value in get_args.items()]
+        )
         return u'{0}?{1}'.format(getattr(self, url), args_str)
 
     def _all_proposal_info(self):
@@ -69,7 +70,9 @@ class AdminPolicy(object):
 
     def _proposals_for_inst(self, inst_id):
         inst_props_url = self._format_url(
-            'prop_instrument_url', instrument_id=inst_id)
+            'prop_instrument_url',
+            instrument_id=inst_id
+        )
         inst_props = loads(requests.get(inst_props_url).text)
         inst_props = set([part['proposal_id'] for part in inst_props])
         return inst_props

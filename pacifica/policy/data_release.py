@@ -9,6 +9,7 @@ from six import text_type
 import requests
 from dateutil import parser
 from .config import get_config
+from .search_render import SearchRender
 
 VALID_KEYWORDS = [
     'proposals.actual_end_date',
@@ -37,16 +38,13 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
             datetime.now() - time_ago
         ).replace(microsecond=0).isoformat(),
         'suspense_date_1': datetime.now().replace(microsecond=0).isoformat(),
-        'suspense_date_operator': 'between',
-        'recursion_depth': 0,
-        'recursion_limit': 1
+        'suspense_date_operator': 'between'
     }
     resp = requests.get(
         text_type('{base_url}/{orm_obj}?{args}').format(
             base_url=get_config().get('metadata', 'endpoint_url'),
             orm_obj=orm_obj,
-            args='&'.join(['{}={}'.format(key, value)
-                           for key, value in suspense_args.items()])
+            args=SearchRender.merge_get_args(suspense_args)
         )
     )
     if orm_obj == 'proposals':
@@ -77,16 +75,13 @@ def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
             'time_field': time_field,
             'epoch': (
                 datetime.now() - time_ago
-            ).replace(microsecond=0).isoformat(),
-            'recursion_depth': 0,
-            'recursion_limit': 1
+            ).replace(microsecond=0).isoformat()
         }
         resp = requests.get(
             text_type('{base_url}/{orm_obj}?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
                 orm_obj=orm_obj,
-                args='&'.join(['{}={}'.format(key, value)
-                               for key, value in obj_args.items()])
+                args=SearchRender.merge_get_args(obj_args)
             )
         )
         collate_objs_from_key(resp, objs, date_key)

@@ -43,6 +43,24 @@ def es_client():
     )
     mapping_params = {
         'properties': {
+            'release': {
+                'type': 'keyword'
+            },
+            'updated_date': {
+                'type': 'date'
+            },
+            'created_date': {
+                'type': 'date'
+            },
+            'closed_date': {
+                'type': 'date'
+            },
+            'actual_start_date': {
+                'type': 'date'
+            },
+            'actual_end_date': {
+                'type': 'date'
+            },
             'transaction_ids': {
                 'type':     'text',
                 'fielddata': True
@@ -99,7 +117,10 @@ def es_client():
     # pylint: disable=unexpected-keyword-arg
     esclient.indices.create(index=ELASTIC_INDEX, ignore=400)
     esclient.indices.put_mapping(
-        index=ELASTIC_INDEX, doc_type='doc', body=dumps(mapping_params))
+        index=ELASTIC_INDEX,
+        doc_type='doc',
+        body=dumps(mapping_params)
+    )
     # pylint: enable=unexpected-keyword-arg
     return esclient
 
@@ -167,7 +188,7 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
         )
     )
     objs = resp.json()
-    return SearchRender.generate(obj, objs, obj != 'transactions')
+    return SearchRender.generate(obj, objs, obj != 'transactions', True)
 
 
 def create_worker_threads(threads, work_queue):

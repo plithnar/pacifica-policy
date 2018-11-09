@@ -18,7 +18,7 @@ class TestAdminCMD(TestCase):
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(
-            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 25)
+            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 26)
 
     def test_trans_data_release(self):
         """Test transaction data release."""
@@ -31,6 +31,10 @@ class TestAdminCMD(TestCase):
             'http://localhost:8121/transaction_release?transaction=1234')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['transaction'], 1234)
+        resp = requests.get(
+            'http://localhost:8121/transaction_release?transaction=1235')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.json()), 0)
 
     def test_default_data_release(self):
         """Test the data release subcommand."""
