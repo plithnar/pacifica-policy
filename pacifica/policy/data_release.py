@@ -44,17 +44,19 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
     )
     if orm_obj == 'proposals':
         for prop_obj in resp.json():
-            prop_id = prop_obj['_id']
-            if text_type(prop_id) in exclude_list:
-                continue
-            resp = requests.get(
-                text_type('{base_url}/transactions?proposal={prop_id}').format(
-                    base_url=get_config().get('metadata', 'endpoint_url'),
-                    prop_id=prop_id
+            for rel_type in ['transsip', 'transsap']:
+                prop_id = prop_obj['_id']
+                if text_type(prop_id) in exclude_list:
+                    continue
+                resp = requests.get(
+                    text_type('{base_url}/{rel_type}?proposal={prop_id}').format(
+                        rel_type=rel_type,
+                        base_url=get_config().get('metadata', 'endpoint_url'),
+                        prop_id=prop_id
+                    )
                 )
-            )
-            for trans_obj in resp.json():
-                trans_objs.add(trans_obj['_id'])
+                for trans_obj in resp.json():
+                    trans_objs.add(trans_obj['_id'])
     else:
         for trans_obj in resp.json():
             if text_type(trans_obj['_id']) not in exclude_list:

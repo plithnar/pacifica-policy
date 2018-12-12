@@ -26,6 +26,7 @@ env:
 ".before_script": &2
 - psql -c 'create database pacifica_metadata;' -U postgres
 - export METADATA_CPCONFIG="$PWD/travis/server.conf"
+- pacifica-metadata-cmd dbsync
 - pushd tests; python -m pacifica.metadata & echo $! > metadata.pid; popd;
 - |
   MAX_TRIES=60
