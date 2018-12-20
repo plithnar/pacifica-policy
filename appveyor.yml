@@ -37,6 +37,7 @@ before_test:
     createdb pacifica_metadata;
     C:\pacifica\Scripts\activate.ps1;
     $env:METADATA_CPCONFIG = "$PWD/travis/server.conf";
+    pacifica-metadata-cmd dbsync;
     Start-Process C:\pacifica\Scripts\pacifica-metadata.exe -RedirectStandardError metadata-error.log -RedirectStandardOutput metadata-output.log;
     $MD_VERSION = `pip show pacifica-metadata | grep Version: | awk '{ print $2 }';
     Invoke-WebRequest https://github.com/pacifica/pacifica-metadata/archive/v${MD_VERSION}.zip -OutFile pacifica-metadata.zip;
