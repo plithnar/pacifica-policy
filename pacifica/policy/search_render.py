@@ -45,49 +45,74 @@ class LimitedSizeDict(OrderedDict):
                 self.popitem(last=False)
 
 
-def trans_science_themes(obj):
+def transsip_transsap_render(trans_obj, render_func, obj_cls, trans_key):
+    """Wrapper method to handle transaction relationships."""
+    ret = {}
+    for trans_rel in ['transsip', 'transsap']:
+        try:
+            obj = SearchRender.get_obj_by_id(trans_rel, trans_obj['_id'])
+            ret[obj[trans_key]] = render_func(
+                SearchRender.get_obj_by_id(obj_cls, obj[trans_key]))
+        except IndexError:
+            pass
+    return [value for _key, value in ret.items()]
+
+
+def trans_science_themes(trans_obj):
     """Render the science theme from a proposal."""
-    return [SearchRender.render_science_theme(
-        SearchRender.get_obj_by_id('proposals', obj['proposal'])
-    )]
+    return transsip_transsap_render(
+        trans_obj, SearchRender.render_science_theme,
+        'proposals', 'proposal'
+    )
 
 
-def trans_proposals(obj):
+def trans_proposals(trans_obj):
     """Render the proposals for a transaction."""
-    return [SearchRender.render(
-        'proposals',
-        SearchRender.get_obj_by_id('proposals', obj['proposal'])
-    )]
+    return transsip_transsap_render(
+        trans_obj, lambda x: SearchRender.render('proposals', x),
+        'proposals', 'proposal'
+    )
 
 
-def trans_inst_groups(obj):
+def trans_inst_groups(trans_obj):
     """Render the instrument groups for a transaction."""
-    return SearchRender.get_groups_from_instrument(obj['instrument'])
+    try:
+        obj = SearchRender.get_obj_by_id('transsip', trans_obj['_id'])
+        return SearchRender.get_groups_from_instrument(obj['instrument'])
+    except IndexError:
+        pass
+    return []
 
 
-def trans_instruments(obj):
+def trans_instruments(trans_obj):
     """Render the instruments for a transaction."""
-    return [
-        SearchRender.render(
-            'instruments',
-            SearchRender.get_obj_by_id('instruments', obj['instrument'])
-        )
-    ]
+    try:
+        obj = SearchRender.get_obj_by_id('transsip', trans_obj['_id'])
+        return [SearchRender.get_obj_by_id('instruments', obj['instrument'])]
+    except IndexError:
+        pass
+    return []
 
 
-def trans_institutions(obj):
+def trans_institutions(trans_obj):
     """Render the institutions for a transaction."""
-    return SearchRender.get_institutions_from_user(obj['submitter'])
+    ret = []
+    for trans_rel in ['transsip', 'transsap']:
+        try:
+            obj = SearchRender.get_obj_by_id(trans_rel, trans_obj['_id'])
+            ret.extend(SearchRender.get_institutions_from_user(
+                obj['submitter']))
+        except IndexError:
+            pass
+    return ret
 
 
-def trans_users(obj):
+def trans_users(trans_obj):
     """Render the users list for transactions."""
-    return [
-        SearchRender.render(
-            'users',
-            SearchRender.get_obj_by_id('users', obj['submitter'])
-        )
-    ]
+    return transsip_transsap_render(
+        trans_obj, lambda x: x,
+        'users', 'submitter'
+    )
 
 
 def user_release(obj):
@@ -211,29 +236,33 @@ class SearchRender(object):
     @classmethod
     def get_prop_release(cls, prop_id):
         """Get the proposal release from transactions on that prop."""
-        resp = requests.get(
-            text_type('{base_url}/transactions?{args}').format(
-                base_url=get_config().get('metadata', 'endpoint_url'),
-                args=cls.merge_get_args({'proposal': prop_id})
+        for trans_rel in ['transsip', 'transsap']:
+            resp = requests.get(
+                text_type('{base_url}/{trans_rel}?{args}').format(
+                    trans_rel=trans_rel,
+                    base_url=get_config().get('metadata', 'endpoint_url'),
+                    args=cls.merge_get_args({'proposal': prop_id})
+                )
             )
-        )
-        for trans_obj in resp.json():
-            if cls.get_trans_release(trans_obj['_id']) == 'true':
-                return 'true'
+            for trans_obj in resp.json():
+                if cls.get_trans_release(trans_obj['_id']) == 'true':
+                    return 'true'
         return 'false'
 
     @classmethod
     def get_user_release(cls, user_id):
         """Get the user release from transactions on that prop."""
-        resp = requests.get(
-            text_type('{base_url}/transactions?{args}').format(
-                base_url=get_config().get('metadata', 'endpoint_url'),
-                args=cls.merge_get_args({'submitter': user_id})
+        for trans_rel in ['transsip', 'transsap']:
+            resp = requests.get(
+                text_type('{base_url}/{trans_rel}?{args}').format(
+                    trans_rel=trans_rel,
+                    base_url=get_config().get('metadata', 'endpoint_url'),
+                    args=cls.merge_get_args({'submitter': user_id})
+                )
             )
-        )
-        for trans_obj in resp.json():
-            if cls.get_trans_release(trans_obj['_id']) == 'true':
-                return 'true'
+            for trans_obj in resp.json():
+                if cls.get_trans_release(trans_obj['_id']) == 'true':
+                    return 'true'
         return 'false'
 
     @classmethod
@@ -312,16 +341,20 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/transactions?' + \
-            cls.merge_get_args({'submitter': '{user_id}'})
-        resp = requests.get(
-            text_type(url).format(
-                base_url=get_config().get('metadata', 'endpoint_url'),
-                user_id=user_id
+        ret = set()
+        for trans_rel in ['transsip', 'transsap']:
+            url = '{base_url}/{trans_rel}?' + \
+                cls.merge_get_args({'submitter': '{user_id}'})
+            resp = requests.get(
+                text_type(url).format(
+                    trans_rel=trans_rel,
+                    base_url=get_config().get('metadata', 'endpoint_url'),
+                    user_id=user_id
+                )
             )
-        )
-        cls.obj_cache[key] = ['transactions_{}'.format(
-            obj['_id']) for obj in resp.json()]
+            ret.update(set(['transactions_{}'.format(
+                obj['_id']) for obj in resp.json()]))
+        cls.obj_cache[key] = list(ret)
         return cls.obj_cache[key]
 
     @classmethod
@@ -332,16 +365,20 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/transactions?' + \
-            cls.merge_get_args({'proposal': '{prop_id}'})
-        resp = requests.get(
-            text_type(url).format(
-                base_url=get_config().get('metadata', 'endpoint_url'),
-                prop_id=prop_id
+        ret = set()
+        for trans_rel in ['transsip', 'transsap']:
+            url = '{base_url}/{trans_rel}?' + \
+                cls.merge_get_args({'proposal': '{prop_id}'})
+            resp = requests.get(
+                text_type(url).format(
+                    trans_rel=trans_rel,
+                    base_url=get_config().get('metadata', 'endpoint_url'),
+                    prop_id=prop_id
+                )
             )
-        )
-        cls.obj_cache[key] = ['transactions_{}'.format(
-            obj['_id']) for obj in resp.json()]
+            ret.update(set(['transactions_{}'.format(
+                obj['_id']) for obj in resp.json()]))
+        cls.obj_cache[key] = list(ret)
         return cls.obj_cache[key]
 
     # pylint: disable=invalid-name
@@ -353,7 +390,7 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/transactions?' + \
+        url = '{base_url}/transsip?' + \
             cls.merge_get_args({'instrument': '{inst_id}'})
         resp = requests.get(
             text_type(url).format(
