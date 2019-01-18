@@ -5,10 +5,11 @@ from __future__ import print_function
 from os import getenv
 from datetime import datetime
 from json import dumps
-from dateutil import parser
 from six import text_type
 import requests
+from dateutil import parser
 from .config import get_config
+from .search_render import SearchRender
 
 VALID_KEYWORDS = [
     'proposals.actual_end_date',
@@ -21,6 +22,13 @@ VALID_KEYWORDS = [
 ]
 
 
+def collate_objs_from_key(resp, objs, date_key):
+    """Deduplicate objs and make sure they have dates."""
+    for chk_obj in resp.json():
+        if chk_obj['_id'] not in objs.keys() and chk_obj.get(date_key, False):
+            objs[chk_obj['_id']] = chk_obj[date_key]
+
+
 def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
     """Query proposals or transactions that has gone past their suspense date."""
     trans_objs = set()
@@ -30,16 +38,13 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
             datetime.now() - time_ago
         ).replace(microsecond=0).isoformat(),
         'suspense_date_1': datetime.now().replace(microsecond=0).isoformat(),
-        'suspense_date_operator': 'between',
-        'recursion_depth': 0,
-        'recursion_limit': 1
+        'suspense_date_operator': 'between'
     }
     resp = requests.get(
         text_type('{base_url}/{orm_obj}?{args}').format(
             base_url=get_config().get('metadata', 'endpoint_url'),
             orm_obj=orm_obj,
-            args='&'.join(['{}={}'.format(key, value)
-                           for key, value in suspense_args.items()])
+            args=SearchRender.merge_get_args(suspense_args)
         )
     )
     if orm_obj == 'proposals':
@@ -66,33 +71,28 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
 
 def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
     """generate a list of relavent orm_objs saving date_key."""
-    objs = set()
+    objs = {}
     for time_field in ['updated', 'created']:
         obj_args = {
             'time_field': time_field,
             'epoch': (
                 datetime.now() - time_ago
-            ).replace(microsecond=0).isoformat(),
-            'recursion_depth': 0,
-            'recursion_limit': 1
+            ).replace(microsecond=0).isoformat()
         }
         resp = requests.get(
             text_type('{base_url}/{orm_obj}?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
                 orm_obj=orm_obj,
-                args='&'.join(['{}={}'.format(key, value)
-                               for key, value in obj_args.items()])
+                args=SearchRender.merge_get_args(obj_args)
             )
         )
-        for chk_obj in resp.json():
-            if chk_obj.get(date_key, False) and not chk_obj['suspense_date']:
-                objs.add((chk_obj['_id'], chk_obj[date_key]))
+        collate_objs_from_key(resp, objs, date_key)
     return objs
 
 
 def update_suspense_date_objs(objs, time_after, orm_obj):
     """update the list of objs given date_key adding time_after."""
-    for obj_id, obj_date_key in objs:
+    for obj_id, obj_date_key in objs.items():
         resp = requests.post(
             text_type('{base_url}/{orm_obj}?_id={obj_id}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),

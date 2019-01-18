@@ -20,11 +20,17 @@ def get_config():
     configparser.add_section('metadata')
     configparser.set(
         'metadata', 'endpoint_url',
-        getenv('METADATA_URL', 'http://localhost:8121')
+        getenv(
+            'METADATA_URL',
+            'http://localhost:8121'
+        )
     )
     configparser.set(
         'metadata', 'status_url',
-        getenv('STATUS_URL', 'http://localhost:8121/groups')
+        getenv(
+            'STATUS_URL',
+            'http://localhost:8121/groups'
+        )
     )
     configparser.read(CONFIG_FILE)
     return configparser

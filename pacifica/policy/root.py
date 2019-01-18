@@ -42,7 +42,7 @@ class Root(object):
 
     def __init__(self):
         """Create the local objects we need."""
-        self._try_meta_connect()
+        self.try_meta_connect()
         self.uploader = UploaderPolicy()
         self.status = StatusPolicy()
         self.reporting = ReportingPolicy()
@@ -50,20 +50,21 @@ class Root(object):
         self.events = EventsPolicy()
 
     @classmethod
-    def _try_meta_connect(cls, attempts=0):
+    def try_meta_connect(cls, attempts=0):
         """Try to connect to the metadata service see if its there."""
         try:
             ret = requests.get(get_config().get('metadata', 'status_url'))
             if ret.status_code != 200:
                 raise Exception(
-                    'try_meta_connect: {0}\n'.format(ret.status_code))
+                    'try_meta_connect: {0}\n'.format(ret.status_code)
+                )
         # pylint: disable=broad-except
         except Exception:
             # pylint: enable=broad-except
             if attempts < METADATA_CONNECT_ATTEMPTS:
                 sleep(METADATA_WAIT)
                 attempts += 1
-                cls._try_meta_connect(attempts)
+                cls.try_meta_connect(attempts)
             else:
                 raise Exception
 # pylint: enable=too-few-public-methods
