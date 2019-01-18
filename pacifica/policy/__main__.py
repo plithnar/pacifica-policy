@@ -58,7 +58,3 @@ def main():
         'server.socket_port': args.port
     })
     cherrypy.quickstart(Root(), '/', args.config)
-
-
-if __name__ == '__main__':
-    main()

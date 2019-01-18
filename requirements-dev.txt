@@ -7,3 +7,4 @@ pre-commit
 pylint<2
 pytest
 radon
+recommonmark

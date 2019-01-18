@@ -17,6 +17,18 @@ def get_config():
     too complex and it only is supported with MySQL and PostgreSQL.
     """
     configparser = SafeConfigParser()
+    configparser.add_section('policy')
+    configparser.set(
+        'policy', 'admin_group',
+        getenv(
+            'ADMIN_GROUP',
+            'admin'
+        )
+    )
+    configparser.set(
+        'policy', 'admin_group_id',
+        getenv('ADMIN_GROUP_ID', '0')
+    )
     configparser.add_section('metadata')
     configparser.set(
         'metadata', 'endpoint_url',

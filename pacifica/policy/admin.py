@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """The Admin module has logic about checking for admin group info."""
 from __future__ import absolute_import
-from os import getenv
 from json import loads
 import requests
 from .config import get_config
@@ -29,8 +28,8 @@ class AdminPolicy(object):
 
     def __init__(self):
         """Constructor for Uploader Policy."""
-        self.admin_group = getenv('ADMIN_GROUP', 'admin')
-        self._set_admin_id()
+        self.admin_group = get_config().get('policy', 'admin_group')
+        self.admin_group_id = get_config().get('policy', 'admin_group_id')
 
     def _format_url(self, url, **get_args):
         """Append the recursion_depth parameter to the url."""
@@ -145,18 +144,6 @@ class AdminPolicy(object):
     def _user_info_from_kwds(self, **kwds):
         return loads(requests.get(self._format_url('all_users_url', **kwds)).text)
 
-    def _set_admin_id(self):
-        agid_query = '{0}/groups?group_name={1}'.format(
-            get_config().get('metadata', 'endpoint_url'),
-            self.admin_group
-        )
-        admin_group_id = requests.get(agid_query)
-        admin_groups = loads(admin_group_id.text)
-        if admin_groups:
-            self.admin_group_id = admin_groups[0]['_id']
-        else:
-            self.admin_group_id = -1
-
     @staticmethod
     def _object_id_valid(object_lookup_name, object_id):
         if not object_id:
@@ -169,8 +156,6 @@ class AdminPolicy(object):
         return len(object_is_valid) > 0
 
     def _is_admin(self, user_id):
-        if self.admin_group_id == -1:
-            self._set_admin_id()
         amember_query = '{0}/user_group?group_id={1}&person_id={2}'.format(
             self.md_url,
             self.admin_group_id,

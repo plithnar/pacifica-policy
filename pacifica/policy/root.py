@@ -42,7 +42,6 @@ class Root(object):
 
     def __init__(self):
         """Create the local objects we need."""
-        self.try_meta_connect()
         self.uploader = UploaderPolicy()
         self.status = StatusPolicy()
         self.reporting = ReportingPolicy()
