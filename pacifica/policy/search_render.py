@@ -88,7 +88,12 @@ def trans_instruments(trans_obj):
     """Render the instruments for a transaction."""
     try:
         obj = SearchRender.get_obj_by_id('transsip', trans_obj['_id'])
-        return [SearchRender.get_obj_by_id('instruments', obj['instrument'])]
+        return [
+            SearchRender.render(
+                'instruments',
+                SearchRender.get_obj_by_id('instruments', obj['instrument'])
+            )
+        ]
     except IndexError:
         pass
     return []
@@ -110,7 +115,7 @@ def trans_institutions(trans_obj):
 def trans_users(trans_obj):
     """Render the users list for transactions."""
     return transsip_transsap_render(
-        trans_obj, lambda x: x,
+        trans_obj, lambda x: SearchRender.render('users', x),
         'users', 'submitter'
     )
 
