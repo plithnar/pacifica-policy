@@ -33,11 +33,17 @@ The service configuration is an INI file and an example is as follows:
 [policy]
 ; This section has policy service specific config options
 
+; In memory object cache size (used in data release)
+cache_size = 10000
+
 ; This sets the admin group name
 admin_group = admin
 
 ; This sets the admin group id (should match group name in metadata)
 admin_group_id = 0
+
+; This sets the admin user id (should match user name in metadata)
+admin_user_id = 0
 
 [metadata]
 ; This section contains configuration for metadata service
@@ -47,6 +53,15 @@ endpoint_url = http://localhost:8121
 
 ; The endpoint to check for status of metadata service
 status_url = http://localhost:8121/groups
+
+[elasticsearch]
+; This section describes configuration to contact elasticsearch
+
+; URL to the elasticsearch server
+url = http://127.0.0.1:9200
+
+; URL to the elasticsearch server
+index = pacifica_search
 ```
 
 ## Starting the Service

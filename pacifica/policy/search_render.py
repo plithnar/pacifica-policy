@@ -1,14 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """This is the render object for the search interface."""
-from os import getenv
 from collections import OrderedDict
 from six import text_type
 import requests
 from .config import get_config
 
-ELASTIC_INDEX = getenv('ELASTIC_INDEX', 'pacifica_search')
-CACHE_SIZE = getenv('CACHE_SIZE', 10000)
+ELASTIC_INDEX = get_config().get('elasticsearch', 'index')
+CACHE_SIZE = get_config().getint('policy', 'cache_size')
 
 
 class LimitedSizeDict(OrderedDict):

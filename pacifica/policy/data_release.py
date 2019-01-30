@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Data release policy for command line tools."""
 from __future__ import print_function
-from os import getenv
 from datetime import datetime
 from json import dumps
 from six import text_type
@@ -132,7 +131,7 @@ def update_data_release(objs):
                 base_url=get_config().get('metadata', 'endpoint_url')
             ),
             data=dumps({
-                'authorized_person': getenv('ADMIN_USER_ID', -1),
+                'authorized_person': get_config().get('policy', 'admin_user_id'),
                 'transaction': trans_id
             }),
             headers={'content-type': 'application/json'}

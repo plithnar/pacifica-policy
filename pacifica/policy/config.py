@@ -5,7 +5,7 @@ from os import getenv
 try:
     from ConfigParser import SafeConfigParser
 except ImportError:  # pragma: no cover python 2 vs 3 issue
-    from configparser import SafeConfigParser
+    from configparser import ConfigParser as SafeConfigParser
 from pacifica.policy.globals import CONFIG_FILE
 
 
@@ -19,6 +19,13 @@ def get_config():
     configparser = SafeConfigParser()
     configparser.add_section('policy')
     configparser.set(
+        'policy', 'cache_size',
+        getenv(
+            'CACHE_SIZE',
+            '10000'
+        )
+    )
+    configparser.set(
         'policy', 'admin_group',
         getenv(
             'ADMIN_GROUP',
@@ -28,6 +35,10 @@ def get_config():
     configparser.set(
         'policy', 'admin_group_id',
         getenv('ADMIN_GROUP_ID', '0')
+    )
+    configparser.set(
+        'policy', 'admin_user_id',
+        getenv('ADMIN_USER_ID', '0')
     )
     configparser.add_section('metadata')
     configparser.set(
@@ -44,5 +55,10 @@ def get_config():
             'http://localhost:8121/groups'
         )
     )
+    configparser.add_section('elasticsearch')
+    configparser.set('elasticsearch', 'url', getenv(
+        'ELASTIC_ENDPOINT', 'http://127.0.0.1:9200'))
+    configparser.set('elasticsearch', 'index', getenv(
+        'ELASTIC_INDEX', 'pacifica_search'))
     configparser.read(CONFIG_FILE)
     return configparser

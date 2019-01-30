@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Sync the database to elasticsearch index for use by Searching tools."""
 from __future__ import print_function, absolute_import
-from os import getenv
 from json import dumps
 from time import sleep
 from threading import Thread
@@ -21,7 +20,7 @@ from .search_render import ELASTIC_INDEX, SearchRender
 
 ELASTIC_CONNECT_ATTEMPTS = 40
 ELASTIC_WAIT = 3
-ELASTIC_ENDPOINT = getenv('ELASTIC_ENDPOINT', '127.0.0.1')
+ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
     'transactions',
     'proposals',
