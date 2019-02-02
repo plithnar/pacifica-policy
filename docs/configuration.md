@@ -33,6 +33,15 @@ The service configuration is an INI file and an example is as follows:
 [policy]
 ; This section has policy service specific config options
 
+; Internal URL format for transactions not released or have DOIs
+internal_url_format = https://internal.example.com/{transaction}
+
+; Release URL format for transactions released but no DOI
+release_url_format = https://release.example.com/{transaction}
+
+; DOI URL format for transactions with a DOI
+doi_url_format = https://dx.doi.org/{doi}
+
 ; In memory object cache size (used in data release)
 cache_size = 10000
 

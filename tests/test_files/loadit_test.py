@@ -19,7 +19,8 @@ def main():
         'proposal_instrument',
         'proposal_participant',
         'transactions',
-        'transsip'
+        'transsip',
+        'transaction_release'
     ]
     for obj in object_order:
         mdclient.create(obj, loads(

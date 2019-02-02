@@ -57,6 +57,24 @@ def transsip_transsap_render(trans_obj, render_func, obj_cls, trans_key):
     return [value for _key, value in ret.items()]
 
 
+def trans_has_doi(trans_obj):
+    """Return true if the transaction has a doi otherwise false."""
+    trans_doi = SearchRender.get_trans_doi(trans_obj['_id'])
+    if trans_doi != 'false':
+        return 'true'
+    return 'false'
+
+
+def trans_access_url(trans_obj):
+    """Figure out the access url for the transaction."""
+    trans_doi = SearchRender.get_trans_doi(trans_obj['_id'])
+    if trans_doi != 'false':
+        return get_config().get('policy', 'doi_url_format').format(doi=trans_doi)
+    if SearchRender.get_trans_release(trans_obj['_id']) == 'true':
+        return get_config().get('policy', 'release_url_format').format(transaction=trans_obj['_id'])
+    return get_config().get('policy', 'internal_url_format').format(transaction=trans_obj['_id'])
+
+
 def trans_science_themes(trans_obj):
     """Render the science theme from a proposal."""
     return transsip_transsap_render(
@@ -180,6 +198,8 @@ class SearchRender(object):
         },
         'transactions': {
             'obj_id': text_type('transactions_{_id}'),
+            'access_url': trans_access_url,
+            'has_doi': trans_has_doi,
             'users': trans_users,
             'institutions': trans_institutions,
             'instruments': trans_instruments,
@@ -223,6 +243,20 @@ class SearchRender(object):
         )
         cls.obj_cache[key] = resp.json()[0]
         return cls.obj_cache[key]
+
+    @classmethod
+    def get_trans_doi(cls, trans_id):
+        """Get the transaction doi and return false or doi."""
+        resp = requests.get(
+            text_type('{base_url}/doi_transaction?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'transaction': trans_id})
+            )
+        )
+        resp_json = resp.json()
+        if resp_json:
+            return resp_json[0].get('doi', 'false')
+        return 'false'
 
     @classmethod
     def get_trans_release(cls, trans_id):

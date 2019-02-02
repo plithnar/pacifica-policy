@@ -3,10 +3,11 @@
 """Test the events policy."""
 from os.path import join
 from json import loads
+from cherrypy.test import helper
 from common_test import CommonCPSetup
 
 
-class TestEventsPolicy(CommonCPSetup):
+class TestEventsPolicy(helper.CPWebCase, CommonCPSetup):
     """Test the Events policy service."""
 
     PORT = 8181

@@ -19,6 +19,20 @@ def get_config():
     configparser = SafeConfigParser()
     configparser.add_section('policy')
     configparser.set(
+        'policy', 'internal_url_format',
+        getenv('INTERNAL_URL_FORMAT',
+               'https://internal.example.com/{transaction}')
+    )
+    configparser.set(
+        'policy', 'release_url_format',
+        getenv('RELEASE_URL_FORMAT',
+               'https://release.example.com/{transaction}')
+    )
+    configparser.set(
+        'policy', 'doi_url_format',
+        getenv('DOI_URL_FORMAT', 'https://dx.doi.org/{doi}')
+    )
+    configparser.set(
         'policy', 'cache_size',
         getenv(
             'CACHE_SIZE',

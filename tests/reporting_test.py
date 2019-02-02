@@ -2,11 +2,16 @@
 # -*- coding: utf-8 -*-
 """Test status policy methods."""
 from json import loads, dumps
+from cherrypy.test import helper
 from common_test import CommonCPSetup
 
 
-class TestReportingPolicy(CommonCPSetup):
+class TestReportingPolicy(helper.CPWebCase, CommonCPSetup):
     """Test the status policy service."""
+
+    PORT = 8181
+    HOST = '127.0.0.1'
+    headers = [('Content-Type', 'application/json')]
 
     def test_transaction_details(self):
         """Return transaction details for a list of transactions."""

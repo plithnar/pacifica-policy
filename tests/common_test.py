@@ -4,19 +4,14 @@
 import logging
 from json import dumps, loads
 import cherrypy
-from cherrypy.test import helper
 from pacifica.policy.root import Root, error_page_default
 from pacifica.policy.globals import CHERRYPY_CONFIG
 
 
-# pylint: disable=too-few-public-methods
-class CommonCPSetup(helper.CPWebCase):
+class CommonCPSetup(object):
     """Common CherryPy setup class."""
 
-    PORT = 8181
-    HOST = '127.0.0.1'
-    headers = [('Content-Type', 'application/json')]
-
+    # pylint: disable=no-member
     def get_json_page(self, path, valid_query):
         """Get a json page and validate its return format."""
         self.getPage(path,
@@ -37,4 +32,3 @@ class CommonCPSetup(helper.CPWebCase):
         cherrypy.config.update({'error_page.default': error_page_default})
         cherrypy.config.update(CHERRYPY_CONFIG)
         cherrypy.tree.mount(Root(), '/', CHERRYPY_CONFIG)
-# pylint: enable=too-few-public-methods
