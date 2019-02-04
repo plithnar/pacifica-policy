@@ -64,6 +64,10 @@ def es_client():
                 'type':     'text',
                 'fielddata': True
             },
+            'has_doi': {
+                'type':      'text',
+                'fielddata': True
+            },
             'users': {
                 'properties': {
                     'keyword': {
