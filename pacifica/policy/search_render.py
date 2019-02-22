@@ -137,6 +137,11 @@ def trans_users(trans_obj):
     )
 
 
+def trans_kvp(trans_obj):
+    """Generate a list of key value pairs for transaction."""
+    return SearchRender.get_trans_kvp(trans_obj['_id'])
+
+
 def user_release(obj):
     """Render the transaction release attribute."""
     return SearchRender.get_user_release(obj['_id'])
@@ -207,6 +212,7 @@ class SearchRender(object):
             'proposals': trans_proposals,
             'science_themes': trans_science_themes,
             'release': trans_release,
+            'key_value_pairs': trans_kvp,
             'updated_date': text_type('{updated}'),
             'created_date': text_type('{created}')
         }
@@ -270,6 +276,18 @@ class SearchRender(object):
         if resp.json():
             return 'true'
         return 'false'
+
+    @classmethod
+    def get_trans_kvp(cls, trans_id):
+        """Get the transaction key value pairs."""
+        resp = requests.get(
+            text_type('{base_url}/transactioninfo/by_id/{trans_id}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                trans_id=trans_id
+            )
+        )
+        kvp_hash = resp.json().get('key_values', {})
+        return kvp_hash
 
     @classmethod
     def get_prop_release(cls, prop_id):

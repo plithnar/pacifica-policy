@@ -42,6 +42,12 @@ def es_client():
     )
     mapping_params = {
         'properties': {
+            'key_value_pairs': {
+                'properties': {
+                    'key': {'type': 'keyword'},
+                    'value': {'type': 'keyword'}
+                }
+            },
             'release': {
                 'type': 'keyword'
             },
