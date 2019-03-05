@@ -287,7 +287,10 @@ class SearchRender(object):
             )
         )
         kvp_hash = resp.json().get('key_values', {})
-        return kvp_hash
+        return {
+            'key_value_hash': kvp_hash,
+            'key_value_objs': [{'key': key, 'value': value} for key, value in kvp_hash.items()]
+        }
 
     @classmethod
     def get_prop_release(cls, prop_id):
