@@ -16,7 +16,7 @@ METADATA_CONNECT_ATTEMPTS = 40
 METADATA_WAIT = 3
 
 MATCH_VALIDATORS = {
-    'proposal': r'[0-9]+[a-zA-Z]*',
+    'project': r'[0-9]+[a-zA-Z]*',
     'user': r'[0-9]+',
     'transaction': r'[0-9]+'
 }

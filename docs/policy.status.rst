@@ -13,7 +13,7 @@ Status Python Module
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.proposal_query
+.. automodule:: pacifica.policy.status.project_query
    :members:
    :private-members:
    :special-members:
@@ -33,7 +33,7 @@ Status Python Module
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.instrument.by_proposal_id
+.. automodule:: pacifica.policy.status.instrument.by_project_id
    :members:
    :private-members:
    :special-members:
@@ -41,19 +41,19 @@ Status Python Module
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.proposal
+.. automodule:: pacifica.policy.status.project
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.proposal.by_user
+.. automodule:: pacifica.policy.status.project.by_user
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.proposal.lookup
+.. automodule:: pacifica.policy.status.project.lookup
    :members:
    :private-members:
    :special-members:
-.. automodule:: pacifica.policy.status.proposal.search
+.. automodule:: pacifica.policy.status.project.search
    :members:
    :private-members:
    :special-members:

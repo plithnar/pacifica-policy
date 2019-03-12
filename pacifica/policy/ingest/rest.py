@@ -8,7 +8,7 @@ Below is an example post body::
     [
         {"destinationTable": "Transactions._id", "value": 1234},
         {"destinationTable": "Transactions.submitter", "value": 34002},
-        {"destinationTable": "Transactions.proposal", "value": "34002"},
+        {"destinationTable": "Transactions.project", "value": "34002"},
         {"destinationTable": "Transactions.instrument", "value": 34002},
         {"destinationTable": "TransactionKeyValue", "key": "Tag", "value": "Blah"},
         {"destinationTable": "TransactionKeyValue", "key": "Taggy", "value": "Blah"},
@@ -50,7 +50,7 @@ class IngestPolicy(UploaderPolicy):
         """Validate the metadata format."""
         variables_to_query = {
             'submitter': 'users',
-            'proposal': 'proposals',
+            'project': 'projects',
             'instrument': 'instruments'
         }
         invalid_terms = []
@@ -65,26 +65,26 @@ class IngestPolicy(UploaderPolicy):
                 valid_terms[variable] = value
         if not invalid_terms:
             # all the incoming terms are valid, check for xrefs
-            if text_type(valid_terms['proposal']) not in self._proposals_for_user_inst(
+            if text_type(valid_terms['project']) not in self._projects_for_user_inst(
                     valid_terms['submitter'], valid_terms['instrument']):
                 invalid_terms.append(
-                    text_type('proposal ({}) not in user instrument list ({})').format(
-                        text_type(valid_terms['proposal']),
-                        self._proposals_for_user_inst(
+                    text_type('project ({}) not in user instrument list ({})').format(
+                        text_type(valid_terms['project']),
+                        self._projects_for_user_inst(
                             valid_terms['submitter'],
                             valid_terms['instrument']
                         )
                     )
                 )
-            if int(valid_terms['instrument']) not in self._instruments_for_user_prop(
-                    valid_terms['submitter'], valid_terms['proposal']
+            if int(valid_terms['instrument']) not in self._instruments_for_user_proj(
+                    valid_terms['submitter'], valid_terms['project']
             ):
                 invalid_terms.append(
-                    text_type('instrument ({}) not in user proposal list ({})').format(
+                    text_type('instrument ({}) not in user project list ({})').format(
                         int(valid_terms['instrument']),
-                        self._instruments_for_user_prop(
+                        self._instruments_for_user_proj(
                             valid_terms['submitter'],
-                            valid_terms['proposal']
+                            valid_terms['project']
                         )
                     )
                 )

@@ -18,9 +18,9 @@ def validate_transaction(index=0):
     return validate_universal(index, 'transaction')
 
 
-def validate_proposal(index=0):
-    """Validate the proposal id."""
-    return validate_universal(index, 'proposal')
+def validate_project(index=0):
+    """Validate the project id."""
+    return validate_universal(index, 'project')
 
 
 def _get_check_id(index, *args, **kwargs):
@@ -32,7 +32,7 @@ def _get_check_id(index, *args, **kwargs):
 
 
 def validate_universal(index, regex):
-    """Decorator generator to validate proposal field."""
+    """Decorator generator to validate project field."""
     def decorator(func):
         """Wrapped decorator."""
         @wraps(func)

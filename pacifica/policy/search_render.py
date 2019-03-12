@@ -76,18 +76,18 @@ def trans_access_url(trans_obj):
 
 
 def trans_science_themes(trans_obj):
-    """Render the science theme from a proposal."""
+    """Render the science theme from a project."""
     return transsip_transsap_render(
         trans_obj, SearchRender.render_science_theme,
-        'proposals', 'proposal'
+        'projects', 'project'
     )
 
 
-def trans_proposals(trans_obj):
-    """Render the proposals for a transaction."""
+def trans_projects(trans_obj):
+    """Render the projects for a transaction."""
     return transsip_transsap_render(
-        trans_obj, lambda x: SearchRender.render('proposals', x),
-        'proposals', 'proposal'
+        trans_obj, lambda x: SearchRender.render('projects', x),
+        'projects', 'project'
     )
 
 
@@ -147,9 +147,9 @@ def user_release(obj):
     return SearchRender.get_user_release(obj['_id'])
 
 
-def prop_release(obj):
+def proj_release(obj):
     """Render the transaction release attribute."""
-    return SearchRender.get_prop_release(obj['_id'])
+    return SearchRender.get_proj_release(obj['_id'])
 
 
 def trans_release(obj):
@@ -181,14 +181,14 @@ class SearchRender(object):
             'keyword': text_type('{last_name}, {first_name} {middle_initial}'),
             'release': user_release
         },
-        'proposals': {
-            'obj_id': text_type('proposals_{_id}'),
+        'projects': {
+            'obj_id': text_type('projects_{_id}'),
             'display_name': text_type('{title}'),
             'long_name': text_type(''),
             'abstract': text_type('{abstract}'),
             'title': text_type('{title}'),
             'keyword': text_type('{title}'),
-            'release': prop_release,
+            'release': proj_release,
             'updated_date': text_type('{updated}'),
             'created_date': text_type('{created}'),
             'closed_date': text_type('{closed_date}'),
@@ -209,7 +209,7 @@ class SearchRender(object):
             'institutions': trans_institutions,
             'instruments': trans_instruments,
             'instrument_groups': trans_inst_groups,
-            'proposals': trans_proposals,
+            'projects': trans_projects,
             'science_themes': trans_science_themes,
             'release': trans_release,
             'key_value_pairs': trans_kvp,
@@ -293,14 +293,14 @@ class SearchRender(object):
         }
 
     @classmethod
-    def get_prop_release(cls, prop_id):
-        """Get the proposal release from transactions on that prop."""
+    def get_proj_release(cls, proj_id):
+        """Get the project release from transactions on that proj."""
         for trans_rel in ['transsip', 'transsap']:
             resp = requests.get(
                 text_type('{base_url}/{trans_rel}?{args}').format(
                     trans_rel=trans_rel,
                     base_url=get_config().get('metadata', 'endpoint_url'),
-                    args=cls.merge_get_args({'proposal': prop_id})
+                    args=cls.merge_get_args({'project': proj_id})
                 )
             )
             for trans_obj in resp.json():
@@ -310,7 +310,7 @@ class SearchRender(object):
 
     @classmethod
     def get_user_release(cls, user_id):
-        """Get the user release from transactions on that prop."""
+        """Get the user release from transactions on that proj."""
         for trans_rel in ['transsip', 'transsap']:
             resp = requests.get(
                 text_type('{base_url}/{trans_rel}?{args}').format(
@@ -417,9 +417,9 @@ class SearchRender(object):
         return cls.obj_cache[key]
 
     @classmethod
-    def get_transactions_from_proposals(cls, prop_id):
-        """Get a list of transactions for a proposal."""
-        key = text_type('trans_by_prop_{}').format(prop_id)
+    def get_transactions_from_projects(cls, proj_id):
+        """Get a list of transactions for a project."""
+        key = text_type('trans_by_proj_{}').format(proj_id)
         val = cls.obj_cache.get(key, None)
         if val is not None:
             return val
@@ -427,12 +427,12 @@ class SearchRender(object):
         ret = set()
         for trans_rel in ['transsip', 'transsap']:
             url = '{base_url}/{trans_rel}?' + \
-                cls.merge_get_args({'proposal': '{prop_id}'})
+                cls.merge_get_args({'project': '{proj_id}'})
             resp = requests.get(
                 text_type(url).format(
                     trans_rel=trans_rel,
                     base_url=get_config().get('metadata', 'endpoint_url'),
-                    prop_id=prop_id
+                    proj_id=proj_id
                 )
             )
             ret.update(set(['transactions_{}'.format(
@@ -493,7 +493,7 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/proposals?' + \
+        url = '{base_url}/projects?' + \
             cls.merge_get_args({'science_theme': '{science_theme}'})
         resp = requests.get(
             text_type(url).format(
@@ -502,8 +502,8 @@ class SearchRender(object):
             )
         )
         ret = []
-        for prop_id in [obj['_id'] for obj in resp.json()]:
-            ret.extend(cls.get_transactions_from_proposals(prop_id))
+        for proj_id in [obj['_id'] for obj in resp.json()]:
+            ret.extend(cls.get_transactions_from_projects(proj_id))
         cls.obj_cache[key] = ret
         return ret
     # pylint: enable=invalid-name
@@ -520,7 +520,7 @@ class SearchRender(object):
                 'doc': cls.render(obj_cls, obj, trans_ids, render_release),
                 'doc_as_upsert': True
             }
-            if obj_cls == 'proposals':
+            if obj_cls == 'projects':
                 yield {
                     '_op_type': 'update',
                     '_index': ELASTIC_INDEX,

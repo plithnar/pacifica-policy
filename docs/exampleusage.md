@@ -57,7 +57,7 @@ ingest endpoint discussed next.
 
 The Ingest API is used by the
 [Ingest](https://github.com/pacifica/pacifica-ingest) service. This
-endpoint verifies the relationships between user, proposal and
+endpoint verifies the relationships between user, project and
 instrument before allowing an upload. The content of the body
 document is defined by the
 [uploader](https://pacifica-uploader.readthedocs.io/en/latest/metadataconfig.html).
@@ -140,7 +140,7 @@ Http-Code: 500
 There is a single admin command line tool (`pacifica-policy-cmd`)
 with two subcommands, `data_release` and `searchsync`. The
 `data_release` subcommand handles setting the `data_release`
-attributes of the Proposals and Transactions. The `searchsync`
+attributes of the Projects and Transactions. The `searchsync`
 subcommand handles formatting and synchonizing metadata to
 [ElasticSearch](https://www.elastic.co/products/elasticsearch).
 
@@ -181,9 +181,9 @@ optional arguments:
   -h, --help            show this help message and exit
   --exclude [EXCLUDE [EXCLUDE ...]]
                         id of keyword prefix to exclude.
-  --keyword KEYWORD     keyword one of proposals.actual_end_date,
-                        proposals.actual_start_date, proposals.submitted_date,
-                        proposals.accepted_date, proposals.closed_date,
+  --keyword KEYWORD     keyword one of projects.actual_end_date,
+                        projects.actual_start_date, projects.submitted_date,
+                        projects.accepted_date, projects.closed_date,
                         transactions.created, transactions.updated.
   --time-after TIME_AFTER
                         set suspense date on data to X days after keyword.

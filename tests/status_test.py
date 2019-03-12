@@ -13,26 +13,26 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
     HOST = '127.0.0.1'
     headers = [('Content-Type', 'application/json')]
 
-    def test_instrument_by_proposal(self):
-        """Return instruments for a specified proposal."""
-        url = '/status/instrument/by_proposal_id/1234a'
+    def test_instrument_by_project(self):
+        """Return instruments for a specified project."""
+        url = '/status/instrument/by_project_id/1234a'
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer.get('items')), 2)
 
-        # Test nonexistent proposal
-        url = '/status/instrument/by_proposal_id/3455'
+        # Test nonexistent project
+        url = '/status/instrument/by_project_id/3455'
         self.getPage(url)
         self.assertStatus('404 Not Found')
 
-        # Test bad proposal format
-        url = '/status/instrument/by_proposal_id/bob123'
+        # Test bad project format
+        url = '/status/instrument/by_project_id/bob123'
         self.getPage(url)
         self.assertStatus('400 Invalid Request')
 
         # Test with no instruments to return
-        url = '/status/instrument/by_proposal_id/1238'
+        url = '/status/instrument/by_project_id/1238'
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
@@ -65,7 +65,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertInBody('Provide an appropriate transaction_id')
 
     def test_transaction_search(self):
-        """Return proposals for a specified user."""
+        """Return projects for a specified user."""
         transaction_id = 68
         url = '/status/transactions/search?transaction={0}'.format(
             transaction_id)
@@ -92,30 +92,30 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.getPage(url)
         self.assertStatus(404)
 
-    def test_proposals_by_user(self):
-        """Return proposals for a specified user."""
+    def test_projects_by_user(self):
+        """Return projects for a specified user."""
         user_id = 10
-        url = '/status/proposals/by_user_id/{0}'.format(user_id)
+        url = '/status/projects/by_user_id/{0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 2)
 
         user_id = 13
-        url = '/status/proposals/by_user_id/{0}'.format(user_id)
+        url = '/status/projects/by_user_id/{0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         self.assertInBody('404 User Does Not Exist')
 
-    def test_proposal_lookup(self):
-        """Return an appropriate proposal for a specified proposal_id."""
-        proposal_id = '1234a'
-        url = '/status/proposals/by_proposal_id/{0}'.format(proposal_id)
+    def test_project_lookup(self):
+        """Return an appropriate project for a specified project_id."""
+        project_id = '1234a'
+        url = '/status/projects/by_project_id/{0}'.format(project_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer['instruments']), 1)
-        self.assertEqual(answer['id'], proposal_id)
+        self.assertEqual(answer['id'], project_id)
 
     def test_instrument_search(self):
         """Return appropriate instruments for a set of search criteria."""
@@ -145,11 +145,11 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.getPage(url)
         self.assertStatus(404)
 
-    def test_proposal_search(self):
-        """Return appropriate proposals for a search term and user id."""
+    def test_project_search(self):
+        """Return appropriate projects for a search term and user id."""
         search_term = 'expired'
         user_id = 10  # admin user
-        url = '/status/proposals/search/{0}?user={1}'.format(
+        url = '/status/projects/search/{0}?user={1}'.format(
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
@@ -157,7 +157,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertEqual(len(answer), 2)
 
         search_term = None
-        url = '/status/proposals/search?user={0}'.format(user_id)
+        url = '/status/projects/search?user={0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
@@ -165,7 +165,7 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
 
         search_term = 'pacifica'
         user_id = 100  # non admin user
-        url = '/status/proposals/search/{0}?user={1}'.format(
+        url = '/status/projects/search/{0}?user={1}'.format(
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
@@ -173,21 +173,21 @@ class TestStatusPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertEqual(len(answer), 1)
 
         search_term = 'bob'
-        url = '/status/proposals/search/{0}'.format(search_term)
+        url = '/status/projects/search/{0}'.format(search_term)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 0)
 
         search_term = 'bob'
-        url = '/status/proposals/search/{0}?user={1}'.format(
+        url = '/status/projects/search/{0}?user={1}'.format(
             search_term, user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))
         self.assertEqual(len(answer), 0)
 
-        url = '/status/proposals/search?user={0}'.format(user_id)
+        url = '/status/projects/search?user={0}'.format(user_id)
         self.getPage(url)
         self.assertStatus('200 OK')
         answer = loads(self.body.decode('UTF-8'))

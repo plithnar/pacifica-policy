@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""CherryPy Status Metadata proposalinfo base class."""
+"""CherryPy Status Metadata projectinfo base class."""
 import requests
 from pacifica.policy.config import get_config
 
@@ -11,7 +11,7 @@ class QueryBase(object):
 
     base_user_info = {
         'emsl_employee': False,
-        'proposal_list': [],
+        'project_list': [],
         'instrument_list': []
     }
 
@@ -37,9 +37,9 @@ class QueryBase(object):
 
         user_info = user_info_request.json()
 
-        # get available proposals for this user
-        prop_list = QueryBase._get_user_lookups(
-            '{0}/proposalinfo/by_user_id/{1}'.format(
+        # get available projects for this user
+        proj_list = QueryBase._get_user_lookups(
+            '{0}/projectinfo/by_user_id/{1}'.format(
                 get_config().get('metadata', 'endpoint_url'),
                 user_id
             ),
@@ -53,7 +53,7 @@ class QueryBase(object):
             ),
             header_list=header_list
         )
-        user_info['proposal_list'] = prop_list
+        user_info['project_list'] = proj_list
         user_info['instrument_list'] = inst_list
 
         return user_info

@@ -3,21 +3,21 @@
 """CherryPy Status Policy object class."""
 from cherrypy import tools
 import requests
-from pacifica.policy.validation import validate_proposal
+from pacifica.policy.validation import validate_project
 from pacifica.policy.config import get_config
 
 
 # pylint: disable=too-few-public-methods
-class ProposalLookup(object):
-    """Retrieves details of a given proposal."""
+class ProjectLookup(object):
+    """Retrieves details of a given project."""
 
     exposed = True
 
     @staticmethod
-    def _get_proposals_details(proposal_id=None):
-        """Return a details about this proposal."""
-        lookup_url = u'{0}/proposalinfo/by_proposal_id/{1}'.format(
-            get_config().get('metadata', 'endpoint_url'), proposal_id
+    def _get_projects_details(project_id=None):
+        """Return a details about this project."""
+        lookup_url = u'{0}/projectinfo/by_project_id/{1}'.format(
+            get_config().get('metadata', 'endpoint_url'), project_id
         )
         return requests.get(url=lookup_url).json()
 
@@ -26,8 +26,8 @@ class ProposalLookup(object):
     # pylint: disable=invalid-name
     @staticmethod
     @tools.json_out()
-    @validate_proposal()
-    def GET(proposal_id=None):
+    @validate_project()
+    def GET(project_id=None):
         """CherryPy GET method."""
-        return ProposalLookup._get_proposals_details(proposal_id)
+        return ProjectLookup._get_projects_details(project_id)
 # pylint: enable=too-few-public-methods

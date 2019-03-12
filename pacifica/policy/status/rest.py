@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """The CherryPy rest object for the structure."""
 # from pacifica.policy.uploader.instrument import InstrumentQuery
-from pacifica.policy.status.proposal_query import ProposalQuery
+from pacifica.policy.status.project_query import ProjectQuery
 from pacifica.policy.status.instrument_query import InstrumentQuery
 from pacifica.policy.status.transaction_query import TransactionQuery
 from pacifica.policy.status.user_query import UserQuery
@@ -23,7 +23,7 @@ class StatusPolicy(object):
         """Create local objects to allow for import to work."""
         self.instruments = InstrumentQuery()
         self.instrument = InstrumentQuery()
-        self.proposals = ProposalQuery()
+        self.projects = ProjectQuery()
         self.transactions = TransactionQuery()
         self.users = UserQuery()
 # pylint: enable=too-few-public-methods

@@ -35,7 +35,7 @@ class TransactionDetails(QueryBase):
         for transaction_id in req_json.keys():
             info = req_json[transaction_id]
             if user_info['emsl_employee'] or (
-                    info['proposal_id'] in user_info['proposal_list'] and
+                    info['project_id'] in user_info['project_list'] and
                     info['instrument_id'] in user_info['instrument_list']
             ):
                 results[transaction_id] = info

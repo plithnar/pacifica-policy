@@ -13,11 +13,11 @@ def main():
     test_data_dir = dirname(realpath(__file__))
     object_order = [
         'users',
-        'proposals',
+        'projects',
         'instruments',
         'instrument_group',
-        'proposal_instrument',
-        'proposal_participant',
+        'project_instrument',
+        'project_participant',
         'transactions',
         'transsip',
         'transaction_release'

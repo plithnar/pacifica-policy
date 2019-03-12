@@ -39,7 +39,7 @@ class TransactionSummary(QueryBase):
 
         req_json = req.json()
 
-        types_to_check = ['instrument', 'proposal']
+        types_to_check = ['instrument', 'project']
 
         for entry_type in types_to_check:
             req_json['summary_totals']['upload_stats'][entry_type] = TransactionSummary._cleanup_object_stats(

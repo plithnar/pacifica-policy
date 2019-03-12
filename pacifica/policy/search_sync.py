@@ -23,7 +23,7 @@ ELASTIC_WAIT = 3
 ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
     'transactions',
-    'proposals',
+    'projects',
     'users',
     'instruments',
     'institutions',
@@ -90,7 +90,7 @@ def es_client():
 
                 }
             },
-            'proposals': {
+            'projects': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
