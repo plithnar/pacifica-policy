@@ -8,6 +8,7 @@ from six import text_type
 import requests
 from dateutil import parser
 from .config import get_config
+from .admin import AdminPolicy
 from .search_render import SearchRender
 
 VALID_KEYWORDS = [
@@ -113,26 +114,29 @@ def update_suspense_date_objs(objs, time_after, orm_obj):
 
 def update_data_release(objs):
     """Add objs transactions to the released transactions table."""
+    admin_policy = AdminPolicy()
+    rel_uuid = admin_policy.get_relationship_info(name='authorized_releaser')[0].get('uuid')
     for trans_id in objs:
         resp = requests.get(
             text_type(
-                '{base_url}/transaction_release?transaction={trans_id}'
+                '{base_url}/transaction_user?transaction={trans_id}&relationship={rel_uuid}'
             ).format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                trans_id=trans_id
+                trans_id=trans_id, rel_uuid=rel_uuid
             )
         )
         if resp.status_code == 200 and resp.json():
             continue
         resp = requests.put(
             text_type(
-                '{base_url}/transaction_release'
+                '{base_url}/transaction_user'
             ).format(
                 base_url=get_config().get('metadata', 'endpoint_url')
             ),
             data=dumps({
-                'authorized_person': get_config().get('policy', 'admin_user_id'),
-                'transaction': trans_id
+                'user': get_config().get('policy', 'admin_user_id'),
+                'transaction': trans_id,
+                'relationship': rel_uuid
             }),
             headers={'content-type': 'application/json'}
         )

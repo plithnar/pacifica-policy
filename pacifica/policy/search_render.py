@@ -5,9 +5,11 @@ from collections import OrderedDict
 from six import text_type
 import requests
 from .config import get_config
+from .admin import AdminPolicy
 
 ELASTIC_INDEX = get_config().get('elasticsearch', 'index')
 CACHE_SIZE = get_config().getint('policy', 'cache_size')
+RELEASER_UUID = AdminPolicy().get_relationship_info(name='authorized_releaser')[0].get('uuid')
 
 
 class LimitedSizeDict(OrderedDict):
@@ -254,9 +256,19 @@ class SearchRender(object):
     def get_trans_doi(cls, trans_id):
         """Get the transaction doi and return false or doi."""
         resp = requests.get(
+            text_type('{base_url}/transaction_user?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'transaction': trans_id, 'relationship': RELEASER_UUID})
+            )
+        )
+        assert resp.status_code == 200
+        if not resp.json():
+            return 'false'
+        rel_uuid = resp.json()[0].get('uuid')
+        resp = requests.get(
             text_type('{base_url}/doi_transaction?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                args=cls.merge_get_args({'transaction': trans_id})
+                args=cls.merge_get_args({'transaction': rel_uuid})
             )
         )
         resp_json = resp.json()
@@ -268,9 +280,9 @@ class SearchRender(object):
     def get_trans_release(cls, trans_id):
         """Get the transaction release and return true/false."""
         resp = requests.get(
-            text_type('{base_url}/transaction_release?{args}').format(
+            text_type('{base_url}/transaction_user?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                args=cls.merge_get_args({'transaction': trans_id})
+                args=cls.merge_get_args({'transaction': trans_id, 'relationship': RELEASER_UUID})
             )
         )
         if resp.json():
@@ -333,13 +345,13 @@ class SearchRender(object):
             return val
 
         resp = requests.get(
-            text_type('{base_url}/institution_person?{args}').format(
+            text_type('{base_url}/institution_user?{args}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                args=cls.merge_get_args({'person_id': user_id})
+                args=cls.merge_get_args({'user': user_id})
             )
         )
         ret = []
-        for inst_id in [obj['institution_id'] for obj in resp.json()]:
+        for inst_id in [obj['institution'] for obj in resp.json()]:
             ret.append(cls.render('institutions',
                                   cls.get_obj_by_id('institutions', inst_id)))
         cls.obj_cache[key] = ret
@@ -354,7 +366,7 @@ class SearchRender(object):
             return val
 
         url = '{base_url}/instrument_group?' + \
-            cls.merge_get_args({'instrument_id': '{inst_id}'})
+            cls.merge_get_args({'instrument': '{inst_id}'})
         resp = requests.get(
             text_type(url).format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
@@ -362,7 +374,7 @@ class SearchRender(object):
             )
         )
         ret = []
-        for grp_id in [obj['group_id'] for obj in resp.json()]:
+        for grp_id in [obj['group'] for obj in resp.json()]:
             ret.append(cls.render(
                 'groups', cls.get_obj_by_id('groups', grp_id)))
         cls.obj_cache[key] = ret
@@ -377,8 +389,8 @@ class SearchRender(object):
         if val is not None:
             return val
 
-        url = '{base_url}/institution_person?' + \
-            cls.merge_get_args({'institution_id': '{inst_id}'})
+        url = '{base_url}/institution_user?' + \
+            cls.merge_get_args({'institution': '{inst_id}'})
         resp = requests.get(
             text_type(url).format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
@@ -386,7 +398,7 @@ class SearchRender(object):
             )
         )
         ret = []
-        for user_id in [obj['person_id'] for obj in resp.json()]:
+        for user_id in [obj['user'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_users(user_id))
         cls.obj_cache[key] = ret
         return ret
@@ -471,7 +483,7 @@ class SearchRender(object):
             return val
 
         url = '{base_url}/instrument_group?' + \
-            cls.merge_get_args({'group_id': '{group_id}'})
+            cls.merge_get_args({'group': '{group_id}'})
         resp = requests.get(
             text_type(url).format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
@@ -479,7 +491,7 @@ class SearchRender(object):
             )
         )
         ret = []
-        for inst_id in [obj['instrument_id'] for obj in resp.json()]:
+        for inst_id in [obj['instrument'] for obj in resp.json()]:
             ret.extend(cls.get_transactions_from_instruments(inst_id))
         cls.obj_cache[key] = ret
         return ret
@@ -515,7 +527,7 @@ class SearchRender(object):
             yield {
                 '_op_type': 'update',
                 '_index': ELASTIC_INDEX,
-                '_type': obj_cls,
+                '_type': 'doc',
                 '_id': text_type('{}_{}').format(obj_cls, obj['_id']),
                 'doc': cls.render(obj_cls, obj, trans_ids, render_release),
                 'doc_as_upsert': True
@@ -524,7 +536,7 @@ class SearchRender(object):
                 yield {
                     '_op_type': 'update',
                     '_index': ELASTIC_INDEX,
-                    '_type': 'science_theme',
+                    '_type': 'doc',
                     '_id': text_type('science_theme_{}').format(obj['science_theme']),
                     'doc': cls.render_science_theme(obj, trans_ids),
                     'doc_as_upsert': True

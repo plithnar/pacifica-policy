@@ -16,11 +16,14 @@ def main():
         'projects',
         'instruments',
         'instrument_group',
+        'instrument_user',
         'project_instrument',
-        'project_participant',
+        'project_user',
         'transactions',
         'transsip',
-        'transaction_release'
+        'transaction_user',
+        'doi_entries',
+        'doi_transaction'
     ]
     for obj in object_order:
         mdclient.create(obj, loads(

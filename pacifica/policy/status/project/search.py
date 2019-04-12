@@ -31,7 +31,7 @@ class ProjectKeywordSearch(QueryBase):
             if is_admin:
                 results = response.json()
             else:
-                available_projects = QueryBase._get_available_projects(
+                available_projects = self._get_available_projects(
                     user_id)
                 results = [x for x in response.json() if x.get('id')
                            in available_projects]

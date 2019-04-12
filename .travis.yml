@@ -1,14 +1,8 @@
 language: python
+dist: xenial
 services:
 - postgresql
 - elasticsearch
-addons:
-  apt:
-    sources:
-    - elasticsearch-6.x
-    packages:
-    - elasticsearch
-    - oracle-java8-set-default
 stages:
 - lint
 - test
