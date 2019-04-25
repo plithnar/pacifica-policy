@@ -23,7 +23,8 @@ def main():
         'transsip',
         'transaction_user',
         'doi_entries',
-        'doi_transaction'
+        'doi_transaction',
+        'instrument_key_value'
     ]
     for obj in object_order:
         mdclient.create(obj, loads(

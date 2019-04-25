@@ -10,6 +10,7 @@ from .admin import AdminPolicy
 ELASTIC_INDEX = get_config().get('elasticsearch', 'index')
 CACHE_SIZE = get_config().getint('policy', 'cache_size')
 RELEASER_UUID = AdminPolicy().get_relationship_info(name='authorized_releaser')[0].get('uuid')
+SEARCH_REQUIRED_UUID = AdminPolicy().get_relationship_info(name='search_required')[0].get('uuid')
 
 
 class LimitedSizeDict(OrderedDict):
@@ -139,6 +140,11 @@ def trans_users(trans_obj):
     )
 
 
+def instrument_kvp(inst_obj):
+    """Generate a list of key value pairs for transaction."""
+    return SearchRender.get_instrument_kvp(inst_obj['_id'])
+
+
 def trans_kvp(trans_obj):
     """Generate a list of key value pairs for transaction."""
     return SearchRender.get_trans_kvp(trans_obj['_id'])
@@ -159,6 +165,7 @@ def trans_release(obj):
     return SearchRender.get_trans_release(obj['_id'])
 
 
+# pylint: disable=too-many-public-methods
 class SearchRender(object):
     """Search render class to contain methods."""
 
@@ -182,6 +189,7 @@ class SearchRender(object):
             'obj_id': text_type('instruments_{_id}'),
             'display_name': text_type('{display_name}'),
             'long_name': text_type('{name}'),
+            'key_value_pairs': instrument_kvp,
             'keyword': text_type('{display_name}'),
             'release': text_type('true')
         },
@@ -302,6 +310,27 @@ class SearchRender(object):
         if resp.json():
             return 'true'
         return 'false'
+
+    @classmethod
+    def get_instrument_kvp(cls, inst_id):
+        """Get the instrument key value pairs."""
+        resp = requests.get(
+            text_type('{base_url}/instrument_key_value?{args}').format(
+                base_url=get_config().get('metadata', 'endpoint_url'),
+                args=cls.merge_get_args({'instrument': inst_id, 'relationship': SEARCH_REQUIRED_UUID})
+            )
+        )
+        kvp_hash = {}
+        kvp_objs = []
+        for kvp_obj in resp.json():
+            key_name = cls.get_obj_by_id('keys', kvp_obj.get('key')).get('key')
+            value_name = cls.get_obj_by_id('values', kvp_obj.get('value')).get('value')
+            kvp_hash[key_name] = value_name
+            kvp_objs.append({'key': key_name, 'value': value_name})
+        return {
+            'key_value_hash': kvp_hash,
+            'key_value_objs': kvp_objs
+        }
 
     @classmethod
     def get_trans_kvp(cls, trans_id):
@@ -601,3 +630,4 @@ class SearchRender(object):
                 cls, 'get_transactions_from_{}'.format(obj_cls))
             ret['transaction_ids'] = trans_func(obj['_id'])
         return ret
+# pylint: enable=too-many-public-methods
