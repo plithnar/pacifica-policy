@@ -164,6 +164,20 @@ class SearchRender(object):
 
     obj_cache = LimitedSizeDict(size_limit=CACHE_SIZE)
     render_data = {
+        'values': {
+            'obj_id': text_type('values_{_id}'),
+            'value': text_type('{value}'),
+            'display_name': text_type('{display_name}'),
+            'description': text_type('{description}'),
+            'release': text_type('true')
+        },
+        'keys': {
+            'obj_id': text_type('keys_{_id}'),
+            'key': text_type('{key}'),
+            'display_name': text_type('{display_name}'),
+            'description': text_type('{description}'),
+            'release': text_type('true')
+        },
         'instruments': {
             'obj_id': text_type('instruments_{_id}'),
             'display_name': text_type('{display_name}'),
@@ -379,6 +393,16 @@ class SearchRender(object):
                 'groups', cls.get_obj_by_id('groups', grp_id)))
         cls.obj_cache[key] = ret
         return ret
+
+    @classmethod
+    def get_transactions_from_keys(cls, _key_id):
+        """Get a list of transactions for a specific key."""
+        return []
+
+    @classmethod
+    def get_transactions_from_values(cls, _value_id):
+        """Get a list of transactions for a specific value."""
+        return []
 
     # pylint: disable=invalid-name
     @classmethod

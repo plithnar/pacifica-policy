@@ -22,6 +22,8 @@ ELASTIC_CONNECT_ATTEMPTS = 40
 ELASTIC_WAIT = 3
 ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
+    'keys',
+    'values',
     'transactions',
     'projects',
     'users',
@@ -42,6 +44,8 @@ def es_client():
     )
     mapping_params = {
         'properties': {
+            'key': {'type': 'keyword'},
+            'value': {'type': 'keyword'},
             'key_value_pairs': {
                 'properties': {
                     'key': {'type': 'keyword'},
