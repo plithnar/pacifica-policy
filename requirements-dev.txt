@@ -1,6 +1,7 @@
 -r requirements.txt
 coverage
 httpretty
+jsonschema
 pacifica-metadata>=0.8
 pep257
 pre-commit
