@@ -11,6 +11,7 @@ from .projects import ProjectsRender
 from .science_themes import ScienceThemesRender
 from .keys import KeysRender
 from .values import ValuesRender
+from .files import FilesRender
 from .base import SearchBase
 
 
@@ -23,7 +24,7 @@ class TransactionsRender(SearchBase):
     ]
     rel_objs = [
         'users', 'institutions', 'instruments', 'groups',
-        'projects', 'science_themes', 'key_value_pairs'
+        'projects', 'science_themes', 'key_value_pairs', 'files'
     ]
 
     @staticmethod
@@ -82,6 +83,14 @@ class TransactionsRender(SearchBase):
         if cls.get_trans_doi(trans_obj['_id']) != 'false':
             return 'true'
         return 'false'
+
+    @classmethod
+    def files_obj_lists(cls, **trans_obj):
+        """Get the projects related to the transaction."""
+        return [
+            FilesRender.render(file_obj)
+            for file_obj in cls.get_rel_by_args('files', transaction=trans_obj['_id'])
+        ]
 
     @classmethod
     def users_obj_lists(cls, **trans_obj):

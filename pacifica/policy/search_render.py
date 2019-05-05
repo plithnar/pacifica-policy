@@ -27,7 +27,7 @@ class SearchRender(object):
                 '_op_type': 'update',
                 '_index': ELASTIC_INDEX,
                 '_type': 'doc',
-                '_id': text_type('{}_{}').format(obj_cls, obj['_id']),
+                '_id': render_cls.obj_id(**obj),
                 'doc': render_cls.render(obj, True, obj_cls != 'transactions'),
                 'doc_as_upsert': True
             }

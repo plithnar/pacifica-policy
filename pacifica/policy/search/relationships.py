@@ -16,7 +16,7 @@ class RelationshipsRender(SearchBase):
     @staticmethod
     def obj_id(**rel_obj):
         """Return string for object id."""
-        return text_type('relationships_{_id}').format(**rel_obj)
+        return text_type('relationships_{uuid}').format(**rel_obj)
 
     @staticmethod
     def updated_date(**rel_obj):

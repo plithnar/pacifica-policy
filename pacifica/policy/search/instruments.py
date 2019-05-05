@@ -17,32 +17,32 @@ class InstrumentsRender(SearchBase):
     rel_objs = ['key_value_pairs']
 
     @staticmethod
-    def obj_id(**inst_obj):
+    def obj_id(**instrument_obj):
         """Return string for object id."""
-        return text_type('instruments_{_id}').format(**inst_obj)
+        return text_type('instruments_{_id}').format(**instrument_obj)
 
     @staticmethod
-    def updated_date(**inst_obj):
+    def updated_date(**instrument_obj):
         """Return string for the updated date."""
-        return text_type('{updated}').format(**inst_obj)
+        return text_type('{updated}').format(**instrument_obj)
 
     @staticmethod
-    def created_date(**inst_obj):
+    def created_date(**instrument_obj):
         """Return string for the created date."""
-        return text_type('{created}').format(**inst_obj)
+        return text_type('{created}').format(**instrument_obj)
 
     @staticmethod
-    def display_name(**inst_obj):
+    def display_name(**instrument_obj):
         """Return the string to render display_name."""
-        return text_type('{display_name}').format(**inst_obj)
+        return text_type('{display_name}').format(**instrument_obj)
 
     @staticmethod
-    def keyword(**inst_obj):
+    def keyword(**instrument_obj):
         """Return the rendered string for keywords."""
-        return text_type('{name}').format(**inst_obj)
+        return text_type('{name}').format(**instrument_obj)
 
     @classmethod
-    def release(cls, **_inst_obj):
+    def release(cls, **_instrument_obj):
         """Return whether the user has released anything."""
         return 'true'
 
