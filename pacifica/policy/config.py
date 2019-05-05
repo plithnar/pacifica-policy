@@ -21,12 +21,12 @@ def get_config():
     configparser.set(
         'policy', 'internal_url_format',
         getenv('INTERNAL_URL_FORMAT',
-               'https://internal.example.com/{transaction}')
+               'https://internal.example.com/{_id}')
     )
     configparser.set(
         'policy', 'release_url_format',
         getenv('RELEASE_URL_FORMAT',
-               'https://release.example.com/{transaction}')
+               'https://release.example.com/{_id}')
     )
     configparser.set(
         'policy', 'doi_url_format',

@@ -24,6 +24,7 @@ ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
     'keys',
     'values',
+    'relationships',
     'transactions',
     'projects',
     'users',
@@ -61,15 +62,6 @@ def es_client():
             'created_date': {
                 'type': 'date'
             },
-            'closed_date': {
-                'type': 'date'
-            },
-            'actual_start_date': {
-                'type': 'date'
-            },
-            'actual_end_date': {
-                'type': 'date'
-            },
             'transaction_ids': {
                 'type':     'text',
                 'fielddata': True
@@ -99,7 +91,15 @@ def es_client():
                     'keyword': {
                         'type': 'keyword'
                     },
-
+                    'closed_date': {
+                        'type': 'date'
+                    },
+                    'actual_start_date': {
+                        'type': 'date'
+                    },
+                    'actual_end_date': {
+                        'type': 'date'
+                    }
                 }
             },
             'institutions': {
@@ -201,7 +201,7 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
         )
     )
     objs = resp.json()
-    return SearchRender.generate(obj, objs, obj != 'transactions', True)
+    return SearchRender.generate(obj, objs)
 
 
 def create_worker_threads(threads, work_queue):

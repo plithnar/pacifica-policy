@@ -5,7 +5,6 @@ from unittest import TestCase
 import requests
 from jsonschema import validate
 from pacifica.policy.admin_cmd import main
-from pacifica.policy.search_render import LimitedSizeDict, SearchRender
 
 
 class TestAdminCMD(TestCase):
@@ -25,14 +24,19 @@ class TestAdminCMD(TestCase):
                     'release': {'const': 'true'},
                     'created_date': {'const': '2017-07-15T00:00:00'},
                     'users': {
-                        'type': 'array',
-                        'items': {
-                            'type': 'object',
-                            'properties': {
-                                'type': {'const': 'users'},
-                                'obj_id': {'const': 'users_10'},
-                                'display_name': {'const': u'Brown\u00e9 Jr, David\u00e9 '},
-                                'keyword': {'const': u'Brown\u00e9 Jr, David\u00e9 '}
+                        'type': 'object',
+                        'properties': {
+                            'submitter': {
+                                'type': 'array',
+                                'items': {
+                                    'type': 'object',
+                                    'properties': {
+                                        'type': {'const': 'users'},
+                                        'obj_id': {'const': 'users_10'},
+                                        'display_name': {'const': u'Brown\u00e9 Jr, David\u00e9 '},
+                                        'keyword': {'const': u'Brown\u00e9 Jr, David\u00e9 '}
+                                    }
+                                }
                             }
                         }
                     },
@@ -114,8 +118,8 @@ class TestAdminCMD(TestCase):
                         'items': {
                             'type': 'object',
                             'properties': {
-                                'type': {'const': 'science_theme'},
-                                'obj_id': {'const': u'science_theme_g\u00e9neral'},
+                                'type': {'const': 'science_themes'},
+                                'obj_id': {'const': u'science_themes_g\u00e9neral'},
                                 'display_name': {'const': u'g\u00e9neral'}
                             }
                         }
@@ -149,12 +153,10 @@ class TestAdminCMD(TestCase):
     def test_default_search_sync(self):
         """Test the data release subcommand."""
         main('searchsync', '--objects-per-page', '4', '--threads', '1')
-        SearchRender.obj_cache = LimitedSizeDict(size_limit=4)
-        main('searchsync', '--objects-per-page', '4', '--threads', '1')
         resp = requests.get('http://localhost:9200/pacifica_search/_stats')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(
-            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 33)
+            resp.json()['indices']['pacifica_search']['primaries']['docs']['count'], 37)
         resp = requests.get('http://localhost:9200/pacifica_search/doc/transactions_67')
         self.assertEqual(resp.status_code, 200)
         validate(resp.json(), schema=self.es_schema)
