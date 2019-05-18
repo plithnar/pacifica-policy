@@ -33,11 +33,16 @@ The service configuration is an INI file and an example is as follows:
 [policy]
 ; This section has policy service specific config options
 
+; The following strings reference formatting directives {}. The
+; object passed to the format method is the transaction object
+; from the metadata API. The DOI is special and added into the
+; transaction object for that format as well.
+
 ; Internal URL format for transactions not released or have DOIs
-internal_url_format = https://internal.example.com/{transaction}
+internal_url_format = https://internal.example.com/{_id}
 
 ; Release URL format for transactions released but no DOI
-release_url_format = https://release.example.com/{transaction}
+release_url_format = https://release.example.com/{_id}
 
 ; DOI URL format for transactions with a DOI
 doi_url_format = https://dx.doi.org/{doi}
