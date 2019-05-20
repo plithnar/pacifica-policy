@@ -36,12 +36,15 @@ SYNC_OBJECTS = [
 
 def es_client():
     """Get the elasticsearch client object."""
+    es_kwargs = {}
+    if get_config().getboolean('elasticsearch', 'sniff'):
+        es_kwargs['sniff_on_start'] = True
+        es_kwargs['sniff_on_connection_fail'] = True
+        es_kwargs['sniff_timeout'] = get_config().getint('elasticsearch', 'timeout')
+    es_kwargs['timeout'] = get_config().getint('elasticsearch', 'timeout')
     esclient = Elasticsearch(
         [ELASTIC_ENDPOINT],
-        sniff_on_start=True,
-        sniff_on_connection_fail=True,
-        sniffer_timeout=60,
-        timeout=60
+        **es_kwargs
     )
     mapping_params = {
         'properties': {

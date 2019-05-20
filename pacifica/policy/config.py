@@ -74,5 +74,9 @@ def get_config():
         'ELASTIC_ENDPOINT', 'http://127.0.0.1:9200'))
     configparser.set('elasticsearch', 'index', getenv(
         'ELASTIC_INDEX', 'pacifica_search'))
+    configparser.set('elasticsearch', 'timeout', getenv(
+        'ELASTIC_TIMEOUT', '60'))
+    configparser.set('elasticsearch', 'sniff', getenv(
+        'ELASTIC_ENABLE_SNIFF', 'True'))
     configparser.read(CONFIG_FILE)
     return configparser

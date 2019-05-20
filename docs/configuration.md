@@ -76,6 +76,13 @@ url = http://127.0.0.1:9200
 
 ; URL to the elasticsearch server
 index = pacifica_search
+
+; Timeout for connecting to elasticsearch
+timeout = 60
+
+; Turn on or off elasticsearch sniffing
+; https://elasticsearch-py.readthedocs.io/en/master/#sniffing
+sniff = True
 ```
 
 ## Starting the Service
