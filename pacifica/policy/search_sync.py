@@ -85,11 +85,13 @@ def es_client():
                         'type': 'keyword'
                     },
                     'submitter': {
+                        'type': 'nested',
                         'keyword': {
                             'type': 'keyword'
                         }
                     },
                     'authorized_releaser': {
+                        'type': 'nested',
                         'keyword': {
                             'type': 'keyword'
                         }
@@ -100,8 +102,7 @@ def es_client():
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
-                    },
-
+                    }
                 }
             },
             'projects': {
