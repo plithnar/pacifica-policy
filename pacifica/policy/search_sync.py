@@ -73,12 +73,27 @@ def es_client():
                 'type':      'text',
                 'fielddata': True
             },
+            'description': {
+                'type': 'keyword'
+            },
+            'type': {
+                'type': 'keyword'
+            },
             'users': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
                     },
-
+                    'submitter': {
+                        'keyword': {
+                            'type': 'keyword'
+                        }
+                    },
+                    'authorized_releaser': {
+                        'keyword': {
+                            'type': 'keyword'
+                        }
+                    }
                 }
             },
             'instruments': {
@@ -121,11 +136,21 @@ def es_client():
 
                 }
             },
-            'instrument_groups': {
+            'groups': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
                     },
+                }
+            },
+            'files': {
+                'properties': {
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+                    'created_date': {
+                        'type': 'date'
+                    }
                 }
             }
         }
