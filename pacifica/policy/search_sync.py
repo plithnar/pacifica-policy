@@ -73,20 +73,43 @@ def es_client():
                 'type':      'text',
                 'fielddata': True
             },
+            'description': {
+                'type': 'keyword'
+            },
+            'type': {
+                'type': 'keyword'
+            },
+            'keyword': {
+                'type': 'keyword'
+            },
             'users': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
                     },
-
+                    'submitter': {
+                        'type': 'nested',
+                        'properties': {
+                            'keyword': {
+                                'type': 'keyword'
+                            }
+                        }
+                    },
+                    'authorized_releaser': {
+                        'type': 'nested',
+                        'properties': {
+                            'keyword': {
+                                'type': 'keyword'
+                            }
+                        }
+                    }
                 }
             },
             'instruments': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
-                    },
-
+                    }
                 }
             },
             'projects': {
@@ -121,11 +144,21 @@ def es_client():
 
                 }
             },
-            'instrument_groups': {
+            'groups': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
                     },
+                }
+            },
+            'files': {
+                'properties': {
+                    'keyword': {
+                        'type': 'keyword'
+                    },
+                    'created_date': {
+                        'type': 'date'
+                    }
                 }
             }
         }
