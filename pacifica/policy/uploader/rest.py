@@ -43,32 +43,32 @@ class UploaderPolicy(AdminPolicy):
         user_queries = []
         if 'network_id' in where_objects:
             user_queries.append({'network_id': query['where']['network_id']})
-        elif 'proposal_id' in where_objects:
-            for prop_user_id in self._users_for_prop(query['where']['proposal_id']):
-                user_queries.append({'_id': prop_user_id})
+        elif 'project_id' in where_objects:
+            for proj_user_id in self._users_for_proj(query['where']['project_id']):
+                user_queries.append({'_id': proj_user_id})
         else:
             user_queries.append({'_id': user_id})
         return self._user_info_from_queries(user_queries)
 
-    def _query_select_proposal_info(self, query):
+    def _query_select_project_info(self, query):
         user_id = self._clean_user_query_id(query)
         where_objects = query['where'].keys()
         if 'instrument_id' in where_objects:
-            prop_ids = self._proposals_for_user_inst(
+            proj_ids = self._projects_for_user_inst(
                 user_id, query['where']['instrument_id'])
         elif '_id' in query['where']:
-            prop_ids = [query['where']['_id']]
+            proj_ids = [query['where']['_id']]
         else:
-            prop_ids = self._proposals_for_user(user_id)
-        return self._proposal_info_from_ids(prop_ids)
+            proj_ids = self._projects_for_user(user_id)
+        return self._project_info_from_ids(proj_ids)
 
     def _query_select_instrument_info(self, query):
         user_id = self._clean_user_query_id(query)
-        if 'proposal_id' in query['where']:
+        if 'project_id' in query['where']:
             if self._is_admin(user_id):
                 return self._all_instrument_info()
-            inst_ids = self._instruments_for_user_prop(
-                user_id, query['where']['proposal_id'])
+            inst_ids = self._instruments_for_user_proj(
+                user_id, query['where']['project_id'])
         elif '_id' in query['where']:
             inst_ids = [query['where']['_id']]
         else:
@@ -79,11 +79,11 @@ class UploaderPolicy(AdminPolicy):
         wants_object = query['from']
         if wants_object == 'users':
             return self._query_select_user_info(query)
-        if wants_object == 'proposals':
+        if wants_object == 'projects':
             if '_id' in query['where']:
-                prop_ids = [query['where']['_id']]
-                return self._proposal_info_from_ids(prop_ids)
-            return self._all_proposal_info()
+                proj_ids = [query['where']['_id']]
+                return self._project_info_from_ids(proj_ids)
+            return self._all_project_info()
         if wants_object == 'instruments':
             return self._query_select_instrument_info(query)
         raise TypeError('Invalid Query: ' +
@@ -93,8 +93,8 @@ class UploaderPolicy(AdminPolicy):
         wants_object = query['from']
         if wants_object == 'users':
             return self._query_select_user_info(query)
-        if wants_object == 'proposals':
-            return self._query_select_proposal_info(query)
+        if wants_object == 'projects':
+            return self._query_select_project_info(query)
         if wants_object == 'instruments':
             return self._query_select_instrument_info(query)
         raise TypeError('Invalid Query: ' +

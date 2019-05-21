@@ -1,7 +1,8 @@
 -r requirements.txt
 coverage
 httpretty
-pacifica-metadata
+jsonschema
+pacifica-metadata>=0.8
 pep257
 pre-commit
 pylint<2

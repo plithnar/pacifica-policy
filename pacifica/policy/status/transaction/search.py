@@ -14,7 +14,7 @@ class TransactionSearch(object):
 
     @staticmethod
     def _get_transactions_for_keywords(kwargs, option=None):
-        """Return a list with all the proposals involving this user."""
+        """Return a list with all the projects involving this user."""
         md_url = '{0}/transactioninfo/search/{1}'.format(
             get_config().get('metadata', 'endpoint_url'), option)
         response = requests.get(url=md_url, params=kwargs)

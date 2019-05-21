@@ -22,8 +22,11 @@ ELASTIC_CONNECT_ATTEMPTS = 40
 ELASTIC_WAIT = 3
 ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
+    'keys',
+    'values',
+    'relationships',
     'transactions',
-    'proposals',
+    'projects',
     'users',
     'instruments',
     'institutions',
@@ -33,15 +36,20 @@ SYNC_OBJECTS = [
 
 def es_client():
     """Get the elasticsearch client object."""
+    es_kwargs = {}
+    if get_config().getboolean('elasticsearch', 'sniff'):
+        es_kwargs['sniff_on_start'] = True
+        es_kwargs['sniff_on_connection_fail'] = True
+        es_kwargs['sniff_timeout'] = get_config().getint('elasticsearch', 'timeout')
+    es_kwargs['timeout'] = get_config().getint('elasticsearch', 'timeout')
     esclient = Elasticsearch(
         [ELASTIC_ENDPOINT],
-        sniff_on_start=True,
-        sniff_on_connection_fail=True,
-        sniffer_timeout=60,
-        timeout=60
+        **es_kwargs
     )
     mapping_params = {
         'properties': {
+            'key': {'type': 'keyword'},
+            'value': {'type': 'keyword'},
             'key_value_pairs': {
                 'properties': {
                     'key': {'type': 'keyword'},
@@ -55,15 +63,6 @@ def es_client():
                 'type': 'date'
             },
             'created_date': {
-                'type': 'date'
-            },
-            'closed_date': {
-                'type': 'date'
-            },
-            'actual_start_date': {
-                'type': 'date'
-            },
-            'actual_end_date': {
                 'type': 'date'
             },
             'transaction_ids': {
@@ -90,12 +89,20 @@ def es_client():
 
                 }
             },
-            'proposals': {
+            'projects': {
                 'properties': {
                     'keyword': {
                         'type': 'keyword'
                     },
-
+                    'closed_date': {
+                        'type': 'date'
+                    },
+                    'actual_start_date': {
+                        'type': 'date'
+                    },
+                    'actual_end_date': {
+                        'type': 'date'
+                    }
                 }
             },
             'institutions': {
@@ -197,7 +204,7 @@ def yield_data(obj, time_field, page, items_per_page, time_delta):
         )
     )
     objs = resp.json()
-    return SearchRender.generate(obj, objs, obj != 'transactions', True)
+    return SearchRender.generate(obj, objs)
 
 
 def create_worker_threads(threads, work_queue):

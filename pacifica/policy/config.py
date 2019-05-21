@@ -21,12 +21,12 @@ def get_config():
     configparser.set(
         'policy', 'internal_url_format',
         getenv('INTERNAL_URL_FORMAT',
-               'https://internal.example.com/{transaction}')
+               'https://internal.example.com/{_id}')
     )
     configparser.set(
         'policy', 'release_url_format',
         getenv('RELEASE_URL_FORMAT',
-               'https://release.example.com/{transaction}')
+               'https://release.example.com/{_id}')
     )
     configparser.set(
         'policy', 'doi_url_format',
@@ -74,5 +74,9 @@ def get_config():
         'ELASTIC_ENDPOINT', 'http://127.0.0.1:9200'))
     configparser.set('elasticsearch', 'index', getenv(
         'ELASTIC_INDEX', 'pacifica_search'))
+    configparser.set('elasticsearch', 'timeout', getenv(
+        'ELASTIC_TIMEOUT', '60'))
+    configparser.set('elasticsearch', 'sniff', getenv(
+        'ELASTIC_ENABLE_SNIFF', 'True'))
     configparser.read(CONFIG_FILE)
     return configparser

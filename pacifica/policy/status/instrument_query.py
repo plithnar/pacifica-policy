@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """CherryPy Status Policy object class."""
-from pacifica.policy.status.instrument.by_proposal_id import InstrumentsByProposal
+from pacifica.policy.status.instrument.by_project_id import InstrumentsByProject
 from pacifica.policy.status.instrument.search import InstrumentKeywordSearch
 
 
@@ -13,6 +13,6 @@ class InstrumentQuery(object):
 
     def __init__(self):
         """Create local objects for sub tree items."""
-        # self.search = ProposalSearch()
-        self.by_proposal_id = InstrumentsByProposal()
+        # self.search = ProjectSearch()
+        self.by_project_id = InstrumentsByProject()
         self.search = InstrumentKeywordSearch()

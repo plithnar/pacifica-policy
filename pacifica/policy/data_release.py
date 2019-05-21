@@ -8,14 +8,15 @@ from six import text_type
 import requests
 from dateutil import parser
 from .config import get_config
-from .search_render import SearchRender
+from .admin import AdminPolicy
+from .search.base import SearchBase
 
 VALID_KEYWORDS = [
-    'proposals.actual_end_date',
-    'proposals.actual_start_date',
-    'proposals.submitted_date',
-    'proposals.accepted_date',
-    'proposals.closed_date',
+    'projects.actual_end_date',
+    'projects.actual_start_date',
+    'projects.submitted_date',
+    'projects.accepted_date',
+    'projects.closed_date',
     'transactions.created',
     'transactions.updated'
 ]
@@ -29,7 +30,7 @@ def collate_objs_from_key(resp, objs, date_key):
 
 
 def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
-    """Query proposals or transactions that has gone past their suspense date."""
+    """Query projects or transactions that has gone past their suspense date."""
     trans_objs = set()
     suspense_args = {
         'suspense_date': 0,
@@ -39,24 +40,25 @@ def relavent_data_release_objs(time_ago, orm_obj, exclude_list):
         'suspense_date_1': datetime.now().replace(microsecond=0).isoformat(),
         'suspense_date_operator': 'between'
     }
+    suspense_args.update(SearchBase.global_get_args)
     resp = requests.get(
-        text_type('{base_url}/{orm_obj}?{args}').format(
+        text_type('{base_url}/{orm_obj}').format(
             base_url=get_config().get('metadata', 'endpoint_url'),
-            orm_obj=orm_obj,
-            args=SearchRender.merge_get_args(suspense_args)
-        )
+            orm_obj=orm_obj
+        ),
+        params=suspense_args
     )
-    if orm_obj == 'proposals':
-        for prop_obj in resp.json():
+    if orm_obj == 'projects':
+        for proj_obj in resp.json():
             for rel_type in ['transsip', 'transsap']:
-                prop_id = prop_obj['_id']
-                if text_type(prop_id) in exclude_list:
+                proj_id = proj_obj['_id']
+                if text_type(proj_id) in exclude_list:
                     continue
                 resp = requests.get(
-                    text_type('{base_url}/{rel_type}?proposal={prop_id}').format(
+                    text_type('{base_url}/{rel_type}?project={proj_id}').format(
                         rel_type=rel_type,
                         base_url=get_config().get('metadata', 'endpoint_url'),
-                        prop_id=prop_id
+                        proj_id=proj_id
                     )
                 )
                 for trans_obj in resp.json():
@@ -78,12 +80,13 @@ def relavent_suspense_date_objs(time_ago, orm_obj, date_key):
                 datetime.now() - time_ago
             ).replace(microsecond=0).isoformat()
         }
+        obj_args.update(SearchBase.global_get_args)
         resp = requests.get(
-            text_type('{base_url}/{orm_obj}?{args}').format(
+            text_type('{base_url}/{orm_obj}').format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                orm_obj=orm_obj,
-                args=SearchRender.merge_get_args(obj_args)
-            )
+                orm_obj=orm_obj
+            ),
+            params=obj_args
         )
         collate_objs_from_key(resp, objs, date_key)
     return objs
@@ -113,26 +116,29 @@ def update_suspense_date_objs(objs, time_after, orm_obj):
 
 def update_data_release(objs):
     """Add objs transactions to the released transactions table."""
+    admin_policy = AdminPolicy()
+    rel_uuid = admin_policy.get_relationship_info(name='authorized_releaser')[0].get('uuid')
     for trans_id in objs:
         resp = requests.get(
             text_type(
-                '{base_url}/transaction_release?transaction={trans_id}'
+                '{base_url}/transaction_user?transaction={trans_id}&relationship={rel_uuid}'
             ).format(
                 base_url=get_config().get('metadata', 'endpoint_url'),
-                trans_id=trans_id
+                trans_id=trans_id, rel_uuid=rel_uuid
             )
         )
         if resp.status_code == 200 and resp.json():
             continue
         resp = requests.put(
             text_type(
-                '{base_url}/transaction_release'
+                '{base_url}/transaction_user'
             ).format(
                 base_url=get_config().get('metadata', 'endpoint_url')
             ),
             data=dumps({
-                'authorized_person': get_config().get('policy', 'admin_user_id'),
-                'transaction': trans_id
+                'user': get_config().get('policy', 'admin_user_id'),
+                'transaction': trans_id,
+                'relationship': rel_uuid
             }),
             headers={'content-type': 'application/json'}
         )

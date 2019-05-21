@@ -3,22 +3,22 @@
 """CherryPy Status Policy object class."""
 import requests
 from cherrypy import tools, HTTPError
-from pacifica.policy.validation import validate_proposal
+from pacifica.policy.validation import validate_project
 from pacifica.policy.config import get_config
 from pacifica.policy.status.base import QueryBase
 
 
 # pylint: disable=too-few-public-methods
-class InstrumentsByProposal(QueryBase):
-    """Retrieves instrument list for a given proposal."""
+class InstrumentsByProject(QueryBase):
+    """Retrieves instrument list for a given project."""
 
     exposed = True
 
     @staticmethod
-    def _get_instruments_for_proposal(proposal_id):
-        """Return a list with all the instruments belonging to this proposal."""
-        md_url = u'{0}/proposalinfo/by_proposal_id/{1}'.format(
-            get_config().get('metadata', 'endpoint_url'), proposal_id
+    def _get_instruments_for_project(project_id):
+        """Return a list with all the instruments belonging to this project."""
+        md_url = u'{0}/projectinfo/by_project_id/{1}'.format(
+            get_config().get('metadata', 'endpoint_url'), project_id
         )
         query = requests.get(url=md_url)
         if query.status_code == 200:
@@ -30,18 +30,18 @@ class InstrumentsByProposal(QueryBase):
     # pylint: disable=invalid-name
     @staticmethod
     @tools.json_out()
-    @validate_proposal()
-    def GET(proposal_id=None):
+    @validate_project()
+    def GET(project_id=None):
         """CherryPy GET method."""
-        proposal_info = InstrumentsByProposal._get_instruments_for_proposal(
-            proposal_id)
+        project_info = InstrumentsByProject._get_instruments_for_project(
+            project_id)
         instruments = {index: info for (
-            index, info) in proposal_info.get('instruments').items()}
+            index, info) in project_info.get('instruments').items()}
         cleaned_instruments = []
         if instruments:
             clean_info = {
                 'id': -1,
-                'text': u'All Available Instruments for Proposal {0}'.format(proposal_id),
+                'text': u'All Available Instruments for Project {0}'.format(project_id),
                 'name': 'All Instruments',
                 'active': 'Y'
             }

@@ -13,14 +13,18 @@ def main():
     test_data_dir = dirname(realpath(__file__))
     object_order = [
         'users',
-        'proposals',
+        'projects',
         'instruments',
         'instrument_group',
-        'proposal_instrument',
-        'proposal_participant',
+        'instrument_user',
+        'project_instrument',
+        'project_user',
         'transactions',
         'transsip',
-        'transaction_release'
+        'transaction_user',
+        'doi_entries',
+        'doi_transaction',
+        'instrument_key_value'
     ]
     for obj in object_order:
         mdclient.create(obj, loads(

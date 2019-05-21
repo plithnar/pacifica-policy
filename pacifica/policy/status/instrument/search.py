@@ -10,7 +10,7 @@ from pacifica.policy.status.base import QueryBase
 
 # pylint: disable=too-few-public-methods
 class InstrumentKeywordSearch(QueryBase):
-    """Retrieves a set of proposals for a given keyword set."""
+    """Retrieves a set of projects for a given keyword set."""
 
     exposed = True
 

@@ -16,8 +16,8 @@ class TestUploader(TestCase):
     admin_group_id = 127
     user_group_json = [
         {
-            'group_id': admin_group_id,
-            'person_id': admin_user_id
+            'group': admin_group_id,
+            'person': admin_user_id
         }
     ]
     admin_group_json = [

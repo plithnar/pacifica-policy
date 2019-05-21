@@ -23,12 +23,12 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertTrue('status' in ret_data)
         self.assertEqual(ret_data['status'], 'success')
 
-        # change proposal to valid but he's an admin so this works
+        # change project to valid but he's an admin so this works
         valid_query[4]['key'] = 'Tag'
         valid_query[2]['value'] = '1234a'
         self.get_json_page('/ingest', valid_query)
 
-        # change the proposal to be invalid => fails
+        # change the project to be invalid => fails
         invalid_query = loads(
             open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[2]['value'] = '12'
@@ -56,11 +56,11 @@ class TestIngestPolicy(helper.CPWebCase, CommonCPSetup):
         self.assertFalse(ret_data is None)
         self.assertTrue('message' in ret_data)
 
-        # change the query so that the instrument xrefs and proposal xrefs fail (but for valid base entities)
+        # change the query so that the instrument xrefs and project xrefs fail (but for valid base entities)
         invalid_query = loads(
             open(join('test_files', 'ingest_base_query.json')).read())
         invalid_query[3]['value'] = 74  # instrument
-        invalid_query[2]['value'] = u'1234c\u00e9'  # proposal
+        invalid_query[2]['value'] = u'1234c\u00e9'  # project
         invalid_query[1]['value'] = 12  # submitter
         self.getPage('/ingest',
                      self.headers +

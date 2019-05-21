@@ -20,10 +20,11 @@ class AdminPolicy(object):
     md_url = get_config().get('metadata', 'endpoint_url')
     all_users_url = '{0}/users'.format(md_url)
     all_instruments_url = '{0}/instruments'.format(md_url)
-    all_proposals_url = '{0}/proposals'.format(md_url)
-    prop_participant_url = '{0}/proposal_participant'.format(md_url)
-    prop_instrument_url = '{0}/proposal_instrument'.format(md_url)
-    inst_custodian_url = '{0}/instrument_custodian'.format(md_url)
+    all_projects_url = '{0}/projects'.format(md_url)
+    all_relationships_url = '{0}/relationships'.format(md_url)
+    proj_user_url = '{0}/project_user'.format(md_url)
+    proj_instrument_url = '{0}/project_instrument'.format(md_url)
+    inst_user_url = '{0}/instrument_user'.format(md_url)
     inst_group_url = '{0}/instrument_group'.format(md_url)
 
     def __init__(self):
@@ -39,46 +40,51 @@ class AdminPolicy(object):
         )
         return u'{0}?{1}'.format(getattr(self, url), args_str)
 
-    def _all_proposal_info(self):
-        return loads(requests.get(self._format_url('all_proposals_url')).text)
+    def get_relationship_info(self, **get_args):
+        """Get a relationship by kwargs."""
+        return loads(requests.get(self._format_url('all_relationships_url', **get_args)).text)
+
+    def _all_project_info(self):
+        return loads(requests.get(self._format_url('all_projects_url')).text)
 
     def _all_instrument_info(self):
         return loads(requests.get(self._format_url('all_instruments_url')).text)
 
-    def _proposals_for_user(self, user_id):
+    def _projects_for_user(self, user_id, relationship='member_of'):
         if self._is_admin(user_id):
-            return [prop['_id'] for prop in self._all_proposal_info()]
+            return [proj['_id'] for proj in self._all_project_info()]
+        rel_uuid = self.get_relationship_info(name=relationship)[0].get('uuid')
+        proj_url = self._format_url('proj_user_url', user=user_id, relationship=rel_uuid)
+        return [part['project'] for part in loads(requests.get(proj_url).text)]
 
-        prop_url = self._format_url('prop_participant_url', person_id=user_id)
-        return [part['proposal_id'] for part in loads(requests.get(prop_url).text)]
-
-    def _proposals_for_custodian(self, user_id):
+    def _projects_for_custodian(self, user_id):
         inst_list = self._instruments_for_custodian(user_id)
-        proposals_for_custodian = set([])
+        projects_for_custodian = set([])
         for inst in inst_list:
-            proposals = self._proposals_for_inst(inst)
-            proposals_for_custodian = proposals_for_custodian.union(proposals)
-        return list(proposals_for_custodian)
+            projects = self._projects_for_inst(inst)
+            projects_for_custodian = projects_for_custodian.union(projects)
+        return list(projects_for_custodian)
 
     def _instruments_for_custodian(self, user_id):
+        rel_uuid = self.get_relationship_info(name='custodian')[0].get('uuid')
         inst_custodian_associations_url = self._format_url(
-            'inst_custodian_url', custodian_id=user_id)
+            'inst_user_url', user=user_id, relationship=rel_uuid)
         inst_custodian_list = loads(requests.get(
             inst_custodian_associations_url).text)
-        return [i['instrument_id'] for i in inst_custodian_list]
+        return [i['instrument'] for i in inst_custodian_list]
 
-    def _proposals_for_inst(self, inst_id):
-        inst_props_url = self._format_url(
-            'prop_instrument_url',
+    def _projects_for_inst(self, inst_id):
+        inst_projs_url = self._format_url(
+            'proj_instrument_url',
             instrument_id=inst_id
         )
-        inst_props = loads(requests.get(inst_props_url).text)
-        inst_props = set([part['proposal_id'] for part in inst_props])
-        return inst_props
+        inst_projs = loads(requests.get(inst_projs_url).text)
+        inst_projs = set([part['project'] for part in inst_projs])
+        return inst_projs
 
-    def _proposals_for_user_inst(self, user_id, inst_id):
-        props = set(self._proposals_for_user(user_id))
-        props_for_custodian = set(self._proposals_for_custodian(user_id))
+    def _projects_for_user_inst(self, user_id, inst_id):
+        projs = set(self._projects_for_user(user_id))
+        projs_for_custodian = set(self._projects_for_custodian(user_id))
         inst_groups = self._groups_for_inst(inst_id)
         if inst_groups:
             group_insts = set()
@@ -86,47 +92,47 @@ class AdminPolicy(object):
                 group_insts |= set(self._instruments_for_group(group_id))
         else:
             group_insts = set([inst_id])
-        ginst_props = set()
+        ginst_projs = set()
         for ginst_id in group_insts:
-            ginst_props |= self._proposals_for_inst(ginst_id)
-        return list((props | props_for_custodian) & ginst_props)
+            ginst_projs |= self._projects_for_inst(ginst_id)
+        return list((projs | projs_for_custodian) & ginst_projs)
 
-    def _proposal_info_from_ids(self, prop_list):
+    def _project_info_from_ids(self, proj_list):
         ret = []
-        if prop_list:
-            for prop_id in prop_list:
-                prop_url = self._format_url('all_proposals_url', _id=prop_id)
-                ret.extend(loads(requests.get(prop_url).text))
+        if proj_list:
+            for proj_id in proj_list:
+                proj_url = self._format_url('all_projects_url', _id=proj_id)
+                ret.extend(loads(requests.get(proj_url).text))
         return ret
 
     def _groups_for_inst(self, inst_id):
         inst_g_url = self._format_url('inst_group_url', instrument_id=inst_id)
-        return [i['group_id'] for i in loads(requests.get(inst_g_url).text)]
+        return [i['group'] for i in loads(requests.get(inst_g_url).text)]
 
     def _instruments_for_group(self, group_id):
         inst_g_url = self._format_url('inst_group_url', group_id=group_id)
-        return [i['instrument_id'] for i in loads(requests.get(inst_g_url).text)]
+        return [i['instrument'] for i in loads(requests.get(inst_g_url).text)]
 
     def _instruments_for_user(self, user_id):
         if self._is_admin(user_id):
             return [inst['_id'] for inst in self._all_instrument_info()]
         return self._instruments_for_custodian(user_id)
 
-    def _instruments_for_user_prop(self, user_id, prop_id):
+    def _instruments_for_user_proj(self, user_id, proj_id):
         user_insts = set(self._instruments_for_user(user_id))
         if self._is_admin(user_id):
             return list(user_insts)
-        prop_insts_url = self._format_url(
-            'prop_instrument_url', proposal_id=prop_id)
-        prop_insts = set([part['instrument_id']
-                          for part in loads(requests.get(prop_insts_url).text)])
+        proj_insts_url = self._format_url(
+            'proj_instrument_url', project=proj_id)
+        proj_insts = set([part['instrument']
+                          for part in loads(requests.get(proj_insts_url).text)])
         inst_groups = set()
-        for inst_id in prop_insts:
+        for inst_id in proj_insts:
             inst_groups |= set(self._groups_for_inst(inst_id))
         group_insts = set()
         for group_id in inst_groups:
             group_insts |= set(self._instruments_for_group(group_id))
-        return list(group_insts | user_insts | prop_insts)
+        return list(group_insts | user_insts | proj_insts)
 
     def _instrument_info_from_ids(self, inst_list):
         ret = []
@@ -135,11 +141,11 @@ class AdminPolicy(object):
             ret.extend(loads(requests.get(inst_url).text))
         return ret
 
-    def _users_for_prop(self, prop_id):
-        user_prop_url = self._format_url(
-            'prop_participant_url', proposal_id=prop_id)
-        user_props = loads(requests.get(user_prop_url).text)
-        return list(set([str(part['person_id']) for part in user_props]))
+    def _users_for_proj(self, proj_id):
+        user_proj_url = self._format_url(
+            'proj_user_url', project=proj_id)
+        user_projs = loads(requests.get(user_proj_url).text)
+        return list(set([str(part['user']) for part in user_projs]))
 
     def _user_info_from_kwds(self, **kwds):
         return loads(requests.get(self._format_url('all_users_url', **kwds)).text)
@@ -156,7 +162,7 @@ class AdminPolicy(object):
         return len(object_is_valid) > 0
 
     def _is_admin(self, user_id):
-        amember_query = '{0}/user_group?group_id={1}&person_id={2}'.format(
+        amember_query = '{0}/user_group?group={1}&person={2}'.format(
             self.md_url,
             self.admin_group_id,
             user_id

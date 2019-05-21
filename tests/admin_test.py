@@ -22,15 +22,15 @@ class TestAdminBase(helper.CPWebCase, CommonCPSetup):
         ]
         # pylint: disable=protected-access
         for user_id, inst_id in valid_pairs:
-            for prop_id in adm_policy._proposals_for_user_inst(user_id, inst_id):
+            for proj_id in adm_policy._projects_for_user_inst(user_id, inst_id):
                 self.assertTrue(
-                    inst_id in adm_policy._instruments_for_user_prop(user_id, prop_id))
+                    inst_id in adm_policy._instruments_for_user_proj(user_id, proj_id))
         # pylint: enable=protected-access
 
     def test_base_queries(self):
         """Test the base class queries."""
         adm_policy = AdminPolicy()
         # pylint: disable=protected-access
-        res = adm_policy._proposals_for_custodian(10)
+        res = adm_policy._projects_for_custodian(10)
         # pylint: enable=protected-access
         self.assertTrue('1234a' in res)

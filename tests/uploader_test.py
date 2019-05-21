@@ -44,12 +44,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'user_query_with_proposal': {
+        'user_query_with_project': {
             'query': {
                 'user': 100,
                 'from': 'users',
                 'columns': ['last_name', 'first_name'],
-                'where': {'proposal_id': '1234a', 'user': 10}
+                'where': {'project_id': '1234a', 'user': 10}
             },
             'answer': [
                 {
@@ -58,12 +58,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query': {
+        'project_query': {
             'query': {
                 'user': 10,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
-                'where': {'proposal_id': '1234a'}
+                'where': {'project_id': '1234a'}
             },
             'answer': [
                 {
@@ -72,12 +72,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_not_admin': {
+        'project_query_not_admin': {
             'query': {
                 'user': 100,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
-                'where': {'proposal_id': u'1234b\u00e9'}
+                'where': {'project_id': u'1234b\u00e9'}
             },
             'answer': [
                 {
@@ -86,10 +86,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_user': {
+        'project_query_user': {
             'query': {
                 'user': 100,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
                 'where': {'_id': '1234a'}
             },
@@ -100,10 +100,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_admin': {
+        'project_query_admin': {
             'query': {
                 'user': 10,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
                 'where': {'_id': '1234a'}
             },
@@ -114,10 +114,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_with_instruments': {
+        'project_query_with_instruments': {
             'query': {
                 'user': 11,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
                 'where': {'instrument_id': 74}
             },
@@ -128,10 +128,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_for_user': {
+        'project_query_for_user': {
             'query': {
                 'user': 10,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
                 'where': {}
             },
@@ -142,10 +142,10 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'proposal_query_for_non_admin_no_group': {
+        'project_query_for_non_admin_no_group': {
             'query': {
                 'user': 100,
-                'from': 'proposals',
+                'from': 'projects',
                 'columns': ['_id', 'title'],
                 'where': {'instrument_id': 75}
             },
@@ -184,12 +184,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'instrument_query_from_proposal': {
+        'instrument_query_from_project': {
             'query': {
                 'user': 10,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
-                'where': {'proposal_id': '1234a'}
+                'where': {'project_id': '1234a'}
             },
             'answer': [
                 {
@@ -198,12 +198,12 @@ class TestUploaderPolicy(helper.CPWebCase, CommonCPSetup):
                 }
             ]
         },
-        'instrument_query_from_proposal_bad': {
+        'instrument_query_from_project_bad': {
             'query': {
                 'user': 100,
                 'from': 'instruments',
                 'columns': ['_id', 'name'],
-                'where': {'proposal_id': '1234a'}
+                'where': {'project_id': '1234a'}
             },
             'answer': [
                 {
