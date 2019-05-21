@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Test the uploader policy."""
+from json import loads
 from cherrypy.test import helper
 from pacifica.policy.admin import AdminPolicy
 from common_test import CommonCPSetup
@@ -34,3 +35,10 @@ class TestAdminBase(helper.CPWebCase, CommonCPSetup):
         res = adm_policy._projects_for_custodian(10)
         # pylint: enable=protected-access
         self.assertTrue('1234a' in res)
+
+    def test_root_get(self):
+        """Test to make sure get from root returns good things."""
+        self.getPage('/')
+        self.assertStatus('200 OK')
+        answer = loads(self.body.decode('UTF-8'))
+        self.assertEqual(answer.get('message'), 'Pacifica Policy Up and Running')
