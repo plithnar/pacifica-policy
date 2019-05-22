@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Endpoints for status
 - Endpoints for reporting
 
+## [0.6.4] - 2019-05-22
+### Added
+- Allowed for Elasticsearch sniffing to be configurable (Pull #78)
+
+### Changed
+- Fix #79 Change Web Root to be Status
+- Fix #81 Modify Elasticsearch Mappings to include more fields
+
 ## [0.6.1] - 2019-05-18
 ### Added
 - Events policy endpoint
