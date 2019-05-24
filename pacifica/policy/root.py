@@ -38,7 +38,7 @@ class Root(object):
     not exposed by default the base objects are exposed
     """
 
-    exposed = False
+    exposed = True
 
     def __init__(self):
         """Create the local objects we need."""
@@ -47,6 +47,14 @@ class Root(object):
         self.reporting = ReportingPolicy()
         self.ingest = IngestPolicy()
         self.events = EventsPolicy()
+
+    @staticmethod
+    @cherrypy.tools.json_out()
+    # pylint: disable=invalid-name
+    def GET():
+        """Return happy message about functioning service."""
+        return {'message': 'Pacifica Policy Up and Running'}
+    # pylint: enable=invalid-name
 
     @classmethod
     def try_meta_connect(cls, attempts=0):
