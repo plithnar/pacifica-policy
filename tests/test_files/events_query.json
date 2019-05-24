@@ -71,7 +71,7 @@
   ],
   "eventID": "C234-1234-1234",
   "eventTime": "2018-04-05T17:31:00Z",
-  "eventType": "com.example.someevent",
+  "eventType": "org.pacifica.metadata.ingest",
   "extensions": {
     "comExampleExtension": "value"
   },
