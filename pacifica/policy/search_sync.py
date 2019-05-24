@@ -20,7 +20,6 @@ from .search_render import ELASTIC_INDEX, SearchRender
 
 ELASTIC_CONNECT_ATTEMPTS = 40
 ELASTIC_WAIT = 3
-ELASTIC_ENDPOINT = get_config().get('elasticsearch', 'url')
 SYNC_OBJECTS = [
     'keys',
     'values',
@@ -43,7 +42,7 @@ def es_client():
         es_kwargs['sniff_timeout'] = get_config().getint('elasticsearch', 'timeout')
     es_kwargs['timeout'] = get_config().getint('elasticsearch', 'timeout')
     esclient = Elasticsearch(
-        [ELASTIC_ENDPOINT],
+        [get_config().get('elasticsearch', 'url')],
         **es_kwargs
     )
     mapping_params = {
